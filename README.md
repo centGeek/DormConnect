@@ -55,9 +55,9 @@ volumes:
 
 #### Project Structure
 
-Create a folder for your group’s module inside the `dormcorrect` directory. Within this folder, organize your code according to functionality by creating the following package structure:
+Create a folder for your group’s module inside the `dormConnect` directory. Within this folder, organize your code according to functionality by creating the following package structure:
 ```
-dormcorrect/
+dormConnect/
     └── <dorm>/
         ├── controllers/      
         ├── repositories/     
@@ -130,7 +130,7 @@ public class UserService {
 }
 ```
 
-**@RestController**: The @RestController annotation is used to define a Spring REST controller. It combines @Controller and @ResponseBody, meaning all methods return data directly as JSON (or other formats) instead of views. This is used for exposing only APIs, not HTML views.
+**@RestController**: The @RestController annotation is used to define a Spring REST controller. We will use it for exposing only APIs, not HTML views.
 
 Example:
 
