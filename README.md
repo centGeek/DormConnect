@@ -4,7 +4,7 @@ Project run
 Run the docker-compose.yml file and DormConnectApplication.java. All Spring dependencies should be correctly loaded.
 Using the app in dev mode
 
-Use the following URL:
+Use the following URL: http://localhost:8091/
 
 To log in, enter:
 
@@ -59,17 +59,17 @@ Create a folder for your group’s module inside the `dormcorrect` directory. Wi
 ```
 dormcorrect/
     └── <dorm>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
  └── <wastebin>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
  └── <nfc>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
 ```
 ### Backend used tools
 
