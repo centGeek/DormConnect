@@ -12,5 +12,5 @@ public class RoomEntity {
     private String number;
     private int capacity;
     private int floor;
-
+    boolean active = true;
 }
