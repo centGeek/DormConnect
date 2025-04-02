@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 
 @Repository
-public interface RoomRepository extends CrudRepository<RoomEntity, Id> {
+public interface RoomRepository extends CrudRepository<RoomEntity, Long> {
 
 }
