@@ -22,17 +22,28 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @GetMapping("/dorm/room")
+    @GetMapping("")
     public List<RoomEntity> getRooms() {
         return roomService.getAllRooms();
     }
 
 
-    @PostMapping("/dorm/room")
+    @PostMapping("")
     public ResponseEntity<RoomEntity> addRoom(@RequestBody RoomEntity roomEntity) {
         RoomEntity createdRoom = roomService.addRoom(roomEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
 
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<RoomEntity> deleteRoom(@RequestBody Long id) {
+        try{
+            roomService.deleteRoomById(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 }

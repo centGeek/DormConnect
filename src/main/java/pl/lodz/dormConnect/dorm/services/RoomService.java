@@ -26,4 +26,17 @@ public class RoomService {
         return roomRepository.save(roomEntity);
     }
 
+    public RoomEntity findById(Long id){
+        return roomRepository.findById(id).orElse(null);
+    }
+
+    public boolean deleteRoomByEntity(RoomEntity roomEntity){
+        roomRepository.delete(roomEntity);
+        return true;
+    }
+
+    public boolean deleteRoomById(Long id){
+        roomRepository.deleteById(id);
+        return true;
+    }
 }
