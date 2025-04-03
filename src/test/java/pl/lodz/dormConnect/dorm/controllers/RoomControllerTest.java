@@ -1,5 +1,6 @@
 package pl.lodz.dormConnect.dorm.controllers;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,13 +10,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username = "admin",roles = "ADMIN")
+@WithMockUser(username = "user",roles = "USER",password = "password")
 class RoomControllerTest {
 
     @Autowired
@@ -25,7 +26,7 @@ class RoomControllerTest {
     void addRoomTest() throws Exception {
     String testJsonRequest = """
             {
-              "number": "A101",
+              "number": "A999",
               "capacity": 2,
               "floor": 1,
               "active": true
@@ -33,15 +34,21 @@ class RoomControllerTest {
             """;
     mockMvc.perform(post("/dorm/room")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(testJsonRequest))
+            .content(testJsonRequest)
+                    .with(csrf()))
             .andExpect(status().isCreated());
 
+    mockMvc.perform(delete("/dorm/room")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Long.toString(4))
+            .with(csrf())).andExpect(status().isOk());
     }
 
     @Test
+    @Transactional
     void getRoomsTest() throws Exception {
         mockMvc.perform(
-                get("/dorm/room/")
+                get("/dorm/room")
         ).andExpect(status().is2xxSuccessful());
     }
 }
