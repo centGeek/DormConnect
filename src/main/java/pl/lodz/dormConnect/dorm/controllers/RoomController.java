@@ -37,11 +37,10 @@ public class RoomController {
 
     @DeleteMapping("")
     public ResponseEntity<RoomEntity> deleteRoom(@RequestBody Long id) {
-        try{
+        try {
             roomService.deleteRoomById(id);
             return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
