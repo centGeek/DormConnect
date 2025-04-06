@@ -26,5 +26,9 @@ public class RoomEntity {
     @OneToMany
     private List<RoomAssignEntity> roomAssigns;
 
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    //null means there is no grouping
+    private GroupedRoomsEntity groupedRooms;
 
 }
