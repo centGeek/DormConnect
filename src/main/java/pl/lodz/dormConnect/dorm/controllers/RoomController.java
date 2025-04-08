@@ -1,6 +1,7 @@
 package pl.lodz.dormConnect.dorm.controllers;
 
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,11 +30,10 @@ public class RoomController {
     }
 
 
-    @PostMapping("")
+    @PostMapping("/create")
     public ResponseEntity<RoomEntity> addRoom(@RequestBody RoomEntity roomEntity) {
         RoomEntity createdRoom = roomService.addRoom(roomEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
-
     }
 
     @DeleteMapping("")
@@ -42,6 +43,23 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @Transactional
+    @PostMapping("/{id}")
+    public ResponseEntity<RoomEntity> updateRoom(@PathVariable Long id, @RequestBody RoomEntity roomEntity,
+                                                 @RequestBody Long idOfStudent, @RequestBody LocalDate fromDate,
+                                                 @RequestBody LocalDate toDate) {
+        if (roomEntity == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+
+        if (roomService.assignStudentToRoom(roomEntity, idOfStudent, fromDate, toDate)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

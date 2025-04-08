@@ -8,4 +8,5 @@ import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 @Repository
 public interface RoomRepository extends CrudRepository<RoomEntity, Long> {
 
+
 }

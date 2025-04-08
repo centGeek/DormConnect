@@ -1,11 +1,16 @@
 package pl.lodz.dormConnect.dorm.entities;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class RoomAssignEntity {
     @Id
@@ -13,10 +18,10 @@ public class RoomAssignEntity {
     private Long id;
 
     @ManyToOne
-    private RoomEntity rooms;
+    private RoomEntity room;
     //WARNING!
     //Idk if students entities are gonna be in my module, so for now i only put Id
-    private Long studentId;
+    private Long residentId;
 
     @Column(nullable = false)
     LocalDate fromDate;
@@ -25,5 +30,8 @@ public class RoomAssignEntity {
     @Column(nullable = true)
     private LocalDate toDate;
 
-
+    public void setRoom(RoomEntity room) {
+        this.room = room;
+        room.getRoomAssigns().add(this);
+    }
 }

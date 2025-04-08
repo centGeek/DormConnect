@@ -31,4 +31,6 @@ public class RoomEntity {
     //null means there is no grouping
     private GroupedRoomsEntity groupedRooms;
 
+
+
 }
