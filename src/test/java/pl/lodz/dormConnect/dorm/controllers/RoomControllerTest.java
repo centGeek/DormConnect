@@ -2,6 +2,7 @@ package pl.lodz.dormConnect.dorm.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import pl.lodz.dormConnect.dorm.DormTestRooms;
 import pl.lodz.dormConnect.dorm.services.RoomService;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -55,6 +58,9 @@ class RoomControllerTest {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         Long idOfCreatedRoom = jsonNode.get("id").asLong();
 
+        MvcResult resultOfCreatedRoom =  mockMvc.perform(get("/dorm/room/" + idOfCreatedRoom).accept(MediaType.APPLICATION_JSON).with(csrf())).andExpect(status().isOk()).andReturn();
+
+
         mockMvc.perform(delete("/dorm/room")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Long.toString(idOfCreatedRoom))
@@ -85,5 +91,29 @@ class RoomControllerTest {
         String responseBody = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
+
+
+
+        Long idOfCreatedRoom = jsonNode.get(0).get("id").asLong();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+
+        objectNode.putIfAbsent("roomEntity",jsonNode.get(0));
+
+
+
+
+
+        objectNode.put("idOfStudent",15L);
+        objectNode.put("fromDate", LocalDate.of(2025,1,1).toString());
+        objectNode.put("toDate", LocalDate.of(2025,1,15).toString());
+
+
+        String uri = "/dorm/room/"+idOfCreatedRoom;
+        mockMvc.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectNode.toString())
+                .with(csrf()))
+                .andExpect(status().isOk());
     }
 }

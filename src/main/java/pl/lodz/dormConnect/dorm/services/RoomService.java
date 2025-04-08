@@ -11,6 +11,7 @@ import pl.lodz.dormConnect.dorm.repositories.RoomRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -34,8 +35,8 @@ public class RoomService {
         return roomRepository.save(roomEntity);
     }
 
-    public RoomEntity findById(Long id){
-        return roomRepository.findById(id).orElse(null);
+    public Optional<RoomEntity> findById(Long id){
+        return roomRepository.findById(id);
     }
 
     public boolean deleteRoomByEntity(RoomEntity roomEntity){
