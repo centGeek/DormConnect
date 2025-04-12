@@ -34,4 +34,5 @@ public interface RoomAssigmentRepository extends CrudRepository<RoomAssignEntity
 """)
     boolean existsAssignmentForStudentDuring(@Param("studentId")Long studentId,@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+
 }

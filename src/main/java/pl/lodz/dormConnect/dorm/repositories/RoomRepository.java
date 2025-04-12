@@ -9,4 +9,5 @@ import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 public interface RoomRepository extends CrudRepository<RoomEntity, Long> {
 
 
+    void countRoomEntity();
 }
