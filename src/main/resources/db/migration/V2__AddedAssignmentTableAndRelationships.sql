@@ -1,7 +1,10 @@
 CREATE TABLE dorm_rooms_room_assigns
 (
     room_entity_id  BIGINT NOT NULL,
-    room_assigns_id BIGINT NOT NULL
+    room_assigns_id BIGINT NOT NULL,
+    CONSTRAINT uc_dorm_rooms_room_assigns_roomassigns UNIQUE (room_assigns_id),
+    CONSTRAINT fk_dorroorooass_on_room_assign_entity FOREIGN KEY (room_assigns_id) REFERENCES room_assign_entity (id),
+    CONSTRAINT fk_dorroorooass_on_room_entity FOREIGN KEY (room_entity_id) REFERENCES dorm_rooms (id)
 );
 
 CREATE TABLE grouped_rooms_entity
@@ -14,7 +17,10 @@ CREATE TABLE grouped_rooms_entity
 CREATE TABLE grouped_rooms_entity_rooms
 (
     grouped_rooms_entity_id BIGINT NOT NULL,
-    rooms_id                BIGINT NOT NULL
+    rooms_id                BIGINT NOT NULL,
+    CONSTRAINT uc_grouped_rooms_entity_rooms_rooms UNIQUE (rooms_id),
+    CONSTRAINT fk_grorooentroo_on_grouped_rooms_entity FOREIGN KEY (grouped_rooms_entity_id) REFERENCES grouped_rooms_entity (id),
+    CONSTRAINT fk_grorooentroo_on_room_entity FOREIGN KEY (rooms_id) REFERENCES dorm_rooms (id)
 );
 
 CREATE TABLE room_assign_entity
@@ -24,38 +30,13 @@ CREATE TABLE room_assign_entity
     resident_id BIGINT,
     from_date   date                                    NOT NULL,
     to_date     date,
-    CONSTRAINT pk_roomassignentity PRIMARY KEY (id)
+    CONSTRAINT pk_roomassignentity PRIMARY KEY (id),
+    CONSTRAINT FK_ROOMASSIGNENTITY_ON_ROOM FOREIGN KEY (room_id) REFERENCES dorm_rooms (id)
 );
 
+
 ALTER TABLE dorm_rooms
+    ADD CONSTRAINT FK_DORMROOMS_ON_GROUPEDROOMS FOREIGN KEY (grouped_rooms_id) REFERENCES grouped_rooms_entity (id),
+    ALTER COLUMN number SET NOT NULL,
+    ADD CONSTRAINT uc_dormrooms_number UNIQUE (number),
     ADD grouped_rooms_id BIGINT;
-
-ALTER TABLE dorm_rooms_room_assigns
-    ADD CONSTRAINT uc_dorm_rooms_room_assigns_roomassigns UNIQUE (room_assigns_id);
-
-ALTER TABLE dorm_rooms
-    ADD CONSTRAINT uc_dormrooms_number UNIQUE (number);
-
-ALTER TABLE grouped_rooms_entity_rooms
-    ADD CONSTRAINT uc_grouped_rooms_entity_rooms_rooms UNIQUE (rooms_id);
-
-ALTER TABLE dorm_rooms
-    ADD CONSTRAINT FK_DORMROOMS_ON_GROUPEDROOMS FOREIGN KEY (grouped_rooms_id) REFERENCES grouped_rooms_entity (id);
-
-ALTER TABLE room_assign_entity
-    ADD CONSTRAINT FK_ROOMASSIGNENTITY_ON_ROOM FOREIGN KEY (room_id) REFERENCES dorm_rooms (id);
-
-ALTER TABLE dorm_rooms_room_assigns
-    ADD CONSTRAINT fk_dorroorooass_on_room_assign_entity FOREIGN KEY (room_assigns_id) REFERENCES room_assign_entity (id);
-
-ALTER TABLE dorm_rooms_room_assigns
-    ADD CONSTRAINT fk_dorroorooass_on_room_entity FOREIGN KEY (room_entity_id) REFERENCES dorm_rooms (id);
-
-ALTER TABLE grouped_rooms_entity_rooms
-    ADD CONSTRAINT fk_grorooentroo_on_grouped_rooms_entity FOREIGN KEY (grouped_rooms_entity_id) REFERENCES grouped_rooms_entity (id);
-
-ALTER TABLE grouped_rooms_entity_rooms
-    ADD CONSTRAINT fk_grorooentroo_on_room_entity FOREIGN KEY (rooms_id) REFERENCES dorm_rooms (id);
-
-ALTER TABLE dorm_rooms
-    ALTER COLUMN number SET NOT NULL;
