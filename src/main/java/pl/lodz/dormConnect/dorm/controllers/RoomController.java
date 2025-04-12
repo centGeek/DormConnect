@@ -24,7 +24,7 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @GetMapping("")
+    @GetMapping()
     public List<RoomEntity> getRooms() {
         return roomService.getAllRooms();
     }
@@ -36,7 +36,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping()
     public ResponseEntity<RoomEntity> deleteRoom(@RequestBody Long id) {
         try {
             roomService.deleteRoomById(id);
