@@ -9,7 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -28,7 +29,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter:1.0.0-M3'
+	implementation 'org.springframework.ai:spring-ai-bom:1.0.0-M3'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+	implementation 'org.slf4j:slf4j-api:2.0.17'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

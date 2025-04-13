@@ -1,4 +1,16 @@
-# Configuration
+# Backend Configuration
+Project run
+
+Run the docker-compose.yml file and DormConnectApplication.java. All Spring dependencies should be correctly loaded.
+Using the app in dev mode
+
+Use the following URL: http://localhost:8091/
+
+To log in, enter:
+
+    login: user
+
+    password: find it in the running logs of the main application. For example - `The generated security password is: 0dce0df9-baec-48cc-9c21-b4a0cbbef931`.
 ### PostgreSQL Configuration in `docker-compose.yml` file
 
 Below is the PostgreSQL configuration that you can include in your `docker-compose.yml` file:
@@ -7,14 +19,14 @@ Below is the PostgreSQL configuration that you can include in your `docker-compo
 services:
   postgres-dev:
     image: postgres:17
-    container_name: postgres-db-dev
+    container_name: postgres-db-dormConnect
     restart: always
     ports:
-      - "5433:5432"
+      - "5434:5432"
     environment:
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "coordination-system-dev"
+      POSTGRES_DB: "dormConnect"
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
 
@@ -24,13 +36,13 @@ volumes:
 
 #### Configuration Explanation
 - **`image`**: Specifies the Docker image for PostgreSQL version 17.
-- **`container_name`**: Sets the container name to `postgres-db-dev`.
+- **`container_name`**: Sets the container name to `postgres-db-dormConnect`.
 - **`restart`**: The container will automatically restart if it stops.
-- **`ports`**: Maps the external port (`5433`) to the PostgreSQL internal port (`5432`) within the container.
+- **`ports`**: Maps the external port (`5434`) to the PostgreSQL internal port (`5432`) within the container.
 - **`environment`**:
     - `POSTGRES_USER`: Admin username for the database (`admin`).
     - `POSTGRES_PASSWORD`: Admin password for the database (`admin`).
-    - `POSTGRES_DB`: Default database name (`coordination-system-dev`).
+    - `POSTGRES_DB`: Default database name (`dormConnect`).
 - **`volumes`**: PostgreSQL data is stored in the `postgres_data_dev` volume, making it persistent across container restarts.
 
 #### How to Use
@@ -43,21 +55,21 @@ volumes:
 
 #### Project Structure
 
-Create a folder for your group’s module inside the `dormcorrect` directory. Within this folder, organize your code according to functionality by creating the following package structure:
+Create a folder for your group’s module inside the `dormConnect` directory. Within this folder, organize your code according to functionality by creating the following package structure:
 ```
-dormcorrect/
+dormConnect/
     └── <dorm>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
  └── <wastebin>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
  └── <nfc>/
-        ├── controllers/      # Contains the controller classes
-        ├── repositories/     # Contains the repository interfaces
-        └── services/         # Contains the service classes
+        ├── controllers/      
+        ├── repositories/     
+        └── services/         
 ```
 ### Backend used tools
 
@@ -118,7 +130,7 @@ public class UserService {
 }
 ```
 
-**@RestController**: The @RestController annotation is used to define a Spring REST controller. It combines @Controller and @ResponseBody, meaning all methods return data directly as JSON (or other formats) instead of views. This is used for exposing only APIs, not HTML views.
+**@RestController**: The @RestController annotation is used to define a Spring REST controller. We will use it for exposing only APIs, not HTML views.
 
 Example:
 
