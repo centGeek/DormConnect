@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.lodz.dormConnect.database.entity.ManagerEntity;
-import pl.lodz.dormConnect.database.entity.StudentEntity;
-
 import java.util.Optional;
 
 @Repository
