@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.security.repository;
+package pl.lodz.dormConnect.database.repository.jpa;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,29 +7,22 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
-import pl.lodz.dormConnect.fixtures.StudentFixture;
+import pl.lodz.dormConnect.fixtures.SecurityFixture;
+
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(PersistenceContainersTestConfiguration.class)
-class StudentJpaRepositoryTest {
-
-    @Autowired
-    private StudentJpaRepository studentJpaRepository;
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
     @Test
-    void thatStudentIsSavedAndRetrievedCorrectly(){
-        //given
-        var studentEntity = StudentFixture.anyStudent();
-        var userEntity = studentEntity.getUser();
-        userRepository.saveAndFlush(userEntity);
-
+    void thatUserIsCorrectlyRetrievedByEmail(){
         //when
-        var actualStudentEntity = studentJpaRepository.saveAndFlush(studentEntity);
-
+        var userEntity = userRepository.findByEmail("admin@edu.p.lodz.pl").get();
         //then
-        Assertions.assertEquals(studentEntity, actualStudentEntity);
+        var expectedUserEntity = SecurityFixture.adminEntity();
+        Assertions.assertEquals(expectedUserEntity, userEntity);
     }
 
 }

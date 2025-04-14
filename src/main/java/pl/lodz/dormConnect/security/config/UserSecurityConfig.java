@@ -7,11 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.security.model.RoleEntity;
-import pl.lodz.dormConnect.security.model.UserEntity;
-import pl.lodz.dormConnect.security.repository.UserRepository;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
+import pl.lodz.dormConnect.database.entity.UserEntity;
+import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +23,15 @@ public class UserSecurityConfig implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email);
+        Optional<UserEntity> user = userRepository.findByEmail(email);
 
-        if (user == null) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User with email " + email + " not found");
         }
 
-        SimpleGrantedAuthority authorities = getUserAuthority(user.getRole());
+        SimpleGrantedAuthority authorities = getUserAuthority(user.get().getRole());
 
-        return buildUserForAuthentication(user, List.of(authorities));
+        return buildUserForAuthentication(user.get(), List.of(authorities));
     }
 
     private SimpleGrantedAuthority getUserAuthority(RoleEntity roleEntity) {
