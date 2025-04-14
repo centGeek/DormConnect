@@ -1,0 +1,57 @@
+package pl.lodz.dormConnect.events.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "event")
+public class EventEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
+    private Long eventId;
+
+    @Column(name = "event_name")
+    private String eventName;
+
+    @Column(name = "description", length = 1000)
+    private String description;
+
+    @Column(name = "start_date_time")
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_date_time")
+    private LocalDateTime endDateTime;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "event_type")
+    private String eventType;
+
+    @Column(name = "max_participants")
+    private Integer maxParticipants;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @ElementCollection
+    @Column(name = "organizer_id")
+    private List<Long> organizerId;
+
+    @ElementCollection
+    @Column(name = "participant_id")
+    private List<Long> participantId;
+}
