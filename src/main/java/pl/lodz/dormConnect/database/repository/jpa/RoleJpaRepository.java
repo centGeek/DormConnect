@@ -1,10 +1,10 @@
-package pl.lodz.dormConnect.security.repository;
+package pl.lodz.dormConnect.database.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import pl.lodz.dormConnect.security.model.RoleEntity;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
 @Repository
 public interface RoleJpaRepository extends JpaRepository<RoleEntity, Long> {
     @Query("""
