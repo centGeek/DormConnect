@@ -79,4 +79,66 @@ public class EventServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> eventService.getEventById(1L));
     }
+
+    @Test
+    void shouldDeleteEvent() {
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(entity));
+
+        eventService.deleteEvent(1L);
+
+        verify(eventRepository).delete(entity);
+    }
+
+
+    @Test
+    void shouldThrowWhenDeletingNonexistentEvent() {
+        when(eventRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> eventService.deleteEvent(1L));
+    }
+
+
+    @Test
+    void shouldUpdateEvent() {
+        EventDTO updatedDto = new EventDTO(1L, "Updated", "New Desc", dto.startDateTime(), dto.endDateTime(), "New Loc", "PRIVATE", 20, "new.png", List.of(2L), List.of());
+        EventEntity updatedEntity = EventEntity.builder()
+                .eventId(1L)
+                .eventName("Updated")
+                .description("New Desc")
+                .startDateTime(dto.startDateTime())
+                .endDateTime(dto.endDateTime())
+                .location("New Loc")
+                .eventType("PRIVATE")
+                .maxParticipants(20)
+                .imageUrl("new.png")
+                .organizerId(List.of(2L))
+                .participantId(List.of())
+                .build();
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(updatedEntity));
+
+        when(eventMapper.toEntity(any(EventDTO.class))).thenReturn(updatedEntity);
+        when(eventRepository.save(updatedEntity)).thenReturn(updatedEntity);
+        when(eventMapper.toEventDTO(updatedEntity)).thenReturn(updatedDto);
+
+        EventDTO result = eventService.updateEvent(1L, updatedDto);
+
+        assertEquals(updatedDto, result);
+    }
+
+
+    @Test
+    void shouldReturnAllEvents() {
+
+        when(eventRepository.findAll()).thenReturn(List.of(entity));
+        when(eventMapper.toEventDTOList(List.of(entity))).thenReturn(List.of(dto));
+
+        List<EventDTO> results = eventService.getAllEvents();
+
+        assertEquals(1, results.size());
+        assertEquals(dto, results.getFirst());
+    }
+
+
+
 }

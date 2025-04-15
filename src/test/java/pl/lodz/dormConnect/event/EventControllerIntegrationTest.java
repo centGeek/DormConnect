@@ -1,6 +1,7 @@
 package pl.lodz.dormConnect.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
+@Transactional
 @ContextConfiguration(classes = {PersistenceContainersTestConfiguration.class})
 public class EventControllerIntegrationTest {
 
@@ -38,11 +40,6 @@ public class EventControllerIntegrationTest {
 
     @Autowired
     private EventRepository eventRepository;
-
-    @BeforeEach
-    void cleanDatabase() {
-        eventRepository.deleteAll();
-    }
 
     @Test
     @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
