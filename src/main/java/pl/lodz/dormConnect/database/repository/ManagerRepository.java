@@ -41,7 +41,7 @@ public class ManagerRepository {
     }
 
     private void conditionsToNotCreateManager(Manager manager) {
-        if (IsEmailAlreadyPresent(manager.user().getEmail())) {
+        if (isEmailAlreadyPresent(manager.user().getEmail())) {
             throw new UserAlreadyExistsException("User with email: [%s] already exists".formatted(manager.user().getEmail()));
         }
     }
