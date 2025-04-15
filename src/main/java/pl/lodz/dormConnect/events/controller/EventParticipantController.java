@@ -10,6 +10,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventParticipantController {
     private static final Logger logger = LoggerFactory.getLogger(EventParticipantController.class);
 
-    
-
 }
