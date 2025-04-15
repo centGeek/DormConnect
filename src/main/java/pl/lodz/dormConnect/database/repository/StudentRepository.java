@@ -43,7 +43,7 @@ public class StudentRepository {
     }
 
     private void conditionsToNotCreateStudent(Student student) {
-        if (IsEmailAlreadyPresent(student.user().getEmail())) {
+        if (isEmailAlreadyPresent(student.user().getEmail())) {
             throw new UserAlreadyExistsException("User with email: [%s] already exists".formatted(student.user().getEmail()));
         }
     }
