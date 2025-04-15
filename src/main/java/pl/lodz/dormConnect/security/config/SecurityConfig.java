@@ -48,25 +48,31 @@ public class SecurityConfig {
                 .build();
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(requests -> requests
-//                        .requestMatchers("/api/ai/**").permitAll()
-//                        .anyRequest().authenticated()
-//                ).formLogin(
-//                        form -> form
-//                                .loginPage("/login")
-//                                .loginProcessingUrl("/login")
-//                                .permitAll()
-//                ).logout(
-//                        logout -> logout
-//                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                                .permitAll()
-//                );
-//        return http.build();
-//    }
+    @Bean
+    SecurityFilterChain securityEnabled(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/login", "/").permitAll()
+                        .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(loginConfigurer -> loginConfigurer
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+
+                )
+
+                .build();
+    }
+
 
     @Bean
     @ConditionalOnProperty(value = "spring.security.enabled", havingValue = "false")

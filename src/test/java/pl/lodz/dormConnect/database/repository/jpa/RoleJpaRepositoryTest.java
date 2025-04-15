@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.security.repository;
+package pl.lodz.dormConnect.database.repository.jpa;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
 import pl.lodz.dormConnect.fixtures.SecurityFixture;
-import pl.lodz.dormConnect.security.model.RoleEntity;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

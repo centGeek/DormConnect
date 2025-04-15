@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.fixtures;
 
-import pl.lodz.dormConnect.security.model.RoleEntity;
-import pl.lodz.dormConnect.security.model.UserEntity;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
+import pl.lodz.dormConnect.database.entity.UserEntity;
 
 public class SecurityFixture {
     public static RoleEntity adminRole(){
@@ -21,9 +21,15 @@ public class SecurityFixture {
                 true, adminRole());
     }
 
-    public static UserEntity anyStudent(){
+    public static UserEntity anyUser(){
         return new UserEntity(
                 "student", "student@edu.p.lodz.pl", "$2a$12$TwQsp1IusXTDl7LwZqL0qeu49Ypr6vRdEzRq2vAsgb.zvOtrnzm5G",
+                true, studentRole());
+    }
+
+    public static UserEntity anotherUser(){
+        return new UserEntity(
+                "maciej_zielak", "greenman@edu.p.lodz.pl", "$2a$12$TwQsp1IusXTDl7LwZqL0qeu49Ypr6vRdEzRq2vAsgb.zvOtrnzm5G",
                 true, studentRole());
     }
 }
