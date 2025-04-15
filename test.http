@@ -1,0 +1,22 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+POST http://localhost:8091/api/event/create
+Content-Type: application/json
+
+{
+  "eventName": "Sample Event",
+  "description": "This is a sample event",
+  "startDateTime": "2025-04-14T20:00:00",
+  "endDateTime": "2025-04-14T22:00:00",
+  "location": "Sample Location",
+  "eventType": "Conference",
+  "maxParticipants": 100,
+  "imageUrl": "http://example.com/sample.jpg",
+  "organizerId": [1],
+  "participantId": [2, 3]
+}
+###

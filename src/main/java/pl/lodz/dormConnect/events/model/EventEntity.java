@@ -48,10 +48,12 @@ public class EventEntity {
     private String imageUrl;
 
     @ElementCollection
+    @CollectionTable(name = "event_organizer", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "organizer_id")
     private List<Long> organizerId;
 
     @ElementCollection
+    @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "participant_id")
     private List<Long> participantId;
 }

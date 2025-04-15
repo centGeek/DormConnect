@@ -12,20 +12,20 @@ CREATE TABLE event
     CONSTRAINT pk_event PRIMARY KEY (event_id)
 );
 
-CREATE TABLE event_organizer_id
+CREATE TABLE event_organizer
 (
-    event_event_id BIGINT NOT NULL,
-    organizer_id   BIGINT
+    event_id     BIGINT NOT NULL,
+    organizer_id BIGINT
 );
 
-CREATE TABLE event_participant_id
+CREATE TABLE event_participant
 (
-    event_event_id BIGINT NOT NULL,
+    event_id       BIGINT NOT NULL,
     participant_id BIGINT
 );
 
-ALTER TABLE event_organizer_id
-    ADD CONSTRAINT fk_event_organizerid_on_event FOREIGN KEY (event_event_id) REFERENCES event (event_id);
+ALTER TABLE event_organizer
+    ADD CONSTRAINT fk_event_organizer_on_event_entity FOREIGN KEY (event_id) REFERENCES event (event_id);
 
-ALTER TABLE event_participant_id
-    ADD CONSTRAINT fk_event_participantid_on_event FOREIGN KEY (event_event_id) REFERENCES event (event_id);
+ALTER TABLE event_participant
+    ADD CONSTRAINT fk_event_participant_on_event_entity FOREIGN KEY (event_id) REFERENCES event (event_id);
