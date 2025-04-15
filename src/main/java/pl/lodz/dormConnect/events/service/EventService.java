@@ -23,22 +23,38 @@ public class EventService {
     }
 
     public EventDTO createEvent(EventDTO eventDTO) {
-        EventEntity eventEntity = eventMapper.mapToEntity(eventDTO);
-        EventEntity savedEvent = eventRepository.save(eventEntity);
-        return eventMapper.mapToDTO(savedEvent);
+        EventEntity savedEvent = eventRepository.save(eventMapper.toEntity(eventDTO));
+        return eventMapper.toEventDTO(savedEvent);
     }
 
     public EventDTO getEventById(Long eventId) {
         EventEntity eventEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
-        return eventMapper.mapToDTO(eventEntity);
+        return eventMapper.toEventDTO(eventEntity);
     }
 
     public List<EventDTO> getAllEvents() {
         List<EventEntity> events = eventRepository.findAll();
-        return events.stream()
-                .map(this.eventMapper::mapToDTO)
-                .collect(Collectors.toList());
+        return eventMapper.toEventDTOList(events);
+    }
+
+    public EventDTO updateEvent(Long eventId, EventDTO eventDTO) {
+        EventEntity eventEntity = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
+
+        eventEntity.setEventName(eventDTO.eventName());
+        eventEntity.setDescription(eventDTO.description());
+        eventEntity.setStartDateTime(eventDTO.startDateTime());
+        eventEntity.setEndDateTime(eventDTO.endDateTime());
+        eventEntity.setLocation(eventDTO.location());
+        eventEntity.setMaxParticipants(eventDTO.maxParticipants());
+        eventEntity.setImageUrl(eventDTO.imageUrl());
+        eventEntity.setOrganizerId(eventDTO.organizerId());
+        eventEntity.setParticipantId(eventDTO.participantId());
+
+        EventEntity updatedEvent = eventRepository.save(eventEntity);
+
+        return eventMapper.toEventDTO(updatedEvent);
     }
 
     public void deleteEvent(Long eventId) {

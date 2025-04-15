@@ -23,19 +23,20 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    // To przyjmuje prostego JSON bez id
     @PostMapping("/create")
-    public ResponseEntity<String> createEvent(@RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
         try {
-            eventService.createEvent(eventDTO);
-            return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
+            EventDTO createdEvent = eventService.createEvent(eventDTO);
+            return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Error creating event: ", e);
-            return new ResponseEntity<>("Error creating event", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<EventDTO>> getEvents() {
+    public ResponseEntity<List<EventDTO>> getAllEvents() {
         try {
             List<EventDTO> events = eventService.getAllEvents();
             return new ResponseEntity<>(events, HttpStatus.OK);
@@ -59,6 +60,20 @@ public class EventController {
         }
     }
 
+    @PutMapping("/{eventId}")
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long eventId, @RequestBody EventDTO eventDTO) {
+        try {
+            EventDTO updatedEvent = eventService.updateEvent(eventId, eventDTO);
+            return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Event not found for update: ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Error updating event: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) {
         try {
@@ -72,4 +87,6 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }

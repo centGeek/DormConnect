@@ -1,13 +1,9 @@
 package pl.lodz.dormConnect.events.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-
-public record EventDTO(
-        Long eventId,
+public record EventCreateDTO(
         String eventName,
         String description,
         LocalDateTime startDateTime,
@@ -18,4 +14,5 @@ public record EventDTO(
         String imageUrl,
         List<Long> organizerId,
         List<Long> participantId
-) {}
+)
+{}

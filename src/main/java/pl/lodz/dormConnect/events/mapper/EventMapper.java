@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pl.lodz.dormConnect.events.controller.EventController;
+import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.model.EventEntity;
 
@@ -14,8 +15,10 @@ import java.util.stream.Collectors;
 public class EventMapper {
     private static final Logger logger = LoggerFactory.getLogger(EventMapper.class);
 
-    public EventDTO mapToDTO(EventEntity eventEntity) {
+
+    public EventDTO toEventDTO(EventEntity eventEntity) {
         return new EventDTO(
+                eventEntity.getEventId(),
                 eventEntity.getEventName(),
                 eventEntity.getDescription(),
                 eventEntity.getStartDateTime(),
@@ -29,10 +32,25 @@ public class EventMapper {
         );
     }
 
-    public EventEntity mapToEntity(EventDTO eventDTO) {
-        logger.error("Error creating event: {}", eventDTO);
+    public EventCreateDTO toEventCreateDTO(EventEntity eventEntity) {
+        return new EventCreateDTO(
+                eventEntity.getEventName(),
+                eventEntity.getDescription(),
+                eventEntity.getStartDateTime(),
+                eventEntity.getEndDateTime(),
+                eventEntity.getLocation(),
+                eventEntity.getEventType(),
+                eventEntity.getMaxParticipants(),
+                eventEntity.getImageUrl(),
+                eventEntity.getOrganizerId(),
+                eventEntity.getParticipantId()
+        );
+    }
+
+
+    public EventEntity toEntity(EventDTO eventDTO) {
         return new EventEntity(
-                null,
+                eventDTO.eventId(),
                 eventDTO.eventName(),
                 eventDTO.description(),
                 eventDTO.startDateTime(),
@@ -46,15 +64,32 @@ public class EventMapper {
         );
     }
 
-    public List<EventDTO> mapToDTOList(List<EventEntity> eventEntities) {
+    public EventEntity toEntity(EventCreateDTO eventCreateDTO) {
+        return new EventEntity(
+                null,
+                eventCreateDTO.eventName(),
+                eventCreateDTO.description(),
+                eventCreateDTO.startDateTime(),
+                eventCreateDTO.endDateTime(),
+                eventCreateDTO.location(),
+                eventCreateDTO.eventType(),
+                eventCreateDTO.maxParticipants(),
+                eventCreateDTO.imageUrl(),
+                eventCreateDTO.organizerId(),
+                eventCreateDTO.participantId()
+        );
+    }
+
+    public List<EventDTO> toEventDTOList(List<EventEntity> eventEntities) {
         return eventEntities.stream()
-                .map(this::mapToDTO)
+                .map(this::toEventDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<EventEntity> mapToEntityList(List<EventDTO> eventDTOs) {
+    public List<EventEntity> toEntityList(List<EventDTO> eventDTOs) {
         return eventDTOs.stream()
-                .map(this::mapToEntity)
+                .map(this::toEntity)
                 .collect(Collectors.toList());
     }
+
 }
