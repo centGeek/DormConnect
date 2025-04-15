@@ -51,7 +51,7 @@ public class ManagerRepository {
         managerEntity.getUser().setPassword(passwordEncoder.encode(manager.user().getPassword()));
     }
 
-    private boolean IsEmailAlreadyPresent(String email) {
+    private boolean isEmailAlreadyPresent(String email) {
         Optional<UserEntity> existingManagerByEmail = userRepository.findByEmail(email);
         return existingManagerByEmail.isPresent();
     }

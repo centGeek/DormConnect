@@ -53,7 +53,7 @@ public class StudentRepository {
         studentEntity.getUser().setPassword(passwordEncoder.encode(student.user().getPassword()));
     }
 
-    private boolean IsEmailAlreadyPresent(String email) {
+    private boolean isEmailAlreadyPresent(String email) {
         Optional<UserEntity> existingStudentByEmail = userRepository.findByEmail(email);
         return existingStudentByEmail.isPresent();
     }
