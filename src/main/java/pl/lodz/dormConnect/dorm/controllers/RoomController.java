@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/dorm/room")
+@RequestMapping("/api/dorm")
 public class RoomController {
 
     @Autowired
@@ -24,20 +24,20 @@ public class RoomController {
         this.roomService = roomService;
     }
 
-    @GetMapping()
+    @GetMapping("/room")
     public List<RoomEntity> getRooms() {
         return roomService.getAllRooms();
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/room/create")
     public ResponseEntity<RoomEntity> addRoom(@RequestBody RoomEntity roomEntity) {
         RoomEntity createdRoom = roomService.addRoom(roomEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
     }
 
-    @DeleteMapping()
-    public ResponseEntity<RoomEntity> deleteRoom(@RequestBody Long id) {
+    @DeleteMapping("/room/{id}")
+    public ResponseEntity<RoomEntity> deleteRoom(@PathVariable Long id) {
         try {
             roomService.deleteRoomById(id);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -47,14 +47,14 @@ public class RoomController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/room/{id}")
     public ResponseEntity<RoomEntity> getRoomById(@PathVariable Long id) {
         return roomService.findById(id).map(ResponseEntity::ok).
                 orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Transactional
-    @PostMapping("/{id}")
+    @PutMapping("/room/{id}")
     public ResponseEntity<RoomEntity> updateRoom(@PathVariable Long id, @RequestBody RoomAssignDTO roomAssignDTO) {
         if (roomAssignDTO.roomEntity() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
