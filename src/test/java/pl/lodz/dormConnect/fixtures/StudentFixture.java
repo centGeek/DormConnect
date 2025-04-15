@@ -1,9 +1,13 @@
 package pl.lodz.dormConnect.fixtures;
 
-import pl.lodz.dormConnect.security.model.StudentEntity;
+import pl.lodz.dormConnect.database.entity.StudentEntity;
+import pl.lodz.dormConnect.domain.Student;
 
 public class StudentFixture {
-    public static StudentEntity anyStudent(){
-        return new StudentEntity("Bolesław", "Chrobry", SecurityFixture.anyStudent());
+    public static StudentEntity anyStudentEntity(){
+        return new StudentEntity("Bolesław", "Chrobry", SecurityFixture.anyUser());
+    }
+    public static Student anyStudent(){
+        return new Student(1L, "Bolesław", "Chrobry", SecurityFixture.anotherUser());
     }
 }

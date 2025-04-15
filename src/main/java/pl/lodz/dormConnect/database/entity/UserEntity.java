@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.security.model;
+package pl.lodz.dormConnect.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
