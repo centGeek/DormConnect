@@ -47,7 +47,7 @@ class RoomControllerTest {
                   "groupedRooms": null
                 }
                 """;
-        MvcResult result = mockMvc.perform(post("/dorm/room/create")
+        MvcResult result = mockMvc.perform(post("/api/dorm/room/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(testJsonRequest)
                         .with(csrf()))
@@ -58,12 +58,11 @@ class RoomControllerTest {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         Long idOfCreatedRoom = jsonNode.get("id").asLong();
 
-        MvcResult resultOfCreatedRoom =  mockMvc.perform(get("/dorm/room/" + idOfCreatedRoom).accept(MediaType.APPLICATION_JSON).with(csrf())).andExpect(status().isOk()).andReturn();
+        MvcResult resultOfCreatedRoom =  mockMvc.perform(get("/api/dorm/room" + idOfCreatedRoom).accept(MediaType.APPLICATION_JSON).with(csrf())).andExpect(status().isOk()).andReturn();
 
 
-        mockMvc.perform(delete("/dorm/room")
+        mockMvc.perform(delete("/api/dorm/room/" + idOfCreatedRoom)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Long.toString(idOfCreatedRoom))
                 .with(csrf())).andExpect(status().isOk());
     }
 
