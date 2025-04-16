@@ -2,13 +2,13 @@ package pl.lodz.dormConnect.events.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -22,8 +22,8 @@ public class EventService {
         this.eventMapper = eventMapper;
     }
 
-    public EventDTO createEvent(EventDTO eventDTO) {
-        EventEntity savedEvent = eventRepository.save(eventMapper.toEntity(eventDTO));
+    public EventDTO createEvent(EventCreateDTO eventCreateDTO) {
+        EventEntity savedEvent = eventRepository.save(eventMapper.toEntity(eventCreateDTO));
         return eventMapper.toEventDTO(savedEvent);
     }
 

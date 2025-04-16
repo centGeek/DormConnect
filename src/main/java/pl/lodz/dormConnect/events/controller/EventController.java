@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventService;
 import org.slf4j.Logger;
@@ -25,9 +26,9 @@ public class EventController {
 
     // To przyjmuje prostego JSON bez id
     @PostMapping("/create")
-    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventCreateDTO eventCreateDTO) {
         try {
-            EventDTO createdEvent = eventService.createEvent(eventDTO);
+            EventDTO createdEvent = eventService.createEvent(eventCreateDTO);
             return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Error creating event: ", e);

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
@@ -33,10 +34,12 @@ public class EventServiceTest {
 
     private EventDTO dto;
     private EventEntity entity;
+    private EventCreateDTO dtoCreate;
 
     @BeforeEach
     void setup() {
         dto = new EventDTO(null, "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", List.of(1L), List.of());
+        dtoCreate = new EventCreateDTO( "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", List.of(1L), List.of());
         entity = EventEntity.builder()
                 .eventName("Test")
                 .description("Desc")
@@ -53,11 +56,11 @@ public class EventServiceTest {
 
     @Test
     void shouldCreateEvent() {
-        when(eventMapper.toEntity(dto)).thenReturn(entity);
+        when(eventMapper.toEntity(dtoCreate)).thenReturn(entity);
         when(eventRepository.save(entity)).thenReturn(entity);
         when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        EventDTO result = eventService.createEvent(dto);
+        EventDTO result = eventService.createEvent(dtoCreate);
 
         assertEquals(dto, result);
         verify(eventRepository).save(entity);
