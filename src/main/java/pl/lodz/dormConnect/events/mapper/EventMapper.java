@@ -1,21 +1,14 @@
 package pl.lodz.dormConnect.events.mapper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import pl.lodz.dormConnect.events.controller.EventController;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.model.EventEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
-    private static final Logger logger = LoggerFactory.getLogger(EventMapper.class);
-
-
     public EventDTO toEventDTO(EventEntity eventEntity) {
         return new EventDTO(
                 eventEntity.getEventId(),
@@ -83,13 +76,13 @@ public class EventMapper {
     public List<EventDTO> toEventDTOList(List<EventEntity> eventEntities) {
         return eventEntities.stream()
                 .map(this::toEventDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<EventEntity> toEntityList(List<EventDTO> eventDTOs) {
         return eventDTOs.stream()
                 .map(this::toEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

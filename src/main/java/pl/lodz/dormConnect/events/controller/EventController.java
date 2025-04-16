@@ -49,30 +49,16 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable Long eventId) {
-        try {
-            EventDTO event = eventService.getEventById(eventId);
-            return new ResponseEntity<>(event, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            logger.warn("Event not found: ", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            logger.error("Error retrieving event by ID: ", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return eventService.getEventById(eventId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{eventId}")
     public ResponseEntity<EventDTO> updateEvent(@PathVariable Long eventId, @RequestBody EventDTO eventDTO) {
-        try {
-            EventDTO updatedEvent = eventService.updateEvent(eventId, eventDTO);
-            return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            logger.warn("Event not found for update: ", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            logger.error("Error updating event: ", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return eventService.updateEvent(eventId, eventDTO)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{eventId}")

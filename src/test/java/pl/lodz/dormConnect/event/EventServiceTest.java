@@ -71,16 +71,18 @@ public class EventServiceTest {
         when(eventRepository.findById(1L)).thenReturn(Optional.of(entity));
         when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        EventDTO result = eventService.getEventById(1L);
-
-        assertEquals(dto, result);
+        Optional<EventDTO> result = eventService.getEventById(1L);
+        assertTrue(result.isPresent());
+        assertEquals(dto, result.get());
     }
 
     @Test
-    void shouldThrowIfEventNotFound() {
+    void shouldReturnEmptyOptionalIfEventNotFound() {
         when(eventRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> eventService.getEventById(1L));
+        Optional<EventDTO> result = eventService.getEventById(1L);
+
+        assertFalse(result.isPresent());
     }
 
     @Test
@@ -123,9 +125,10 @@ public class EventServiceTest {
         when(eventRepository.save(updatedEntity)).thenReturn(updatedEntity);
         when(eventMapper.toEventDTO(updatedEntity)).thenReturn(updatedDto);
 
-        EventDTO result = eventService.updateEvent(1L, updatedDto);
+        Optional<EventDTO> result = eventService.updateEvent(1L, updatedDto);
 
-        assertEquals(updatedDto, result);
+        assertTrue(result.isPresent());
+        assertEquals(updatedDto, result.get());
     }
 
 
