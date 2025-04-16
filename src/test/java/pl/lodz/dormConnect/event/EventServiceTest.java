@@ -117,7 +117,6 @@ public class EventServiceTest {
 
         when(eventRepository.findById(1L)).thenReturn(Optional.of(updatedEntity));
 
-        when(eventMapper.toEntity(any(EventDTO.class))).thenReturn(updatedEntity);
         when(eventRepository.save(updatedEntity)).thenReturn(updatedEntity);
         when(eventMapper.toEventDTO(updatedEntity)).thenReturn(updatedDto);
 
@@ -138,7 +137,5 @@ public class EventServiceTest {
         assertEquals(1, results.size());
         assertEquals(dto, results.getFirst());
     }
-
-
 
 }
