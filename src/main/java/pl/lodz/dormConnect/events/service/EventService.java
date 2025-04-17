@@ -1,7 +1,9 @@
 package pl.lodz.dormConnect.events.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
@@ -23,21 +25,28 @@ public class EventService {
         this.eventMapper = eventMapper;
     }
 
-    public EventDTO createEvent(EventCreateDTO eventCreateDTO) {
+    @Transactional
+    public Optional<EventDTO> createEvent(EventCreateDTO eventCreateDTO) {
+        if (eventCreateDTO.participantId().size() >= eventCreateDTO.maxParticipants()) {
+            return Optional.empty();
+        }
         EventEntity savedEvent = eventRepository.save(eventMapper.toEntity(eventCreateDTO));
-        return eventMapper.toEventDTO(savedEvent);
+        return Optional.of(eventMapper.toEventDTO(savedEvent));
     }
 
+    @Transactional(readOnly = true)
     public Optional<EventDTO> getEventById(Long eventId) {
         return eventRepository.findById(eventId)
                 .map(eventMapper::toEventDTO);
     }
 
+    @Transactional(readOnly = true)
     public List<EventDTO> getAllEvents() {
         List<EventEntity> events = eventRepository.findAll();
         return eventMapper.toEventDTOList(events);
     }
 
+    @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
         return eventRepository.findById(eventId).map(eventEntity -> {
             eventEntity.setEventName(eventDTO.eventName());
@@ -55,6 +64,7 @@ public class EventService {
         });
     }
 
+    @Transactional
     public void deleteEvent(Long eventId) {
         EventEntity eventEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));

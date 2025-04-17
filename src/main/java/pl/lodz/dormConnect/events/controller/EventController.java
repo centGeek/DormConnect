@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
@@ -28,11 +29,12 @@ public class EventController {
     @PostMapping("/create")
     public ResponseEntity<EventDTO> createEvent(@RequestBody EventCreateDTO eventCreateDTO) {
         try {
-            EventDTO createdEvent = eventService.createEvent(eventCreateDTO);
-            return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+            return eventService.createEvent(eventCreateDTO)
+                    .map(event -> new ResponseEntity<>(event, HttpStatus.CREATED))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
         } catch (Exception e) {
             logger.error("Error creating event: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

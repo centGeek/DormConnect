@@ -60,9 +60,10 @@ public class EventServiceTest {
         when(eventRepository.save(entity)).thenReturn(entity);
         when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        EventDTO result = eventService.createEvent(dtoCreate);
+        Optional<EventDTO> result = eventService.createEvent(dtoCreate);
 
-        assertEquals(dto, result);
+        assertTrue(result.isPresent());
+        assertEquals(dto, result.get());
         verify(eventRepository).save(entity);
     }
 
