@@ -1,0 +1,562 @@
+[33mcommit d710c4c5fe270b4a1f41e211decd0af1a3fa493f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 9bd0f6d dbdcbc5
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 17:25:49 2025 +0200
+
+    Merge pull request #6 from centGeek/event
+    
+    Event works poorly
+
+[33mcommit dbdcbc5c7fcfed2781f87cd358c68401c35e8c45[m[33m ([m[1;31morigin/event[m[33m)[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 17:24:42 2025 +0200
+
+    Chaged to Optional and edited test to work with optionals.
+
+[33mcommit ead43d869e41454eeefc6f673293e9152d6fb299[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 13:59:40 2025 +0200
+
+    Changed EventDto to EventCreateDTO.
+
+[33mcommit e71fb7d86893e59afa6d9d2a9dd22238a4ccc9c6[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 02:12:43 2025 +0200
+
+    Naprawione
+
+[33mcommit f761ece49fccfe93fc17c8b4e5cb5afec44a99fd[m
+Merge: 5aeca2d 9bd0f6d
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 01:57:22 2025 +0200
+
+    naprawiam
+
+[33mcommit 5aeca2dd64077c3f266a40091084fd2802b87e3a[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 01:53:35 2025 +0200
+
+    naprawiam
+
+[33mcommit aef3338d581c48d0dc62ed71ad5d6a3a9e9d713c[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 01:30:17 2025 +0200
+
+    Podstawowe funkcjonalności działają i są przetestowane usuniete wbudy
+
+[33mcommit d4ed707cbbbda0bde709958fe27ae27ce78e2e73[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Wed Apr 16 01:25:16 2025 +0200
+
+    Podstawowe funkcjonalności działają i są przetestowane
+
+[33mcommit deaa4ba1ea02593b9741011f0a7142c24e35f31f[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 23:54:17 2025 +0200
+
+    Główne założenia działają i są przetestowane
+
+[33mcommit af35bfd8dad5e02316d5d1fae2d43249648c2164[m
+Merge: 81ff530 4dd48a1
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 18:09:20 2025 +0200
+
+    Merge remote-tracking branch 'origin/main' into event
+
+[33mcommit 9bd0f6de4a154e48ad082fc9117e29ca8e8cccc9[m
+Merge: 3a0a4f5 a541084
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 18:02:40 2025 +0200
+
+    Merge pull request #2 from centGeek/dorm
+    
+    Dorm rooms model; Assigning works poorly.
+
+[33mcommit 4dd48a186197e6c7cdc67deaa750c1e46d01a742[m
+Merge: f0f82cc 984d0ec
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 18:02:40 2025 +0200
+
+    Merge pull request #2 from centGeek/dorm
+    
+    Dorm rooms model; Assigning works poorly.
+
+[33mcommit a541084f2d7d674c97fba7dbcb4513b9d7fb3842[m[33m ([m[1;31morigin/dorm[m[33m)[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:59:53 2025 +0200
+
+    commented out tests - they need a lot of refactoring
+
+[33mcommit 984d0eca9988022e9101bb0c2936011a97c9e833[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:59:53 2025 +0200
+
+    commented out tests - they need a lot of refactoring
+
+[33mcommit f787e8d0cd518c292aff4bff0a6fb67ae40fb54d[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:44:14 2025 +0200
+
+    poprawienie flyway v2
+
+[33mcommit 3dfcd1ad318f7e4c49d626026cd3eecada621c3f[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:44:14 2025 +0200
+
+    poprawienie flyway v2
+
+[33mcommit 8de87d04a0ad3fb966171f74750c8135723498b1[m
+Merge: 7f84ea9 3a0a4f5
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:42:53 2025 +0200
+
+    merge main
+
+[33mcommit c9136c2422e80ef8eb9051b890185bee24f167ce[m
+Merge: 8173274 f0f82cc
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:42:53 2025 +0200
+
+    merge main
+
+[33mcommit 7f84ea9d0d14c66b950babef285e119e9a8a1d6c[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:41:58 2025 +0200
+
+    poprawienie flyway
+
+[33mcommit 81732749da6d7fa5764c3216c1b6ba05b270f55f[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 17:41:58 2025 +0200
+
+    poprawienie flyway
+
+[33mcommit 3a0a4f52b7b4cce9a24c457ab11d10fb3faec78a[m
+Merge: 400da9f 3df9f27
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 15:25:35 2025 +0200
+
+    Merge pull request #5 from centGeek/fix/repos
+    
+    Naprawiony błąd z nazewnictwem
+
+[33mcommit f0f82ccccdfc1408a1580921e8f847b2d087b6ea[m
+Merge: 56d1222 e365c3b
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 15:25:35 2025 +0200
+
+    Merge pull request #5 from centGeek/fix/repos
+    
+    Naprawiony błąd z nazewnictwem
+
+[33mcommit 3df9f2759ba941559b21a16747388010f39cddbd[m[33m ([m[1;31morigin/fix/repos[m[33m)[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 15:23:09 2025 +0200
+
+    Poprawione
+
+[33mcommit e365c3b4d76dd601fd26e07906a85a6132c40907[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 15:23:09 2025 +0200
+
+    Poprawione
+
+[33mcommit 81ff53094edaf61cf6cf2b326b35a787d6bfcc1a[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 15:11:52 2025 +0200
+
+    Save point
+
+[33mcommit b071dfa8e66072746eb9fd0be652adce8ea27aea[m
+Merge: 66f377f 400da9f
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 15:00:25 2025 +0200
+
+    Mergign main into dorm
+
+[33mcommit f3499c240a5708d5f770fc6f2a09dfd86f387282[m
+Merge: a014145 56d1222
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 15:00:25 2025 +0200
+
+    Mergign main into dorm
+
+[33mcommit 66f377f31707d5209acda8dfad6a73cc4adc07ef[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 14:50:16 2025 +0200
+
+    Fulfilment of requirements of PR2 comments
+
+[33mcommit a0141458cba8b1511b6597f4b898ac592275b8c6[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 15 14:50:16 2025 +0200
+
+    Fulfilment of requirements of PR2 comments
+
+[33mcommit 400da9f0fe71f8277acb6712d9abe952a5f38950[m
+Merge: 8b043a2 4b7d30e
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 13:37:02 2025 +0200
+
+    Merge pull request #4 from centGeek/seurity-and-repos
+    
+    Security finished -> Proper registration is added and tested; refactor
+
+[33mcommit 56d12225cb63a95a4183314fd57ed57e0e9d8426[m
+Merge: a1f28b0 6edbbcf
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 13:37:02 2025 +0200
+
+    Merge pull request #4 from centGeek/seurity-and-repos
+    
+    Security finished -> Proper registration is added and tested; refactor
+
+[33mcommit 4b7d30e0631c2c98fcd35a37cd7e0a335288dcc6[m[33m ([m[1;31morigin/seurity-and-repos[m[33m)[m
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 11:33:00 2025 +0000
+
+    Poprawione nazwy metod
+
+[33mcommit 6edbbcf57f163273bc1cd5d63a17f9ce6351c62a[m
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Tue Apr 15 11:33:00 2025 +0000
+
+    Poprawione nazwy metod
+
+[33mcommit ac71279f5488ba4074d7fe8ea996a3b17ebb2b2a[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Mon Apr 14 19:50:00 2025 +0200
+
+    Update src/main/java/pl/lodz/dormConnect/database/repository/jpa/ManagerJpaRepository.java
+    
+    Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>
+
+[33mcommit c3d72f48f5a7d06f0d986771ac1a692037e3f9d6[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Mon Apr 14 19:50:00 2025 +0200
+
+    Update src/main/java/pl/lodz/dormConnect/database/repository/jpa/ManagerJpaRepository.java
+    
+    Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>
+
+[33mcommit 85450d3efc4dd572d91cdda567bd0ceb62cec1a4[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Mon Apr 14 19:40:40 2025 +0200
+
+    finished
+
+[33mcommit 2e0f6a43e56a48bb5ca4ffcb0087f06854e2f17b[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Mon Apr 14 19:40:40 2025 +0200
+
+    finished
+
+[33mcommit ece3d84a15a4678f4f64222541ee7a51d3ee4c1c[m
+Author: AbsZeroO <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Mon Apr 14 17:33:14 2025 +0200
+
+    Create EventEntity class
+
+[33mcommit 8b043a22a2d489fe244d6c6443e879b0b0cec662[m
+Merge: 662f290 0203b86
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Mon Apr 14 13:52:07 2025 +0200
+
+    Merge pull request #3 from centGeek/security-developed
+    
+    feat(security): Users and Roles created (admin, manager, student). Repositories and migrations are added
+
+[33mcommit a1f28b0a5e01433a017a97db57b21e291903eab4[m
+Merge: bc194b4 5f870f2
+Author: Łukasz Moskwa <138863520+AbsZeroO@users.noreply.github.com>
+Date:   Mon Apr 14 13:52:07 2025 +0200
+
+    Merge pull request #3 from centGeek/security-developed
+    
+    feat(security): Users and Roles created (admin, manager, student). Repositories and migrations are added
+
+[33mcommit 0203b86b7d330fd69d901dff89cf1484c72ed0c7[m[33m ([m[1;31morigin/security-developed[m[33m)[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Mon Apr 14 13:49:31 2025 +0200
+
+    CommandLineRunner added
+
+[33mcommit 5f870f2ff77038f59bf446e61fe8b216f2fc0d66[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Mon Apr 14 13:49:31 2025 +0200
+
+    CommandLineRunner added
+
+[33mcommit f65734db623a11e7ee171d43b31302fcf397a9e8[m
+Merge: 7f8e2b5 662f290
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sun Apr 13 21:07:35 2025 +0200
+
+    after merging
+
+[33mcommit 3e7f5e6754d8a91e0f6ed33a5e6b755f9594e9f2[m
+Merge: 7680865 bc194b4
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sun Apr 13 21:07:35 2025 +0200
+
+    after merging
+
+[33mcommit 7f8e2b576f8f0fd7ba4c3aa2da6b67c74f79d16c[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sun Apr 13 21:04:14 2025 +0200
+
+    security layer is developed
+
+[33mcommit 7680865321eb217d64755a7e0278249682ee31fc[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sun Apr 13 21:04:14 2025 +0200
+
+    security layer is developed
+
+[33mcommit f1be5a40d6ec66d4941c2bcfb185af53e656c6c5[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 19:47:27 2025 +0200
+
+    Resolving PR comments and requirements.
+
+[33mcommit e84cf2c9c1b0023dc62bae16f9d46dd948c12a83[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 19:47:27 2025 +0200
+
+    Resolving PR comments and requirements.
+
+[33mcommit af9b8f3e63aa796ff615864053aa44de2fc762c7[m
+Merge: d14babb 662f290
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:56:21 2025 +0200
+
+    Merge branch 'main' into dorm
+
+[33mcommit bb00a2da4fbd130f9d8facd7b3079d2267bb4530[m
+Merge: d0d1ff7 bc194b4
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:56:21 2025 +0200
+
+    Merge branch 'main' into dorm
+
+[33mcommit d14babb7ca31aaf0b3446bf68349b8a899a34533[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:55:10 2025 +0200
+
+    poprawiono błąd z dialektem
+
+[33mcommit d0d1ff75eceef0116b61f31414583ffd5c81f0dc[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:55:10 2025 +0200
+
+    poprawiono błąd z dialektem
+
+[33mcommit 088f79f92bf2842428c3b954e117699f9e0abea2[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:35:06 2025 +0200
+
+    ...
+
+[33mcommit 6ff9dc750098ff907b1ee86b9243096ca67c1304[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 12 17:35:06 2025 +0200
+
+    ...
+
+[33mcommit c009dac42b5c0abd6655a2b49e73fe143260e367[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 8 22:35:10 2025 +0200
+
+    Syzyf, test nie działa bo że bo tak.
+
+[33mcommit 90c6b62c6060c4d1c454320dd10d395cd800aee5[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 8 22:35:10 2025 +0200
+
+    Syzyf, test nie działa bo że bo tak.
+
+[33mcommit 1d9b3b533f5f13a1905e828dd06b4af1be71d61f[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 8 20:48:33 2025 +0200
+
+    Assigning added
+
+[33mcommit 3af5bae13e87364daf70911620bcd39a8e693499[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Tue Apr 8 20:48:33 2025 +0200
+
+    Assigning added
+
+[33mcommit 8c82c7e8f43b269d2fecf75670942dd0d113765a[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sun Apr 6 21:17:16 2025 +0200
+
+    further development
+
+[33mcommit 1d5622d0583fa1ed8672ed3eb2518fd7417ad67a[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sun Apr 6 21:17:16 2025 +0200
+
+    further development
+
+[33mcommit 662f290b7e42bb8fb2f0fb3527e25713f652e770[m
+Merge: 9b7b174 eae60f3
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Apr 5 20:07:05 2025 +0200
+
+    Merge pull request #1 from centGeek/chat-ollama
+    
+    java 17 -> 21; security config; AI works but poorly
+
+[33mcommit bc194b459c4a7d21f06dea41dfbc6818090b78e8[m
+Merge: 1c6ac52 22c06d0
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Apr 5 20:07:05 2025 +0200
+
+    Merge pull request #1 from centGeek/chat-ollama
+    
+    java 17 -> 21; security config; AI works but poorly
+
+[33mcommit eae60f35323da0d5b43b8cc5a413b5ad6683d6fa[m[33m ([m[1;31morigin/chat-ollama[m[33m)[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sat Apr 5 15:46:56 2025 +0200
+
+    zmiana javy; security; AI dziala ale slabo
+
+[33mcommit 22c06d053561c71b1340ad93569bb790bb026a92[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sat Apr 5 15:46:56 2025 +0200
+
+    zmiana javy; security; AI dziala ale slabo
+
+[33mcommit a4b3fee4dae02343a33df0bfdb5d657776404326[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 5 15:16:57 2025 +0200
+
+    dodanie encji która pozwala na łączenie ludzi z pokojami (czas na obiad)
+
+[33mcommit 055d0ef65cbdc4e996165591425a878c835681a3[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Sat Apr 5 15:16:57 2025 +0200
+
+    dodanie encji która pozwala na łączenie ludzi z pokojami (czas na obiad)
+
+[33mcommit 6eec77853573dd627f11c673f1cbe9caa12abf73[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Fri Apr 4 00:27:11 2025 +0200
+
+    UTs are green - rozwijanie modelu (dalsza nauka)
+
+[33mcommit bdbc6b80f409a55ac0e9d642ad025b2cfa00e8d7[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Fri Apr 4 00:27:11 2025 +0200
+
+    UTs are green - rozwijanie modelu (dalsza nauka)
+
+[33mcommit 2acc2e4bb4ef601d8dda2f73895c3dbbc1aaa16b[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 17:37:58 2025 +0200
+
+    All UTs are RED (xD) próba pierwszego testu. Dodanie get
+
+[33mcommit b49bf123e9ec91d11724c95ed0f324a43412e004[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 17:37:58 2025 +0200
+
+    All UTs are RED (xD) próba pierwszego testu. Dodanie get
+
+[33mcommit 8325b196a892d15b18bd65d30b0b4907578ec970[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 00:32:24 2025 +0200
+
+    test (czy nie zepsułem gita)
+
+[33mcommit e6bf912523f175cf6ab0f7b65349e80512eb386e[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 00:32:24 2025 +0200
+
+    test (czy nie zepsułem gita)
+
+[33mcommit 9ad7bc280e03f139278ae483468a96ced61d2517[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 00:08:34 2025 +0200
+
+    Próba numer 1 modułu pokoji - nauka springa na nowo
+
+[33mcommit 7209f2a6dd8873d364af243ebe93f751f406027e[m
+Author: qmacdom <qmacdom@gmail.com>
+Date:   Wed Apr 2 00:08:34 2025 +0200
+
+    Próba numer 1 modułu pokoji - nauka springa na nowo
+
+[33mcommit 9b7b174c3b112f74f68c1eff98b6056c2483fc90[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:24:35 2025 +0100
+
+    Update README.md
+
+[33mcommit 1c6ac52310914b952dbf84607ba1549ec75efe10[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:24:35 2025 +0100
+
+    Update README.md
+
+[33mcommit 9d3d33e7a2888978017f6a5ad214aac9eb0ff47d[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:16:41 2025 +0100
+
+    Update README.md
+
+[33mcommit 52aa6c406e3c442531d6d07d81b6e81e0f272a28[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:16:41 2025 +0100
+
+    Update README.md
+
+[33mcommit 79e23f3d492fdc609cc8a3db699c569d6552cd5e[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:04:30 2025 +0100
+
+    Update README.md
+
+[33mcommit e7dfaeabb922e4f4ffc5b3c2face1f3a42025940[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 21:04:30 2025 +0100
+
+    Update README.md
+
+[33mcommit 2216d35c9bcb7bebbb602308698f884295d520ba[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sat Mar 22 20:55:44 2025 +0100
+
+    Init Project
+
+[33mcommit d81cec74c0a4ea8cf8eb8c75a049feedca190b8a[m
+Author: 247638 Centkowski Łukasz <247638@edu.p.lodz.pl>
+Date:   Sat Mar 22 20:55:44 2025 +0100
+
+    Init Project
+
+[33mcommit 07793b6c921620c9e4529c9762b899567988c18e[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 20:17:26 2025 +0100
+
+    Update README.md
+
+[33mcommit 1a6c9dd58be6abf0a590b141a7d5f80bb6ce395c[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 20:17:26 2025 +0100
+
+    Update README.md
+
+[33mcommit 3f6830f0d41068c2c8930792694e43e24729c6a3[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 19:44:47 2025 +0100
+
+    Initial commit
+
+[33mcommit 3f8a0574cff3147262f53aa4eed72bb18d91adba[m
+Author: Łukasz <131073587+centGeek@users.noreply.github.com>
+Date:   Sat Mar 22 19:44:47 2025 +0100
+
+    Initial commit
