@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import './Login.css'; // Importuj plik CSS
 
-const Login: React.FC = () => {
+function Login(){
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Tutaj możesz dodać logikę logowania
         console.log('Email:', email);
         console.log('Password:', password);
+    //     implement your login logic here
     };
 
     return (
