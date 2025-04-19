@@ -14,4 +14,5 @@ public class EventPaticipantService {
         this.eventParticipantRepository = eventParticipantRepository;
     }
 
+
 }

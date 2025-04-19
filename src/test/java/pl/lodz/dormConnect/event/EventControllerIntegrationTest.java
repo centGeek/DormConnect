@@ -44,7 +44,7 @@ public class EventControllerIntegrationTest {
     @Test
     @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
     void shouldCreateEventSuccessfully() throws Exception {
-        EventDTO dto = new EventDTO(null, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", List.of(1L), List.of());
+        EventDTO dto = new EventDTO(null, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, List.of());
 
         mockMvc.perform(post("/api/event/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class EventControllerIntegrationTest {
                 .eventType("PUBLIC")
                 .maxParticipants(10)
                 .imageUrl("img")
-                .organizerId(List.of(1L))
+                .organizerId(1L)
                 .participantId(List.of(2L))
                 .build());
 

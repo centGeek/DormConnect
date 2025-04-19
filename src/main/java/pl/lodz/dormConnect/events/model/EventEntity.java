@@ -47,10 +47,8 @@ public class EventEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ElementCollection
-    @CollectionTable(name = "event_organizer", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "organizer_id")
-    private List<Long> organizerId;
+    private Long organizerId;
 
     @ElementCollection
     @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))

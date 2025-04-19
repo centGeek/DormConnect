@@ -48,6 +48,11 @@ public class EventService {
 
     @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
+
+        if (eventDTO.participantId().size() >= eventDTO.maxParticipants()) {
+            return Optional.empty();
+        }
+
         return eventRepository.findById(eventId).map(eventEntity -> {
             eventEntity.setEventName(eventDTO.eventName());
             eventEntity.setDescription(eventDTO.description());

@@ -12,7 +12,7 @@ public record EventCreateDTO(
         String eventType,
         Integer maxParticipants,
         String imageUrl,
-        List<Long> organizerId,
+        Long organizerId,
         List<Long> participantId
 )
 {}

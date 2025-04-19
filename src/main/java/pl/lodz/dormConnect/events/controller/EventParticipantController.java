@@ -5,10 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventPaticipantService;
 
 @RestController
@@ -28,8 +26,34 @@ public class EventParticipantController {
             @PathVariable("eventId") Long eventId,
             @PathVariable("participantId") String participantId
     ) {
-
-        return new ResponseEntity<>("Participant added", HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Participant not found for addition: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.warn("General Exception Participant: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    @GetMapping("/{participantId}")
+    public ResponseEntity<Void> getParticipantById(
+            @PathVariable Long participantId
+    ) {
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    @GetMapping
+
+    @DeleteMapping("/{participantId}")
+    public ResponseEntity<String> deleteParticipant(@PathVariable Long participantId) {
+
+        return new ResponseEntity<>("Participant deleted", HttpStatus.OK);
+    }
+
+
 
 }
