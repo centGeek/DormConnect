@@ -1,0 +1,15 @@
+.login-container {
+    display: flex;
+    justify-content: center; /* Wyśrodkowanie w poziomie */
+    align-items: center; /* Wyśrodkowanie w pionie */
+    height: 100vh; /* Wysokość całego widoku */
+    background-color: #f8f9fa; /* Opcjonalne tło dla całej strony */
+}
+
+.login-box {
+    background-color: #2F70BB; /* Jasnoniebieski kolor */
+    padding: 20px;
+    border-radius: 10px; /* Zaokrąglone rogi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Cień */
+    width: 300px; /* Szerokość kwadratu */
+}
