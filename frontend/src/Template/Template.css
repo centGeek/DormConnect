@@ -11,31 +11,53 @@
 .template-header {
     background-color: #007acc;
     color: #ffffff;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.template-main {
-    flex: 1;
-    padding: 20px;
-    background-color: #ffffff;
+.template-logo {
+    height: 70px; /* Zwiększono wysokość logo */
+    width: auto;
+    margin-right: 20px;
 }
 
-.template-footer {
+.template-button {
+    padding: 15px 25px; /* Zwiększono padding przycisków */
+    font-size: 16px; /* Zwiększono rozmiar czcionki */
     background-color: #007acc;
-    color: #ffffff;
-    padding: 15px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
     text-align: center;
+    display: inline-block;
 }
-.logout-button{
+
+.logout-button {
+    padding: 15px 25px; /* Zwiększono padding przycisku wylogowania */
+    font-size: 16px; /* Zwiększono rozmiar czcionki */
     background-color: white;
     color: #007acc;
     border: none;
-    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    text-align: right;
-    float: right;
+    text-align: center;
+}
+
+.template-button:hover {
+    background-color: #005fa3;
+}
+
+.logout-button {
+    padding: 10px 20px;
+    background-color: white;
+    color: #007acc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
 }

@@ -1,13 +1,18 @@
 import { ReactNode } from 'react';
 import './Template.css';
+import LogoPL from '../assets/Lodz University of Technology_v2.png';
 
 interface TemplateProps {
-    headerContent?: ReactNode;
     children: ReactNode;
     footerContent?: ReactNode;
+    buttons?: Button[];
+}
+interface Button{
+    text: string;
+    link: string;
 }
 
-function Template({ headerContent, children, footerContent }:TemplateProps) {
+function Template({ children, footerContent, buttons }:TemplateProps) {
     const handleLogout = () => {
         console.log('Logout');
         // Implement your logout logic here
@@ -15,7 +20,16 @@ function Template({ headerContent, children, footerContent }:TemplateProps) {
     return (
         <div className="template-container">
             <header className="template-header">
-                {headerContent || <h1>Domyślny nagłówek</h1>}
+                <img src={LogoPL} alt="Logo" className="template-logo" />
+                {buttons && (
+                    <div className="template-buttons">
+                        {buttons.map((button: Button, index: number) => (
+                            <a key={index} href={button.link} className="template-button">
+                                {button.text}
+                            </a>
+                        ))}
+                    </div>
+                )}
                 <button className="logout-button" onClick={handleLogout}>Log out</button>
             </header>
             <main className="template-main">
@@ -26,6 +40,6 @@ function Template({ headerContent, children, footerContent }:TemplateProps) {
             </footer>
         </div>
     );
-};
+}
 
 export default Template;

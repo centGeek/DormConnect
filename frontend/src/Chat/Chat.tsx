@@ -15,7 +15,7 @@ function ChatPage() {
 
     return (
         <Template
-            headerContent={<h1>Chatbot</h1>}
+            buttons={[{text: 'Home', link: '/' }, { text: 'Chat', link: '/chat' }]}
             footerContent={<p></p>}
         >
             <div className="chat-container">
@@ -31,7 +31,7 @@ function ChatPage() {
                 <div className="chat-input-area">
                     <input
                         type="text"
-                        placeholder="Ask"
+                        placeholder="Ask wanderer"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
