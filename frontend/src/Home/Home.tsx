@@ -3,7 +3,7 @@ import Template from '../Template/Template.tsx';
 import './Home.css';
 
 
-function ChatPage() {
+function Home() {
     const [counter, setCounter] = useState(0);
 
     return (
@@ -22,4 +22,4 @@ function ChatPage() {
     );
 }
 
-export default ChatPage;
+export default Home;
