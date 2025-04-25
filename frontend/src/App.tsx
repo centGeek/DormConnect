@@ -1,19 +1,26 @@
 //import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from './Login/Login.tsx';
-import Chat from './Chat/Chat';
+import Chat from './Chat/Chat.tsx';
 import Home from './Home/Home.tsx';
+import EventsCreate from './Events/EventsCreate.tsx';
+import Events from './Events/Events.tsx';
+import {UserProvider} from "./Context/UserContext.tsx";
 
 function App() {
 
   return (
-      <Router>
-          <Routes>
-              <Route path="/" element={<Login/>}/>
-              <Route path="/home" element={<Home/>}/>
-              <Route path="/chat" element={<Chat/>}/>
-          </Routes>
-      </Router>
+      <UserProvider>
+          <Router>
+              <Routes>
+                  <Route path="/" element={<Login/>}/>
+                  <Route path="/home" element={<Home/>}/>
+                  <Route path="/chat" element={<Chat/>}/>
+                  <Route path="/events" element={<Events/>}/>
+                  <Route path="/events/create" element={<EventsCreate/>}/>
+              </Routes>
+          </Router>
+      </UserProvider>
   )
 }
 

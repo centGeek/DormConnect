@@ -15,7 +15,7 @@ function ChatPage() {
 
     return (
         <Template
-            buttons={[{text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }]}
+            buttons={[{text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
             footerContent={<p></p>}
         >
             <div className="chat-container">
