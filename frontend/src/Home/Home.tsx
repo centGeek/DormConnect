@@ -3,12 +3,12 @@ import Template from '../Template/Template.tsx';
 import './Home.css';
 
 
-function ChatPage() {
+function Home() {
     const [counter, setCounter] = useState(0);
 
     return (
         <Template
-            buttons={[{text: 'Home', link: '/' }, { text: 'Chat', link: '/chat' }]}
+            buttons={[{text: 'Home', link: '/' }, { text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
             footerContent={<p></p>}
         >
             <div className="home-container">
@@ -22,4 +22,4 @@ function ChatPage() {
     );
 }
 
-export default ChatPage;
+export default Home;
