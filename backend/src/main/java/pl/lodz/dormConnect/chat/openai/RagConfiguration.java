@@ -42,17 +42,17 @@ public class RagConfiguration {
             log.info("Vector Store File Exists, loading...");
             simpleVectorStore.load(vectorStoreFile);
         } else {
-            log.info("Vector Store File Does Not Exist, loading documents...");
-            String fullText;
-            try (InputStream inputStream = faq.getInputStream()) {
-                fullText = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            }
-            List<String> sections = splitIntoParagraphs(fullText);
-            List<Document> documents = sections.stream()
-                    .map(Document::new)
-                    .toList();
-            simpleVectorStore.add(documents);
-            simpleVectorStore.save(vectorStoreFile);
+//            log.info("Vector Store File Does Not Exist, loading documents...");
+//            String fullText;
+//            try (InputStream inputStream = faq.getInputStream()) {
+//                fullText = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+//            }
+//            List<String> sections = splitIntoParagraphs(fullText);
+//            List<Document> documents = sections.stream()
+//                    .map(Document::new)
+//                    .toList();
+//            simpleVectorStore.add(documents);
+//            simpleVectorStore.save(vectorStoreFile);
         }
         return simpleVectorStore;
     }
