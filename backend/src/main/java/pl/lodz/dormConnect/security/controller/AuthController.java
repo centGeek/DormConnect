@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.security;
+package pl.lodz.dormConnect.security.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
