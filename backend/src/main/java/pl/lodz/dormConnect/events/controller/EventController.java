@@ -1,6 +1,8 @@
 package pl.lodz.dormConnect.events.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
@@ -39,10 +40,10 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventDTO>> getAllEvents() {
+    public ResponseEntity<Page<EventDTO>> getAllEvents(Pageable pageable) {
         try {
-            List<EventDTO> events = eventService.getAllEvents();
-            return new ResponseEntity<>(events, HttpStatus.OK);
+            Page<EventDTO> eventsPage = eventService.getAllEvents(pageable);
+            return ResponseEntity.ok(eventsPage);
         } catch (Exception e) {
             logger.error("Error retrieving events: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

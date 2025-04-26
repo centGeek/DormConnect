@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventPaticipantService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/event/{eventId}/paricipant")
 public class EventParticipantController {
@@ -22,38 +24,48 @@ public class EventParticipantController {
     }
 
     @PostMapping("/{participantId}")
-    public ResponseEntity<String> addParticipant(
+    public ResponseEntity<String> joinEvent(
             @PathVariable("eventId") Long eventId,
-            @PathVariable("participantId") String participantId
+            @PathVariable("participantId") Long participantId
     ) {
         try {
-            return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            eventPaticipantService.joinEvent(eventId, participantId);
+            return new ResponseEntity<>("Successfully joined event", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             logger.warn("Participant not found for addition: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            logger.warn("General Exception Participant: ", e);
+            logger.error("General Exception Participant: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{participantId}")
+    public ResponseEntity<String> leaveEvent(
+            @PathVariable("eventId") Long eventId,
+            @PathVariable("participantId") Long participantId
+    ) {
+        try {
+            eventPaticipantService.leaveEvent(eventId, participantId);
+            return new ResponseEntity<>("Successfully left event", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Participant not found for removal: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("General Exception on leave: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{participantId}")
-    public ResponseEntity<Void> getParticipantById(
-            @PathVariable Long participantId
-    ) {
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
+    public ResponseEntity<List<EventDTO>> getAllEvents(@PathVariable Long participantId) {
+        try {
+            List<EventDTO> events = eventPaticipantService.getAllEvents(participantId);
+            return new ResponseEntity<>(events, HttpStatus.NOT_IMPLEMENTED);
+        } catch (Exception e) {
+            logger.error("Error retrieving events: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-    @GetMapping
-
-    @DeleteMapping("/{participantId}")
-    public ResponseEntity<String> deleteParticipant(@PathVariable Long participantId) {
-
-        return new ResponseEntity<>("Participant deleted", HttpStatus.OK);
-    }
-
-
 
 }

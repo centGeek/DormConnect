@@ -6,6 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
@@ -156,15 +160,21 @@ public class EventServiceTest {
 
 
     @Test
-    void shouldReturnAllEvents() {
+    void shouldReturnPagedEvents() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<EventEntity> pageOfEntities = new PageImpl<>(List.of(entity));
+        Page<EventDTO> pageOfDtos = new PageImpl<>(List.of(dto));
 
-        when(eventRepository.findAll()).thenReturn(List.of(entity));
-        when(eventMapper.toEventDTOList(List.of(entity))).thenReturn(List.of(dto));
+        when(eventRepository.findAll(pageable)).thenReturn(pageOfEntities);
+        when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        List<EventDTO> results = eventService.getAllEvents();
+        // when
+        Page<EventDTO> results = eventService.getAllEvents(pageable);
 
-        assertEquals(1, results.size());
-        assertEquals(dto, results.getFirst());
+        // then
+        assertEquals(1, results.getTotalElements());
+        assertEquals(dto, results.getContent().get(0));
     }
 
 }
