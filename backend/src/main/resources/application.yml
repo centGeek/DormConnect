@@ -11,13 +11,17 @@ spring:
     hibernate:
       ddl-auto: none
   ai:
-    ollama:
+    openai:
+      api-key: <your-api-key>
       chat:
         options:
-          model: tinyllama
+          model: gpt-4
+          temperature: 0.5
+          max-tokens: 800
+          top-p: 1
+          frequency-penalty: 0
       embedding:
-        enabled: true
         options:
-          model: nomic-embed-text
+          model: text-embedding-3-large
 server:
   port: 8091
