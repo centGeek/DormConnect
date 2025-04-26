@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/chat")
 public class DocsController {
     private final ChatClient chatClient;
 
@@ -20,7 +20,7 @@ public class DocsController {
                 .build();
     }
 
-    @GetMapping("/chat")
+    @GetMapping("/get-message")
     public String chatResponse(@RequestParam(value = "message", defaultValue = "Ile mogę mieć punktów ECTS braku") String message) {
         String modifiedMessage = message + ". Podaj też dokładny artykuł - zacytuj go, na podstawie którego odpowiadasz";
         String content = chatClient.prompt()
