@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -54,13 +53,11 @@ public class RoomController {
     }
 
     @Transactional
-    @PutMapping("/room/{id}")
+    @PostMapping("/room/{id}/assign")
     public ResponseEntity<RoomEntity> updateRoom(@PathVariable Long id, @RequestBody RoomAssignDTO roomAssignDTO) {
         if (roomAssignDTO.roomEntity() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-
         if (roomService.assignStudentToRoom(roomAssignDTO.roomEntity(), roomAssignDTO.idOfStudent(), roomAssignDTO.fromDate(), roomAssignDTO.toDate())) {
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
