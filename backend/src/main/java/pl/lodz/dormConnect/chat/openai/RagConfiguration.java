@@ -36,7 +36,6 @@ public class RagConfiguration {
 
     @Bean
     public VectorStore simpleVectorStore(EmbeddingModel embeddingModel) throws IOException {
-        System.out.println("simple vec");
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
         var vectorStoreFile = getVectorStoreFile();
         if (vectorStoreFile.exists()) {
@@ -86,7 +85,6 @@ public class RagConfiguration {
     }
 
     private File getVectorStoreFile() {
-        System.out.println("vectir store file");
         Path path = Paths.get("src", "main", "resources", "data");
         String absolutePath = path.toFile().getAbsolutePath() + "/" + vectorStoreName;
         return new File(absolutePath);
