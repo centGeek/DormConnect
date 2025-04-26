@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/chat")
 public class DocsController {
@@ -21,14 +23,14 @@ public class DocsController {
     }
 
     @GetMapping("/get-message")
-    public String chatResponse(@RequestParam(value = "message", defaultValue = "Ile mogę mieć punktów ECTS braku") String message) {
+    public Map<String, String> chatResponse(@RequestParam(value = "message", defaultValue = "Jaką frekwencję muszę mieć, aby zdać przedmiot") String message) {
         String modifiedMessage = message + ". Podaj też dokładny artykuł - zacytuj go, na podstawie którego odpowiadasz";
         String content = chatClient.prompt()
                 .user(modifiedMessage)
                 .call()
                 .content();
         System.out.println(content);
-        return content;
+        return Map.of("reply", content);
     }
 
 }
