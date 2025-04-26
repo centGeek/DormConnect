@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class RoomEntity {
     private int floor;
     private boolean active = true;
     @OneToMany
-    private List<RoomAssignEntity> roomAssigns;
+    private List<RoomAssignEntity> roomAssigns = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(nullable = true)
