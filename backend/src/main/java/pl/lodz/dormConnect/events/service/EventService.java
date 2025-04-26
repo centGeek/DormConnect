@@ -3,7 +3,6 @@ package pl.lodz.dormConnect.events.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
@@ -48,6 +47,12 @@ public class EventService {
         return page.map(eventMapper::toEventDTO);
     }
 
+    @Transactional(readOnly = true)
+    public Page<EventDTO> getAllEventsForParticipant(Long participantId, Pageable pageable) {
+        Page<EventEntity> page = eventRepository.findByParticipantIdContaining(participantId, pageable);
+        return page.map(eventMapper::toEventDTO);
+    }
+
     @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
 
@@ -77,5 +82,4 @@ public class EventService {
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
         eventRepository.delete(eventEntity);
     }
-
 }

@@ -177,4 +177,18 @@ public class EventServiceTest {
         assertEquals(dto, results.getContent().get(0));
     }
 
+    @Test
+    void shouldReturnPagedEventsForParticipant() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<EventEntity> pageOfEntities = new PageImpl<>(List.of(entity));
+        Page<EventDTO> pageOfDtos = new PageImpl<>(List.of(dto));
+
+        when(eventRepository.findByParticipantIdContaining(1L, pageable)).thenReturn(pageOfEntities);
+        when(eventMapper.toEventDTO(entity)).thenReturn(dto);
+
+        Page<EventDTO> results = eventService.getAllEventsForParticipant(1L, pageable);
+
+        assertEquals(1, results.getTotalElements());
+        assertEquals(dto, results.getContent().get(0));
+    }
 }

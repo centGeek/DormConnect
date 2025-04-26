@@ -73,8 +73,9 @@ public class EventControllerIntegrationTest {
                 .participantId(List.of(2L))
                 .build());
 
-        mockMvc.perform(get("/api/event"))
+        mockMvc.perform(get("/api/event")
+                        .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].eventName").value("Name"));
+                .andExpect(jsonPath("$.content[0].eventName").value("Name"));
     }
 }

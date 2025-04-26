@@ -27,6 +27,6 @@ public class EventPaticipantService {
 
     public List<EventDTO> getAllEvents(Long participantId) {
 
-        return new
+        return new ArrayList<>();
     }
 }
