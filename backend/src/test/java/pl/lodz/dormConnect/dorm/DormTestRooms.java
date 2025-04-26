@@ -5,7 +5,6 @@ import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Date;
 
 public class DormTestRooms {
     public static RoomEntity testRoom1(){
@@ -13,7 +12,7 @@ public class DormTestRooms {
         room.setNumber("TEST_ROOM_1");
         room.setFloor(1);
         room.setActive(true);
-        room.setCapacity(4);
+        room.setCapacity(2);
         room.setGroupedRooms(null);
         return room;
     }
