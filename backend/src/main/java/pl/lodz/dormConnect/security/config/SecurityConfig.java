@@ -53,7 +53,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/").permitAll()
+                        .requestMatchers("/login", "/api/chat").permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -66,9 +66,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll()
-
-                )
+                        .permitAll())
 
                 .build();
     }
