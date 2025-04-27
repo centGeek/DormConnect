@@ -1,27 +1,33 @@
 import React, { useState } from 'react';
 import './Login.css';
-import axios, {AxiosResponse} from 'axios';
-import {useNavigate} from "react-router-dom";
-import Cookies from 'js-cookie';
+import axios, { AxiosResponse } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Login(){
+function Login() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
-    const redirection = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response: AxiosResponse = await axios.post('/api/login', {email, password});//tutaj trzeba zmienić ewentualnie
-            const token: string = response.data.token;
-            Cookies.set('token', token, {maxAge: 600, secure: true, sameSite: 'Strict'});
+            const response: AxiosResponse = await axios.post(
+                'http://localhost:8091/api/auth/login',
+                { email, password },
+                {
+                    withCredentials: true, // Upewnij się, że ciasteczka będą wysyłane
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
             console.log('Login successful', response.data);
-            redirection('/home')
-        }
-        catch (error) {
+            // Poczekaj na zapisanie ciasteczka, a potem przekieruj
+            navigate('/home');  // Jeśli logowanie zakończyło się sukcesem
+        } catch (error) {
             console.error('Login failed', error instanceof Error ? error.message : error);
-            setError('Invalid username or password');
+            setError('Invalid email or password');
         }
     };
 
@@ -51,7 +57,7 @@ function Login(){
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        {error && <p className="text-danger">{error}</p>} {/* Render error message if exists */}
+                        {error && <p className="text-danger">{error}</p>}
                     </div>
                     <button type="submit" className="btn btn-primary">Login</button>
                 </form>
