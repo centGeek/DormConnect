@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.event;
+package pl.lodz.dormConnect.event.unitTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

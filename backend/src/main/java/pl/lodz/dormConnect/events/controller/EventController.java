@@ -12,6 +12,7 @@ import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.lodz.dormConnect.security.service.JwtService;
 
 
 @RestController
@@ -19,11 +20,13 @@ import org.slf4j.LoggerFactory;
 public class EventController {
 
     private final EventService eventService;
+    private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, JwtService jwtService) {
         this.eventService = eventService;
+        this.jwtService = jwtService;
     }
 
     // To przyjmuje prostego JSON bez id
@@ -50,12 +53,15 @@ public class EventController {
         }
     }
 
-    @GetMapping("/participant/{participantId}")
+    @GetMapping("/participants")
     public ResponseEntity<Page<EventDTO>> getAllEventsForParticipant(
-            @PathVariable Long participantId,
+            @RequestHeader("Authorization") String authorizationHeader,
             @PageableDefault Pageable pageable
     ) {
         try {
+            String token = authorizationHeader.replace("Bearer ", "");
+            Long participantId = jwtService.extractUserId(token);
+
             Page<EventDTO> eventsPage = eventService.getAllEventsForParticipant(participantId, pageable);
             return ResponseEntity.ok(eventsPage);
         } catch (Exception e) {
