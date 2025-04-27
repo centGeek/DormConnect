@@ -53,36 +53,29 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityEnabled(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(request -> {
+        return http.cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
-                    config.addAllowedOrigin("http://localhost:5173"); // Domena frontendu
+                    config.addAllowedOrigin("http://localhost:5173");
                     config.addAllowedHeader("*");
                     config.addAllowedMethod("*");
                     return config;
                 }))
-                .csrf(csrf -> csrf.disable()) // Wyłącz CSRF
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/chat/**").permitAll()
-        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login").permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/")
-                        .permitAll()
-                )
                 .logout(logout -> logout
+                        .logoutSuccessUrl("/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll()
-                );
-        return http.build();
+                        .permitAll())
+
+                .build();
     }
+
 
 
     @Bean
