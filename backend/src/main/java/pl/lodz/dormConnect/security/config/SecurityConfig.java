@@ -65,6 +65,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Wyłącz CSRF
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/chat/**").permitAll()
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/login", "/chat/get-message", "/api/auth/login").permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
