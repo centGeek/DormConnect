@@ -55,3 +55,32 @@
 .chat-input-area button:hover {
     background-color: #005fa3;
 }
+.chat-window {
+    flex: 1;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-message {
+    background-color: #e1f0ff;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    max-width: 70%;
+}
+
+.chat-message.user {
+    background-color: #f5deb3;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.chat-message.llm {
+    background-color: #007acc;
+    align-self: flex-start;
+    text-align: left;
+    color: white;
+}

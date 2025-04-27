@@ -6,6 +6,7 @@ import Home from './Home/Home.tsx';
 import EventsCreate from './Events/EventsCreate.tsx';
 import Events from './Events/Events.tsx';
 import {UserProvider} from "./Context/UserContext.tsx";
+import Rooms from "./Rooms/Rooms.tsx";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
                   <Route path="/chat" element={<Chat/>}/>
                   <Route path="/events" element={<Events/>}/>
                   <Route path="/events/create" element={<EventsCreate/>}/>
+                  <Route path="/rooms" element={<Rooms/>}/>
               </Routes>
           </Router>
       </UserProvider>
