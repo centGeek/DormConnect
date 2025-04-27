@@ -4,7 +4,7 @@ import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 interface User {
-    id: string;
+    id: number;
     role: string;
     email: string;
 }
@@ -16,7 +16,7 @@ interface UserContextProps {
 interface DecodedToken {
     role: string;
     email: string;
-    id: string;
+    id: number;
 }
 
 export const UserContext = createContext<UserContextProps | null>(null);
