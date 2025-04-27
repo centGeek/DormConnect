@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 type RoomModalProps = {
-    onAddRoom: (room: { id: string; number: string; capacity: number; floor: number }) => void;
+    onAddRoom: (room: { number: string; capacity: number; floor: number }) => void;
     onClose: () => void;
 };
 
@@ -14,7 +13,6 @@ const RoomModal: React.FC<RoomModalProps> = ({ onAddRoom, onClose }) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onAddRoom({
-            id: uuidv4(),
             number,
             capacity,
             floor

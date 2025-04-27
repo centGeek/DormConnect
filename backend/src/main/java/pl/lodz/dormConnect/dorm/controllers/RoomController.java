@@ -52,9 +52,18 @@ public class RoomController {
                 orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @PatchMapping("/room/{id}")
+    public ResponseEntity<RoomEntity> updateRoomPartial(
+            @PathVariable Long id,
+            @RequestBody RoomUpdateDTO updateDTO) {
+        RoomEntity updatedRoom = roomService.updateRoomPartial(id, updateDTO.name(), updateDTO.floor());
+        return ResponseEntity.ok(updatedRoom);
+    }
+
+
     @Transactional
     @PostMapping("/room/{id}/assign")
-    public ResponseEntity<RoomEntity> updateRoom(@PathVariable Long id, @RequestBody RoomAssignDTO roomAssignDTO) {
+    public ResponseEntity<RoomEntity> assignRoomToPerson(@PathVariable Long id, @RequestBody RoomAssignDTO roomAssignDTO) {
         if (roomAssignDTO.roomEntity() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

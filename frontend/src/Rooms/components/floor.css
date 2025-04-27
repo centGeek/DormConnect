@@ -98,3 +98,16 @@
 .btn-secondary:hover {
     background: #ccc;
 }
+
+.room-group {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.group-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
