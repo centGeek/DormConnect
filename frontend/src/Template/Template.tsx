@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
+import {ReactNode} from 'react';
 import './Template.css';
 import LogoPL from '../assets/Lodz University of Technology_v2.png';
-import Cookies from "js-cookie";
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 
 interface TemplateProps {
     children: ReactNode;
@@ -20,13 +19,20 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8080/api/auth/logout', {}, { withCredentials: true });
-
-            Cookies.remove('token');
-
-            navigate('/login');
+            const response : AxiosResponse = await axios.post(
+                'http://localhost:8091/api/auth/logout',
+                {},
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            console.log('Logout successful', response.data);
+            navigate('/');
         } catch (error) {
-            console.error('Logout failed:', error);
+            console.error('Logout failed:', error instanceof Error ? error.message : error);
         }
     }
 
