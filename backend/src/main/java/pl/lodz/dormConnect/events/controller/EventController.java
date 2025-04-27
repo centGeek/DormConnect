@@ -60,10 +60,10 @@ public class EventController {
     ) {
         try {
             String token = authorizationHeader.replace("Bearer ", "");
-            Long participantId = 2L;// jwtService.extractUserId(token);
+            Long participantId = jwtService.getIdFromToken(token);
 
             Page<EventDTO> eventsPage = eventService.getAllEventsForParticipant(participantId, pageable);
-            return ResponseEntity.ok(eventsPage);
+            return new ResponseEntity<>(eventsPage, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error retrieving events: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

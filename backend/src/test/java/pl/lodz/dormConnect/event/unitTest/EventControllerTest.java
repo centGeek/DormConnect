@@ -10,10 +10,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.lodz.dormConnect.events.controller.EventController;
@@ -22,12 +25,11 @@ import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.service.EventService;
+import pl.lodz.dormConnect.security.config.JwtAuthenticationFilter;
 import pl.lodz.dormConnect.security.service.JwtService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,8 +54,10 @@ public class EventControllerTest {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(eventController)
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(eventController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .addFilters(new JwtAuthenticationFilter(jwtService))
                 .build();
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -61,8 +65,35 @@ public class EventControllerTest {
 
     @Test
     void shouldCreateEventSuccessfully() throws Exception {
-        EventCreateDTO createDto = new EventCreateDTO("Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, List.of(2L, 3L));
-        EventDTO eventDTO = new EventDTO(1L, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, Collections.emptyList());
+        EventCreateDTO createDto = new EventCreateDTO(
+                "Test Event",
+                "Opis",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(2),
+                "Location",
+                "PUBLIC",
+                50,
+                "img.png",
+                1L,
+                new ArrayList<>(List.of(2L, 3L))
+        );
+        EventDTO eventDTO = new EventDTO(
+                1L,
+                "Test Event",
+                "Opis",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(2),
+                "Location",
+                "PUBLIC",
+                50,
+                "img.png",
+                1L,
+                new ArrayList<>()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("user", null, Collections.emptyList())
+        );
 
         when(eventService.createEvent(any(EventCreateDTO.class))).thenReturn(Optional.of(eventDTO));
 
@@ -77,9 +108,22 @@ public class EventControllerTest {
 
     @Test
     void shouldReturnAllEvents() throws Exception {
-        EventDTO eventDTO = new EventDTO(1L, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, Collections.emptyList());
+        EventDTO eventDTO = new EventDTO(
+                1L,
+                "Test Event",
+                "Opis",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(2),
+                "Location",
+                "PUBLIC",
+                50,
+                "img.png",
+                1L,
+                new ArrayList<>()
+        );
 
-        Page<EventDTO> page = new PageImpl<>(Collections.singletonList(eventDTO));
+        Page<EventDTO> page = new PageImpl<>(List.of(eventDTO), PageRequest.of(0, 10), 1);
+
         when(eventService.getAllEvents(any())).thenReturn(page);
 
         mockMvc.perform(get("/api/event"))
@@ -92,22 +136,19 @@ public class EventControllerTest {
     @Test
     void shouldReturnEventsForParticipant() throws Exception {
         Long participantId = 2L;
-        String token = "valid-jwt-token";
+        String token = "Bearer valid-jwt-token";
 
-        when(jwtService.extractUserId(anyString())).thenReturn(participantId);
+        EventDTO eventDTO = new EventDTO(1L, "Sample Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Sample Location", "PUBLIC", 100, "event-image.png", 1L, List.of(participantId));
+        Page<EventDTO> page = new PageImpl<>(List.of(eventDTO), PageRequest.of(0, 10), 1);
 
-        EventEntity eventEntity = new EventEntity(1L, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, List.of(participantId));
-        EventDTO eventDTO = new EventDTO(1L, "Test Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Location", "PUBLIC", 50, "img.png", 1L, List.of(participantId));
-        when(eventMapper.toEventDTO(eventEntity)).thenReturn(eventDTO);
-
-        Page<EventDTO> page = new PageImpl<>(List.of(eventDTO), Pageable.unpaged(), 1);
-
+        when(jwtService.getIdFromToken("valid-jwt-token")).thenReturn(participantId);
         when(eventService.getAllEventsForParticipant(eq(participantId), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/event/participants")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, token)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].eventName").value("Test Event"));
+                .andExpect(jsonPath("$.content[0].eventName").value("Sample Event"))
+                .andExpect(jsonPath("$.content[0].location").value("Sample Location"));
     }
 }
