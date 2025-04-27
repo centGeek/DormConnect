@@ -18,7 +18,7 @@ function Home() {
 
     return (
         <Template
-            buttons={[{ text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
+            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
             footerContent={<p></p>}
         >
             <div className="home-container">
