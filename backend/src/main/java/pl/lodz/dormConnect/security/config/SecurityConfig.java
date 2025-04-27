@@ -57,11 +57,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(loginConfigurer -> loginConfigurer
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/")
-                        .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/logout")
                         .invalidateHttpSession(true)
