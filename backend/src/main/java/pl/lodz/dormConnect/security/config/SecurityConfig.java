@@ -53,14 +53,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityEnabled(HttpSecurity http) throws Exception {
-        return http.cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowCredentials(true);
-                    config.addAllowedOrigin("http://localhost:5173");
-                    config.addAllowedHeader("*");
-                    config.addAllowedMethod("*");
-                    return config;
-                }))
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login").permitAll()
