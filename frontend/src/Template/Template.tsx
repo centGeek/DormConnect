@@ -33,7 +33,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
     return (
         <div className="template-container">
             <header className="template-header">
-                <img src={LogoPL} alt="Logo" className="template-logo" />
+                <a href={"/home"}><img src={LogoPL} alt="Logo" className="template-logo" /></a>
                 {buttons && (
                     <div className="template-buttons">
                         {buttons.map((button: Button, index: number) => (
