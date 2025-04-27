@@ -1,0 +1,100 @@
+.floor-container {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: #f0f2f5;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    gap: 10px;
+}
+
+.room-box {
+    background: #007acc;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 120px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.room-box:hover {
+    transform: scale(1.05);
+}
+
+.add-slot {
+    width: 40px;
+    height: 80px;
+    background: #e0e0e0;
+    color: #007acc;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-slot:hover {
+    background: #d0d0d0;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background: #007acc;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #005fa3;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: #ccc;
+}

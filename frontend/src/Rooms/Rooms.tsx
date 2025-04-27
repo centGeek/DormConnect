@@ -1,45 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Template from '../Template/Template.tsx';
 
-// <- dzięki temu axios zawsze wysyła ciasteczka
 axios.defaults.withCredentials = true;
 
 const Room: React.FC = () => {
-    // --- login state ---
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    // --- room form state ---
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [number, setNumber] = useState("");
     const [capacity, setCapacity] = useState(1);
     const [floor, setFloor] = useState(1);
 
-    // --- login handler ---
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            await axios.post(
-                "/login",
-                new URLSearchParams({
-                    email,
-                    password
-                }),
-                {
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                }
-            );
-            setLoggedIn(true);
-            alert("Logged in successfully!");
-        } catch (error) {
-            console.error(error);
-            alert("Login failed!");
-        }
-    };
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
-    // --- add room handler ---
     const handleAddRoom = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -52,10 +25,10 @@ const Room: React.FC = () => {
                 groupedRooms: null
             });
             alert("Room created successfully!");
-            // Optionally clear form
             setNumber("");
             setCapacity(1);
             setFloor(1);
+            closeModal();
         } catch (error) {
             console.error(error);
             alert("Failed to create room.");
@@ -63,74 +36,57 @@ const Room: React.FC = () => {
     };
 
     return (
-        <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Rooms Page</h1>
+        <Template>
+            <div className="floor-container">
+                <h1>Floor Visualization</h1>
+                <div className="floor-canvas" onClick={openModal}>
+                    <p>Click here to add a room</p>
+                </div>
 
-            {!loggedIn && (
-                <form onSubmit={handleLogin} className="flex flex-col gap-4 mb-8 border p-4 rounded-lg">
-                    <h2 className="text-xl font-semibold">Login</h2>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition"
-                    >
-                        Login
-                    </button>
-                </form>
-            )}
-
-            {loggedIn && (
-                <form onSubmit={handleAddRoom} className="flex flex-col gap-4 border p-4 rounded-lg">
-                    <h2 className="text-xl font-semibold">Add New Room</h2>
-                    <input
-                        type="text"
-                        placeholder="Room Number"
-                        value={number}
-                        onChange={(e) => setNumber(e.target.value)}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="Capacity"
-                        value={capacity}
-                        onChange={(e) => setCapacity(parseInt(e.target.value))}
-                        min={1}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="Floor"
-                        value={floor}
-                        onChange={(e) => setFloor(parseInt(e.target.value))}
-                        className="border p-2 rounded"
-                        required
-                    />
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-                    >
-                        Add Room
-                    </button>
-                </form>
-            )}
-        </div>
+                {isModalOpen && (
+                    <div className="modal-overlay" onClick={closeModal}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h2>Add New Room</h2>
+                            <form onSubmit={handleAddRoom} className="room-form">
+                                <div className="form-group">
+                                    <label>Room Number:</label>
+                                    <input
+                                        type="text"
+                                        value={number}
+                                        onChange={(e) => setNumber(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Capacity:</label>
+                                    <input
+                                        type="number"
+                                        value={capacity}
+                                        min={1}
+                                        onChange={(e) => setCapacity(parseInt(e.target.value))}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Floor:</label>
+                                    <input
+                                        type="number"
+                                        value={floor}
+                                        min={0}
+                                        onChange={(e) => setFloor(parseInt(e.target.value))}
+                                        required
+                                    />
+                                </div>
+                                <div className="modal-buttons">
+                                    <button type="submit" className="btn-primary">Save</button>
+                                    <button type="button" className="btn-secondary" onClick={closeModal}>Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </Template>
     );
 };
 

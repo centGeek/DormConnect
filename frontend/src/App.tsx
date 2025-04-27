@@ -6,7 +6,7 @@ import Home from './Home/Home.tsx';
 import EventsCreate from './Events/EventsCreate.tsx';
 import Events from './Events/Events.tsx';
 import {UserProvider} from "./Context/UserContext.tsx";
-import Rooms from "./Rooms/Rooms.tsx";
+import Rooms from "./Rooms/RoomPage.tsx";
 
 function App() {
 
