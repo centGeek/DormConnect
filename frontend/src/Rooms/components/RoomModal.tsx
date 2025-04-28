@@ -24,6 +24,8 @@ const RoomModal: React.FC<RoomModalProps> = ({ onAddRoom, onClose }) => {
             <div className="modal-content">
                 <h2>Add Room</h2>
                 <form onSubmit={handleSubmit} className="modal-form">
+                    <label>Room number</label>
+
                     <input
                         type="text"
                         placeholder="Room Number"
@@ -31,6 +33,8 @@ const RoomModal: React.FC<RoomModalProps> = ({ onAddRoom, onClose }) => {
                         onChange={(e) => setNumber(e.target.value)}
                         required
                     />
+                    <label>Capacity</label>
+
                     <input
                         type="number"
                         placeholder="Capacity"
@@ -39,6 +43,8 @@ const RoomModal: React.FC<RoomModalProps> = ({ onAddRoom, onClose }) => {
                         min={1}
                         required
                     />
+                    <label>Floor</label>
+
                     <input
                         type="number"
                         placeholder="Floor"

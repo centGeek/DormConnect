@@ -28,6 +28,7 @@ public class GroupedRoomsService {
                 room.setGroupedRooms(group);
             }
         }
+
         return groupedRoomsRepository.save(group);
     }
 
