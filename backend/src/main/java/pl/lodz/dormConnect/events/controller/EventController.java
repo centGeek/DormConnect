@@ -53,22 +53,6 @@ public class EventController {
         }
     }
 
-    @GetMapping("/participants")
-    public ResponseEntity<Page<EventDTO>> getAllEventsForParticipant(
-            @RequestHeader("Authorization") String authorizationHeader,
-            @PageableDefault Pageable pageable
-    ) {
-        try {
-            String token = authorizationHeader.replace("Bearer ", "");
-            Long participantId = jwtService.getIdFromToken(token);
-
-            Page<EventDTO> eventsPage = eventService.getAllEventsForParticipant(participantId, pageable);
-            return new ResponseEntity<>(eventsPage, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error retrieving events: ", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @GetMapping("/{eventId}")
     public ResponseEntity<EventDTO> getEventById(@PathVariable Long eventId) {

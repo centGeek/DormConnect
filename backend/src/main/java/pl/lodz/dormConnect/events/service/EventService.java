@@ -47,12 +47,6 @@ public class EventService {
         return page.map(eventMapper::toEventDTO);
     }
 
-    @Transactional(readOnly = true)
-    public Page<EventDTO> getAllEventsForParticipant(Long participantId, Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findByParticipantIdContaining(participantId, pageable);
-        return page.map(eventMapper::toEventDTO);
-    }
-
     @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
 
@@ -70,6 +64,8 @@ public class EventService {
             eventEntity.setImageUrl(eventDTO.imageUrl());
             eventEntity.setOrganizerId(eventDTO.organizerId());
             eventEntity.setParticipantId(eventDTO.participantId());
+            eventEntity.setEventType(eventDTO.eventType());
+            eventEntity.setIsApproved(eventDTO.isApproved());
 
             EventEntity updatedEvent = eventRepository.save(eventEntity);
             return eventMapper.toEventDTO(updatedEvent);
@@ -82,4 +78,16 @@ public class EventService {
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
         eventRepository.delete(eventEntity);
     }
+
+    public boolean isOrganizer(Long userId, Long eventId) {
+        Optional<EventEntity> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isPresent()) {
+            EventEntity event = eventOptional.get();
+            return event.getOrganizerId().equals(userId);
+        }
+
+        return false;
+    }
+
 }

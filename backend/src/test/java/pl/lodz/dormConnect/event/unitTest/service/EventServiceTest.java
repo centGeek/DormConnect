@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.event.unitTest;
+package pl.lodz.dormConnect.event.unitTest.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public class EventServiceTest {
 
     @BeforeEach
     void setup() {
-        dto = new EventDTO(null, "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", 1L, List.of());
+        dto = new EventDTO(null, "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", 1L, false, List.of());
         dtoCreate = new EventCreateDTO( "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", 1L, List.of(2L, 3L));
         entity = EventEntity.builder()
                 .eventName("Test")
@@ -132,7 +132,7 @@ public class EventServiceTest {
 
     @Test
     void shouldUpdateEvent() {
-        EventDTO updatedDto = new EventDTO(1L, "Updated", "New Desc", dto.startDateTime(), dto.endDateTime(), "New Loc", "PRIVATE", 20, "new.png", 2L, List.of());
+        EventDTO updatedDto = new EventDTO(1L, "Updated", "New Desc", dto.startDateTime(), dto.endDateTime(), "New Loc", "PRIVATE", 20, "new.png", 2L, false, List.of());
         EventEntity updatedEntity = EventEntity.builder()
                 .eventId(1L)
                 .eventName("Updated")
@@ -177,18 +177,5 @@ public class EventServiceTest {
         assertEquals(dto, results.getContent().get(0));
     }
 
-    @Test
-    void shouldReturnPagedEventsForParticipant() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<EventEntity> pageOfEntities = new PageImpl<>(List.of(entity));
-        Page<EventDTO> pageOfDtos = new PageImpl<>(List.of(dto));
 
-        when(eventRepository.findByParticipantIdContaining(1L, pageable)).thenReturn(pageOfEntities);
-        when(eventMapper.toEventDTO(entity)).thenReturn(dto);
-
-        Page<EventDTO> results = eventService.getAllEventsForParticipant(1L, pageable);
-
-        assertEquals(1, results.getTotalElements());
-        assertEquals(dto, results.getContent().get(0));
-    }
 }

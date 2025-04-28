@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.event.unitTest;
+package pl.lodz.dormConnect.event.unitTest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,9 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +21,6 @@ import pl.lodz.dormConnect.events.controller.EventController;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
-import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.service.EventService;
 import pl.lodz.dormConnect.security.config.JwtAuthenticationFilter;
 import pl.lodz.dormConnect.security.service.JwtService;
@@ -88,6 +85,7 @@ public class EventControllerTest {
                 50,
                 "img.png",
                 1L,
+                false,
                 new ArrayList<>()
         );
 
@@ -119,6 +117,7 @@ public class EventControllerTest {
                 50,
                 "img.png",
                 1L,
+                false,
                 new ArrayList<>()
         );
 
@@ -133,22 +132,4 @@ public class EventControllerTest {
         verify(eventService, times(1)).getAllEvents(any());
     }
 
-    @Test
-    void shouldReturnEventsForParticipant() throws Exception {
-        Long participantId = 2L;
-        String token = "Bearer valid-jwt-token";
-
-        EventDTO eventDTO = new EventDTO(1L, "Sample Event", "Opis", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Sample Location", "PUBLIC", 100, "event-image.png", 1L, List.of(participantId));
-        Page<EventDTO> page = new PageImpl<>(List.of(eventDTO), PageRequest.of(0, 10), 1);
-
-        when(jwtService.getIdFromToken("valid-jwt-token")).thenReturn(participantId);
-        when(eventService.getAllEventsForParticipant(eq(participantId), any(Pageable.class))).thenReturn(page);
-
-        mockMvc.perform(get("/api/event/participants")
-                        .header(HttpHeaders.AUTHORIZATION, token)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].eventName").value("Sample Event"))
-                .andExpect(jsonPath("$.content[0].location").value("Sample Location"));
-    }
 }

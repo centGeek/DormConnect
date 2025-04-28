@@ -1,0 +1,2 @@
+ALTER TABLE event
+    ADD is_approved BOOLEAN DEFAULT FALSE;

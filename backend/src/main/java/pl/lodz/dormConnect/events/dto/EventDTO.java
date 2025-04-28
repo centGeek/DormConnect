@@ -17,5 +17,6 @@ public record EventDTO(
         Integer maxParticipants,
         String imageUrl,
         Long organizerId,
+        Boolean isApproved,
         List<Long> participantId
 ) {}

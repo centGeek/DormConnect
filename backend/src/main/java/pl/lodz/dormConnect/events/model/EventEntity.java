@@ -23,6 +23,10 @@ public class EventEntity {
     @Column(name = "event_id")
     private Long eventId;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @Column(name = "event_name")
     private String eventName;
 
@@ -49,6 +53,9 @@ public class EventEntity {
 
     @Column(name = "organizer_id")
     private Long organizerId;
+
+    @Column(name = "is_approved", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isApproved = false;
 
     @ElementCollection
     @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))

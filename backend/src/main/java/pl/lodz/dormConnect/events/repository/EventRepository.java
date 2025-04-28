@@ -8,7 +8,12 @@ import pl.lodz.dormConnect.events.model.EventEntity;
 
 @Repository
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
+
     Page<EventEntity> findAll(Pageable pageable);
 
+    Page<EventEntity> findAllByIsApprovedTrue(Pageable pageable);
+
     Page<EventEntity> findByParticipantIdContaining(Long participantId, Pageable pageable);
+
+    Page<EventEntity> findByOrganizerId(Long organizerId, Pageable pageable);
 }
