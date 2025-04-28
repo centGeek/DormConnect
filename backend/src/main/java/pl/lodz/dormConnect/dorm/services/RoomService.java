@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.lodz.dormConnect.dorm.controllers.AssignmentsDTO;
 import pl.lodz.dormConnect.dorm.entities.RoomAssignEntity;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
@@ -118,4 +119,18 @@ public class RoomService {
         return true; // OK, można dodać
     }
 
+    public List<AssignmentsDTO> getAssignmentsByUserId(Long userId) {
+        List<RoomAssignEntity> list = roomAssignmentRepository.findAllAssignmentsByStudentId(userId);
+        return list.stream()
+                .map(assignment -> new AssignmentsDTO(
+                        assignment.getId(),
+                        userId,
+                        null //TODO Pull data from another service using REST.
+                        ,
+                        assignment.getRoom().getNumber(),
+                        assignment.getRoom().getFloor(),
+                        assignment.getFromDate(),
+                        assignment.getToDate()))
+                .toList();
+    }
 }

@@ -1,5 +1,8 @@
 package pl.lodz.dormConnect.dorm.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.services.RoomService;
+import pl.lodz.dormConnect.dorm.controllers.AssignmentsDTO;
+import pl.lodz.dormConnect.security.service.JwtService;
 
 import java.util.List;
 
@@ -19,8 +24,14 @@ public class RoomController {
     private final RoomService roomService;
 
     @Autowired
-    public RoomController(RoomService roomService) {
+    private final JwtService jwtService;
+
+    private static final Logger logger = LoggerFactory.getLogger(RoomController.class);
+
+    @Autowired
+    public RoomController(RoomService roomService, JwtService jwtService) {
         this.roomService = roomService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/room")
@@ -74,5 +85,15 @@ public class RoomController {
         }
     }
 
-
+//    @GetMapping("/assign/myAssigns")
+//    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
+//        try {
+//            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+//            List<AssignmentsDTO> assignments = roomService.getAssignmentsByUserId(userId);
+//            return ResponseEntity.ok(assignments);
+//        } catch (Exception e) {
+//            logger.error("Error retrieving assignments: ", e);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }
