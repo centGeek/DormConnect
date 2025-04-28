@@ -21,6 +21,7 @@ public class EventMapper {
                 eventEntity.getMaxParticipants(),
                 eventEntity.getImageUrl(),
                 eventEntity.getOrganizerId(),
+                eventEntity.getIsApproved(),
                 eventEntity.getParticipantId()
         );
     }
@@ -44,6 +45,7 @@ public class EventMapper {
     public EventEntity toEntity(EventDTO eventDTO) {
         return new EventEntity(
                 eventDTO.eventId(),
+                null,
                 eventDTO.eventName(),
                 eventDTO.description(),
                 eventDTO.startDateTime(),
@@ -53,12 +55,14 @@ public class EventMapper {
                 eventDTO.maxParticipants(),
                 eventDTO.imageUrl(),
                 eventDTO.organizerId(),
+                eventDTO.isApproved(),
                 eventDTO.participantId()
         );
     }
 
     public EventEntity toEntity(EventCreateDTO eventCreateDTO) {
         return new EventEntity(
+                null,
                 null,
                 eventCreateDTO.eventName(),
                 eventCreateDTO.description(),
@@ -69,6 +73,7 @@ public class EventMapper {
                 eventCreateDTO.maxParticipants(),
                 eventCreateDTO.imageUrl(),
                 eventCreateDTO.organizerId(),
+                false,
                 eventCreateDTO.participantId()
         );
     }

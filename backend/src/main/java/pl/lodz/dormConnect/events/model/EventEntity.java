@@ -23,6 +23,10 @@ public class EventEntity {
     @Column(name = "event_id")
     private Long eventId;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @Column(name = "event_name")
     private String eventName;
 
@@ -47,10 +51,11 @@ public class EventEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ElementCollection
-    @CollectionTable(name = "event_organizer", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "organizer_id")
-    private List<Long> organizerId;
+    private Long organizerId;
+
+    @Column(name = "is_approved", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isApproved = false;
 
     @ElementCollection
     @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))
