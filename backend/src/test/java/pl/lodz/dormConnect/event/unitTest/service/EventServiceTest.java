@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.event;
+package pl.lodz.dormConnect.event.unitTest.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
@@ -35,11 +39,12 @@ public class EventServiceTest {
     private EventDTO dto;
     private EventEntity entity;
     private EventCreateDTO dtoCreate;
+    private EventCreateDTO notCreated;
 
     @BeforeEach
     void setup() {
-        dto = new EventDTO(null, "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", List.of(1L), List.of());
-        dtoCreate = new EventCreateDTO( "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", List.of(1L), List.of());
+        dto = new EventDTO(null, "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", 1L, false, List.of());
+        dtoCreate = new EventCreateDTO( "Test", "Desc", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Loc", "PUBLIC", 10, "img.png", 1L, List.of(2L, 3L));
         entity = EventEntity.builder()
                 .eventName("Test")
                 .description("Desc")
@@ -49,9 +54,22 @@ public class EventServiceTest {
                 .eventType("PUBLIC")
                 .maxParticipants(10)
                 .imageUrl("img.png")
-                .organizerId(List.of(1L))
+                .organizerId(1L)
                 .participantId(List.of())
                 .build();
+
+        notCreated = new EventCreateDTO(
+                "Test",
+                "Desc",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
+                "Loc",
+                "PUBLIC",
+                1,
+                "img.png",
+                1L,
+                List.of(1L, 2L, 3L)
+        );
     }
 
     @Test
@@ -60,10 +78,19 @@ public class EventServiceTest {
         when(eventRepository.save(entity)).thenReturn(entity);
         when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        EventDTO result = eventService.createEvent(dtoCreate);
+        Optional<EventDTO> result = eventService.createEvent(dtoCreate);
 
-        assertEquals(dto, result);
+        assertTrue(result.isPresent());
+        assertEquals(dto, result.get());
         verify(eventRepository).save(entity);
+    }
+
+    @Test
+    void shouldNotCreateEvent() {
+        Optional<EventDTO> result = eventService.createEvent(notCreated);
+
+        assertFalse(result.isPresent());
+        verify(eventRepository, never()).save(any());
     }
 
     @Test
@@ -105,7 +132,7 @@ public class EventServiceTest {
 
     @Test
     void shouldUpdateEvent() {
-        EventDTO updatedDto = new EventDTO(1L, "Updated", "New Desc", dto.startDateTime(), dto.endDateTime(), "New Loc", "PRIVATE", 20, "new.png", List.of(2L), List.of());
+        EventDTO updatedDto = new EventDTO(1L, "Updated", "New Desc", dto.startDateTime(), dto.endDateTime(), "New Loc", "PRIVATE", 20, "new.png", 2L, false, List.of());
         EventEntity updatedEntity = EventEntity.builder()
                 .eventId(1L)
                 .eventName("Updated")
@@ -116,7 +143,7 @@ public class EventServiceTest {
                 .eventType("PRIVATE")
                 .maxParticipants(20)
                 .imageUrl("new.png")
-                .organizerId(List.of(2L))
+                .organizerId(2L)
                 .participantId(List.of())
                 .build();
 
@@ -133,15 +160,22 @@ public class EventServiceTest {
 
 
     @Test
-    void shouldReturnAllEvents() {
+    void shouldReturnPagedEvents() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<EventEntity> pageOfEntities = new PageImpl<>(List.of(entity));
+        Page<EventDTO> pageOfDtos = new PageImpl<>(List.of(dto));
 
-        when(eventRepository.findAll()).thenReturn(List.of(entity));
-        when(eventMapper.toEventDTOList(List.of(entity))).thenReturn(List.of(dto));
+        when(eventRepository.findAll(pageable)).thenReturn(pageOfEntities);
+        when(eventMapper.toEventDTO(entity)).thenReturn(dto);
 
-        List<EventDTO> results = eventService.getAllEvents();
+        // when
+        Page<EventDTO> results = eventService.getAllEvents(pageable);
 
-        assertEquals(1, results.size());
-        assertEquals(dto, results.getFirst());
+        // then
+        assertEquals(1, results.getTotalElements());
+        assertEquals(dto, results.getContent().get(0));
     }
+
 
 }

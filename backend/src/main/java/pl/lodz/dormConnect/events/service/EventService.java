@@ -1,7 +1,10 @@
 package pl.lodz.dormConnect.events.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
@@ -23,22 +26,34 @@ public class EventService {
         this.eventMapper = eventMapper;
     }
 
-    public EventDTO createEvent(EventCreateDTO eventCreateDTO) {
+    @Transactional
+    public Optional<EventDTO> createEvent(EventCreateDTO eventCreateDTO) {
+        if (eventCreateDTO.participantId().size() >= eventCreateDTO.maxParticipants()) {
+            return Optional.empty();
+        }
         EventEntity savedEvent = eventRepository.save(eventMapper.toEntity(eventCreateDTO));
-        return eventMapper.toEventDTO(savedEvent);
+        return Optional.of(eventMapper.toEventDTO(savedEvent));
     }
 
+    @Transactional(readOnly = true)
     public Optional<EventDTO> getEventById(Long eventId) {
         return eventRepository.findById(eventId)
                 .map(eventMapper::toEventDTO);
     }
 
-    public List<EventDTO> getAllEvents() {
-        List<EventEntity> events = eventRepository.findAll();
-        return eventMapper.toEventDTOList(events);
+    @Transactional(readOnly = true)
+    public Page<EventDTO> getAllEvents(Pageable pageable) {
+        Page<EventEntity> page = eventRepository.findAll(pageable);
+        return page.map(eventMapper::toEventDTO);
     }
 
+    @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
+
+        if (eventDTO.participantId().size() >= eventDTO.maxParticipants()) {
+            return Optional.empty();
+        }
+
         return eventRepository.findById(eventId).map(eventEntity -> {
             eventEntity.setEventName(eventDTO.eventName());
             eventEntity.setDescription(eventDTO.description());
@@ -49,16 +64,30 @@ public class EventService {
             eventEntity.setImageUrl(eventDTO.imageUrl());
             eventEntity.setOrganizerId(eventDTO.organizerId());
             eventEntity.setParticipantId(eventDTO.participantId());
+            eventEntity.setEventType(eventDTO.eventType());
+            eventEntity.setIsApproved(eventDTO.isApproved());
 
             EventEntity updatedEvent = eventRepository.save(eventEntity);
             return eventMapper.toEventDTO(updatedEvent);
         });
     }
 
+    @Transactional
     public void deleteEvent(Long eventId) {
         EventEntity eventEntity = eventRepository.findById(eventId)
                 .orElseThrow(() -> new IllegalArgumentException("Event not found"));
         eventRepository.delete(eventEntity);
+    }
+
+    public boolean isOrganizer(Long userId, Long eventId) {
+        Optional<EventEntity> eventOptional = eventRepository.findById(eventId);
+
+        if (eventOptional.isPresent()) {
+            EventEntity event = eventOptional.get();
+            return event.getOrganizerId().equals(userId);
+        }
+
+        return false;
     }
 
 }

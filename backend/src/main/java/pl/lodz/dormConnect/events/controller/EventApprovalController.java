@@ -1,0 +1,41 @@
+package pl.lodz.dormConnect.events.controller;
+
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.events.service.EventApprovalService;
+
+@Controller
+@RequestMapping("/api/event/administrate")
+public class EventApprovalController {
+
+    private final EventApprovalService eventApprovalService;
+
+    @Autowired
+    public EventApprovalController(EventApprovalService eventApprovalService) {
+        this.eventApprovalService = eventApprovalService;
+    }
+
+    @PutMapping("/{eventId}/approve")
+    public ResponseEntity<String> approveEvent(@PathVariable Long eventId) {
+        try {
+            eventApprovalService.approveEvent(eventId);
+            return ResponseEntity.ok("Event approved.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{eventId}/reject")
+    public ResponseEntity<String> rejectEvent(@PathVariable Long eventId) {
+        try {
+            eventApprovalService.rejectEvent(eventId);
+            return ResponseEntity.ok("Event rejected.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+}
