@@ -3,6 +3,7 @@ import axios from 'axios';
 import Room from './Room';
 import AddSlot from './AddSlot';
 import RoomModal from './RoomModal';
+import RoomEditModal from './RoomEditModal'; // nowy modal
 import './floor.css';
 
 type GroupedRoomsType = {
@@ -26,7 +27,9 @@ type GroupedRoomsDisplay = {
 const FloorCanvas: React.FC = () => {
     const [groupedRooms, setGroupedRooms] = useState<GroupedRoomsDisplay[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
-    const [ setInsertIndex] = useState<number>(0);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [insertIndex, setInsertIndex] = useState<number>(0);
+    const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
 
     const fetchRooms = async () => {
         try {
@@ -71,6 +74,35 @@ const FloorCanvas: React.FC = () => {
         }
     };
 
+    const handleRoomClick = (room: RoomType) => {
+        setSelectedRoom(room);
+        setEditModalOpen(true);
+    };
+
+    const handleUpdateRoom = async (updatedRoom: { id: string; number: string; floor: number }) => {
+        try {
+            await axios.patch(`/api/dorm/room/${updatedRoom.id}`, {
+                name: updatedRoom.number,
+                floor: updatedRoom.floor
+            });
+            fetchRooms();
+            setEditModalOpen(false);
+        } catch (error) {
+            console.error('Error updating room', error);
+        }
+    };
+
+
+    const handleDeleteRoom = async (roomId: string) => {
+        try {
+            await axios.delete(`/api/dorm/room/${roomId}`);
+            fetchRooms();
+            setEditModalOpen(false);
+        } catch (error) {
+            console.error('Error deleting room', error);
+        }
+    };
+
     useEffect(() => {
         fetchRooms();
     }, []);
@@ -82,8 +114,10 @@ const FloorCanvas: React.FC = () => {
                     {group.groupName && <div className="group-name">{group.groupName}</div>}
                     {group.rooms.map((room, roomIndex) => (
                         <React.Fragment key={room.id}>
-                            <AddSlot onClick={() => handleOpenModal(roomIndex)} />
-                            <Room room={room} />
+                            <div onClick={() => handleRoomClick(room)}>
+                                <Room room={room} />
+                            </div>
+                            <AddSlot  onClick={() => handleOpenModal(roomIndex)} />
                         </React.Fragment>
                     ))}
                 </div>
@@ -93,6 +127,14 @@ const FloorCanvas: React.FC = () => {
                 <RoomModal
                     onAddRoom={handleAddRoom}
                     onClose={() => setModalOpen(false)}
+                />
+            )}
+            {editModalOpen && selectedRoom && (
+                <RoomEditModal
+                    room={selectedRoom}
+                    onUpdateRoom={handleUpdateRoom}
+                    onDeleteRoom={handleDeleteRoom}
+                    onClose={() => setEditModalOpen(false)}
                 />
             )}
         </div>

@@ -9,7 +9,7 @@ import pl.lodz.dormConnect.dorm.services.GroupedRoomsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/dorm/group")
+@RequestMapping("/api/dorm/room/group")
 public class GroupedRoomsController {
 
     private final GroupedRoomsService groupedRoomsService;
