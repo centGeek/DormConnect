@@ -57,6 +57,9 @@ public class EventEntity {
     @Column(name = "is_approved", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isApproved = false;
 
+    @Column(name = "is_finished")
+    private Boolean isFinished = false;
+
     @ElementCollection
     @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "participant_id")

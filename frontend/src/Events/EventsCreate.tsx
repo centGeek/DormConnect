@@ -1,8 +1,8 @@
-import Template from '../Template/Template.tsx';
+import Template from '../Template/Template';
 import React, { useState } from 'react';
 import './EventsCreate.css';
 
-function EventsCreate(){
+function EventsCreate() {
     const [eventName, setEventName] = useState('');
     const [eventDescription, setEventDescription] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -10,33 +10,82 @@ function EventsCreate(){
     const [location, setLocation] = useState('');
     const [eventType, setEventType] = useState('');
     const [availableSeats, setAvailableSeats] = useState<number | ''>('');
-    const [image, setImage] = useState<File | null>(null);
+    const [imageUrl, setImageUrl] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('eventName', eventName);
-        formData.append('eventDescription', eventDescription);
-        formData.append('startDate', startDate);
-        formData.append('endDate', endDate);
-        formData.append('location', location);
-        formData.append('eventType', eventType);
-        formData.append('availableSeats', availableSeats.toString());
-        if (image) {
-            formData.append('image', image);
+
+        const token = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('token='))
+            ?.split('=')[1];
+
+        if (!token) {
+            setError('No token found');
+            return;
         }
-        console.log('Form submitted', formData);
-        // Add logic to send to server
+
+        const newEvent = {
+            eventName: eventName,
+            description: eventDescription,
+            startDateTime: startDate,
+            endDateTime: endDate,
+            location: location,
+            eventType: eventType,
+            maxParticipants: availableSeats !== '' ? Number(availableSeats) : null,
+            imageUrl: imageUrl || null,
+            organizerId: null,
+            participantId: []
+        };
+
+        try {
+            const response = await fetch('/api/event/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(newEvent),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create event');
+            }
+
+            setSuccessMessage('Event created successfully!');
+            setError(null);
+
+            setEventName('');
+            setEventDescription('');
+            setStartDate('');
+            setEndDate('');
+            setLocation('');
+            setEventType('');
+            setAvailableSeats('');
+            setImageUrl('');
+        } catch (error: any) {
+            setError(error.message || 'Error creating event');
+            setSuccessMessage(null);
+        }
     };
-    return(
+
+    return (
         <Template
             buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-        footerContent={<p></p>}>
+            footerContent={<p></p>}
+        >
             <div className="events-create-container">
-                <h2>Create event</h2>
+                <h2>Create Event</h2>
+
+                {error && <p className="error-message">{error}</p>}
+                {successMessage && <p className="success-message">{successMessage}</p>}
+
                 <form onSubmit={handleSubmit} className="event-form">
                     <div className="form-group">
-                        <label htmlFor="eventName">Event's name</label>
+                        <label htmlFor="eventName">Event's Name</label>
                         <input
                             type="text"
                             id="eventName"
@@ -55,7 +104,7 @@ function EventsCreate(){
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="startDate">Start date</label>
+                        <label htmlFor="startDate">Start Date</label>
                         <input
                             type="datetime-local"
                             id="startDate"
@@ -65,7 +114,7 @@ function EventsCreate(){
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="endDate">End date</label>
+                        <label htmlFor="endDate">End Date</label>
                         <input
                             type="datetime-local"
                             id="endDate"
@@ -75,7 +124,7 @@ function EventsCreate(){
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="location">Place</label>
+                        <label htmlFor="location">Location</label>
                         <input
                             type="text"
                             id="location"
@@ -99,7 +148,7 @@ function EventsCreate(){
                         </select>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="availableSeats">Number of people</label>
+                        <label htmlFor="availableSeats">Number of Participants</label>
                         <input
                             type="number"
                             id="availableSeats"
@@ -109,18 +158,19 @@ function EventsCreate(){
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="image">Image</label>
+                        <label htmlFor="imageUrl">Image URL</label>
                         <input
-                            type="file"
-                            id="image"
-                            accept="image/*"
-                            onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
+                            type="text"
+                            id="imageUrl"
+                            value={imageUrl}
+                            onChange={(e) => setImageUrl(e.target.value)}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">Create event</button>
+                    <button type="submit" className="btn btn-primary">Create Event</button>
                 </form>
             </div>
         </Template>
-    )
+    );
 }
+
 export default EventsCreate;
