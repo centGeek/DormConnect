@@ -1,0 +1,25 @@
+.admin-events-container {
+    padding: 20px;
+}
+
+.event-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.admin-buttons {
+    margin-top: 10px;
+}
+
+.approve-button {
+    background-color: green;
+    color: white;
+    margin-right: 10px;
+}
+
+.reject-button {
+    background-color: red;
+    color: white;
+}

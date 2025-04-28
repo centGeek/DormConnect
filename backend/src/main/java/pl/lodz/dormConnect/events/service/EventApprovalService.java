@@ -2,8 +2,12 @@ package pl.lodz.dormConnect.events.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.dormConnect.events.dto.EventDTO;
+import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
@@ -11,10 +15,12 @@ import pl.lodz.dormConnect.events.repository.EventRepository;
 public class EventApprovalService {
 
     private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
 
     @Autowired
-    public EventApprovalService(EventRepository eventRepository) {
+    public EventApprovalService(EventRepository eventRepository, EventMapper eventMapper) {
         this.eventRepository = eventRepository;
+        this.eventMapper = eventMapper;
     }
 
     @Transactional
@@ -33,5 +39,11 @@ public class EventApprovalService {
 
         event.setIsApproved(false);
         eventRepository.save(event);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<EventDTO> getAllEvents(Pageable pageable) {
+        Page<EventEntity> page = eventRepository.findAll(pageable);
+        return page.map(eventMapper::toEventDTO);
     }
 }
