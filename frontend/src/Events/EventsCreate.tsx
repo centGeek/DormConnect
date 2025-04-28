@@ -1,23 +1,9 @@
 import Template from '../Template/Template';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importujemy useNavigate
+import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import './EventsCreate.css';
 
-// Funkcja do parsowania tokena
-function parseJwt(token: string) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        console.error("Invalid token", e);
-        return null;
-    }
-}
 
 function EventsCreate() {
     const [eventName, setEventName] = useState('');

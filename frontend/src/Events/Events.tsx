@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
 import './Events.css';
 
@@ -14,23 +15,6 @@ interface Event {
     eventType: string;
     maxParticipants: number;
     participantId: number[]; // Lista uczestników
-}
-
-// Funkcja do dekodowania tokena JWT
-function parseJwt(token: string) {
-    try {
-        const base64Url = token.split('.')[1]; // Payload znajduje się w drugiej części (indeks 1)
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Zmieniamy format base64, by był poprawny
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        // Parsujemy payload jako JSON
-        return JSON.parse(jsonPayload);
-    } catch (e) {
-        console.error("Invalid token", e);
-        return null;
-    }
 }
 
 function Events() {
@@ -95,6 +79,26 @@ function Events() {
         setPage(newPage);
     };
 
+    const updateEventParticipation = (eventId: number, isJoining: boolean) => {
+        setEvents(events.map(event => {
+            if (event.eventId === eventId) {
+                const updatedParticipants = isJoining
+                    ? [...event.participantId, userId!]  // Dodajemy użytkownika do listy uczestników
+                    : event.participantId.filter(id => id !== userId);  // Usuwamy użytkownika z listy
+
+                // Liczba dostępnych miejsc to różnica między maxParticipants a aktualną liczbą uczestników
+                const availableSpots = event.maxParticipants - updatedParticipants.length;
+
+                return {
+                    ...event,
+                    participantId: updatedParticipants,
+                    availableSpots: availableSpots  // Aktualizujemy liczbę dostępnych miejsc
+                };
+            }
+            return event;
+        }));
+    };
+
     const joinEvent = async (eventId: number) => {
         try {
             if (!token) {
@@ -114,7 +118,8 @@ function Events() {
                 throw new Error('Nie udało się dołączyć do wydarzenia');
             }
 
-            fetchEvents(page); // Odświeżamy listę wydarzeń
+
+            updateEventParticipation(eventId, true);
         } catch (error: any) {
             console.error('Błąd podczas dołączania do wydarzenia:', error);
         }
@@ -139,7 +144,8 @@ function Events() {
                 throw new Error('Nie udało się opuścić wydarzenia');
             }
 
-            fetchEvents(page); // Odświeżamy listę wydarzeń
+
+            updateEventParticipation(eventId, false);
         } catch (error: any) {
             console.error('Błąd podczas opuszczania wydarzenia:', error);
         }
@@ -151,7 +157,7 @@ function Events() {
             footerContent={<p></p>}
         >
             <div className="events-container">
-                {/* Wyświetlanie komunikatu sukcesu */}
+
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <h2>All Events</h2>
@@ -176,7 +182,7 @@ function Events() {
                                 </p>
                                 <p><strong>Lokalizacja:</strong> {event.location}</p>
                                 <p><strong>Typ:</strong> {event.eventType}</p>
-                                <p><strong>Dostępne miejsca:</strong> {event.maxParticipants}</p>
+                                <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
 
                                 {/* Przyciski Join/Leave */}
                                 {userId && (
@@ -185,7 +191,11 @@ function Events() {
                                             Opuść wydarzenie
                                         </button>
                                     ) : (
-                                        <button className="btn join-button" onClick={() => joinEvent(event.eventId)}>
+                                        <button
+                                            className="btn join-button"
+                                            onClick={() => joinEvent(event.eventId)}
+                                            disabled={event.maxParticipants - event.participantId.length <= 0}
+                                        >
                                             Dołącz do wydarzenia
                                         </button>
                                     )
