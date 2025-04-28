@@ -1,6 +1,23 @@
 import Template from '../Template/Template';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importujemy useNavigate
 import './EventsCreate.css';
+
+// Funkcja do parsowania tokena
+function parseJwt(token: string) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error("Invalid token", e);
+        return null;
+    }
+}
 
 function EventsCreate() {
     const [eventName, setEventName] = useState('');
@@ -13,6 +30,7 @@ function EventsCreate() {
     const [imageUrl, setImageUrl] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const navigate = useNavigate(); // Inicjalizujemy funkcję nawigacji
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -27,6 +45,15 @@ function EventsCreate() {
             return;
         }
 
+        // Dekodujemy token, aby wyciągnąć organizerId
+        const user = parseJwt(token);
+        const organizerId = user?.id;
+
+        if (!organizerId) {
+            setError('Invalid user token');
+            return;
+        }
+
         const newEvent = {
             eventName: eventName,
             description: eventDescription,
@@ -36,7 +63,7 @@ function EventsCreate() {
             eventType: eventType,
             maxParticipants: availableSeats !== '' ? Number(availableSeats) : null,
             imageUrl: imageUrl || null,
-            organizerId: null,
+            organizerId: organizerId, // <- tutaj teraz przekazujemy ID organizatora
             participantId: []
         };
 
@@ -58,6 +85,12 @@ function EventsCreate() {
             setSuccessMessage('Event created successfully!');
             setError(null);
 
+            // Przekierowanie na stronę z wydarzeniami po pomyślnym utworzeniu
+            setTimeout(() => {
+                navigate('/events'); // Przekierowuje do /events
+            }, 1000); // Odczekujemy 1 sekundę, by wyświetlić komunikat o sukcesie przed przekierowaniem
+
+            // Czyścimy formularz
             setEventName('');
             setEventDescription('');
             setStartDate('');

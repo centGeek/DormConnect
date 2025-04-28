@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Template from '../Template/Template.tsx';
 import './Events.css';
 
-// Event interface
+// Interfejs Event
 interface Event {
     eventId: number;
     eventName: string;
@@ -33,8 +33,10 @@ function parseJwt(token: string) {
     }
 }
 
-
 function Events() {
+    const { state } = useLocation();
+    const successMessage = state?.successMessage;  // Pobieramy komunikat sukcesu
+
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -67,15 +69,15 @@ function Events() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to fetch events');
+                throw new Error('Nie udało się pobrać wydarzeń');
             }
 
             const data = await response.json();
             setEvents(data.content || []);
             setTotalPages(data.totalPages);
         } catch (error: any) {
-            console.error('Error fetching events:', error);
-            setError(error.message || 'An error occurred while fetching events.');
+            console.error('Błąd podczas pobierania wydarzeń:', error);
+            setError(error.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
         } finally {
             setLoading(false);
         }
@@ -101,7 +103,7 @@ function Events() {
             }
 
             const response = await fetch(`/api/event/participant/${eventId}`, {
-                method: 'PUT',  // Poprawnie używamy POST do dołączenia
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -109,12 +111,12 @@ function Events() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to join event');
+                throw new Error('Nie udało się dołączyć do wydarzenia');
             }
 
             fetchEvents(page); // Odświeżamy listę wydarzeń
         } catch (error: any) {
-            console.error('Error joining event:', error);
+            console.error('Błąd podczas dołączania do wydarzenia:', error);
         }
     };
 
@@ -126,7 +128,7 @@ function Events() {
             }
 
             const response = await fetch(`/api/event/participant/${eventId}`, {
-                method: 'DELETE', // Używamy DELETE do opuszczenia wydarzenia
+                method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -134,12 +136,12 @@ function Events() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to leave event');
+                throw new Error('Nie udało się opuścić wydarzenia');
             }
 
             fetchEvents(page); // Odświeżamy listę wydarzeń
         } catch (error: any) {
-            console.error('Error leaving event:', error);
+            console.error('Błąd podczas opuszczania wydarzenia:', error);
         }
     };
 
@@ -149,39 +151,42 @@ function Events() {
             footerContent={<p></p>}
         >
             <div className="events-container">
+                {/* Wyświetlanie komunikatu sukcesu */}
+                {successMessage && <div className="success-message">{successMessage}</div>}
+
                 <h2>All Events</h2>
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
                     Add Event
                 </button>
 
-                {loading && <p>Loading events...</p>}
+                {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="events-list">
                     {events.length === 0 ? (
-                        <p>No events available.</p>
+                        <p>Brak dostępnych wydarzeń.</p>
                     ) : (
                         events.map((event) => (
                             <div key={event.eventId} className="event-card">
                                 <h3>{event.eventName}</h3>
                                 <p>{event.description}</p>
                                 <p>
-                                    <strong>Date:</strong> {new Date(event.startDateTime).toLocaleString()} -{' '}
+                                    <strong>Data:</strong> {new Date(event.startDateTime).toLocaleString()} -{' '}
                                     {new Date(event.endDateTime).toLocaleString()}
                                 </p>
-                                <p><strong>Location:</strong> {event.location}</p>
-                                <p><strong>Type:</strong> {event.eventType}</p>
-                                <p><strong>Available Seats:</strong> {event.maxParticipants}</p>
+                                <p><strong>Lokalizacja:</strong> {event.location}</p>
+                                <p><strong>Typ:</strong> {event.eventType}</p>
+                                <p><strong>Dostępne miejsca:</strong> {event.maxParticipants}</p>
 
                                 {/* Przyciski Join/Leave */}
                                 {userId && (
                                     event.participantId.includes(userId) ? (
                                         <button className="btn leave-button" onClick={() => leaveEvent(event.eventId)}>
-                                            Leave Event
+                                            Opuść wydarzenie
                                         </button>
                                     ) : (
                                         <button className="btn join-button" onClick={() => joinEvent(event.eventId)}>
-                                            Join Event
+                                            Dołącz do wydarzenia
                                         </button>
                                     )
                                 )}
