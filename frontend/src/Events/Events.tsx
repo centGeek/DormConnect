@@ -14,12 +14,13 @@ interface Event {
     location: string;
     eventType: string;
     maxParticipants: number;
-    participantId: number[]; // Lista uczestników
+    participantId: number[];
+    imageUrl?: string; // <- Dodane imageUrl
 }
 
 function Events() {
     const { state } = useLocation();
-    const successMessage = state?.successMessage;  // Pobieramy komunikat sukcesu
+    const successMessage = state?.successMessage;
 
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -83,16 +84,15 @@ function Events() {
         setEvents(events.map(event => {
             if (event.eventId === eventId) {
                 const updatedParticipants = isJoining
-                    ? [...event.participantId, userId!]  // Dodajemy użytkownika do listy uczestników
-                    : event.participantId.filter(id => id !== userId);  // Usuwamy użytkownika z listy
+                    ? [...event.participantId, userId!]
+                    : event.participantId.filter(id => id !== userId);
 
-                // Liczba dostępnych miejsc to różnica między maxParticipants a aktualną liczbą uczestników
                 const availableSpots = event.maxParticipants - updatedParticipants.length;
 
                 return {
                     ...event,
                     participantId: updatedParticipants,
-                    availableSpots: availableSpots  // Aktualizujemy liczbę dostępnych miejsc
+                    availableSpots: availableSpots
                 };
             }
             return event;
@@ -117,7 +117,6 @@ function Events() {
             if (!response.ok) {
                 throw new Error('Nie udało się dołączyć do wydarzenia');
             }
-
 
             updateEventParticipation(eventId, true);
         } catch (error: any) {
@@ -144,7 +143,6 @@ function Events() {
                 throw new Error('Nie udało się opuścić wydarzenia');
             }
 
-
             updateEventParticipation(eventId, false);
         } catch (error: any) {
             console.error('Błąd podczas opuszczania wydarzenia:', error);
@@ -157,7 +155,6 @@ function Events() {
             footerContent={<p></p>}
         >
             <div className="events-container">
-
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <h2>All Events</h2>
@@ -174,6 +171,11 @@ function Events() {
                     ) : (
                         events.map((event) => (
                             <div key={event.eventId} className="event-card">
+                                {/* Wyświetlenie obrazka jeśli istnieje */}
+                                {event.imageUrl && (
+                                    <img src={event.imageUrl} alt={event.eventName} className="event-image" />
+                                )}
+
                                 <h3>{event.eventName}</h3>
                                 <p>{event.description}</p>
                                 <p>
