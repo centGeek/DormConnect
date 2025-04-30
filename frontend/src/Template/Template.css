@@ -3,31 +3,44 @@
     flex-direction: column;
     min-height: 100vh;
     font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5;
+    background-color: white; /* Jasnozielone tło */
     margin: 0;
     padding: 0;
 }
 
+.template {
+    width: 90%;
+    max-width: 1400px;
+    background-color: #e1ffbc; /* Pastelowa zieleń */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    margin-top: 100px;
+}
+
 .template-header {
-    background-color: #007acc;
+    background-color: #66bb6a; /* Średnia zieleń */
     color: #ffffff;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
 }
 
 .template-logo {
-    height: 70px; /* Zwiększono wysokość logo */
+    height: 70px;
     width: auto;
     margin-right: 20px;
 }
 
 .template-button {
-    padding: 15px 25px; /* Zwiększono padding przycisków */
-    font-size: 16px; /* Zwiększono rozmiar czcionki */
-    background-color: #007acc;
+    padding: 15px 25px;
+    font-size: 16px;
+    background-color: #66bb6a; /* Średnia zieleń */
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -37,10 +50,10 @@
 }
 
 .logout-button {
-    padding: 15px 25px; /* Zwiększono padding przycisku wylogowania */
-    font-size: 16px; /* Zwiększono rozmiar czcionki */
+    padding: 15px 25px;
+    font-size: 16px;
     background-color: white;
-    color: #007acc;
+    color: #66bb6a; /* Średnia zieleń */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -48,16 +61,13 @@
 }
 
 .template-button:hover {
-    background-color: #005fa3;
+    background-color: #388e3c; /* Ciemniejsza zieleń */
 }
 
-.logout-button {
-    padding: 10px 20px;
-    background-color: white;
-    color: #007acc;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: center;
+.logout-button:hover {
+    background-color: #c8e6c9; /* Jasnozielony odcień */
+}
+.template-main {
+    margin-top: 20px; /* Stała odległość od headera */
+    padding: 20px;
 }

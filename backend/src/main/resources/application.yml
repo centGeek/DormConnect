@@ -12,7 +12,7 @@ spring:
       ddl-auto: none
   ai:
     openai:
-      api-key: <your-api-key>
+      api-key: sk-proj-GFyIggSjbgwKae4nNpiowkoGVFtikGditpF8AWHjH716GO3MxMXUvFDkm3JCtNrvF-dgvEvl9vT3BlbkFJFYPu4Qj8rG_yWnLeAK8vfjIpK78Wcz-cE7A7XmawdmfTYEtoh7qCH0dQkJanZG8stVlQTmgwUAsudodo
       chat:
         options:
           model: gpt-4
