@@ -14,7 +14,6 @@ function Home() {
             navigate('/');
         }
     }, [navigate]);
-
     return (
         <Template
             buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}

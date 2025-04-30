@@ -32,6 +32,8 @@ function Login() {
     };
 
     return (
+        <>
+            <h1>Welcome in DormConnect</h1>
         <div className="login-container">
             <div className="login-box">
                 <h2>Login</h2>
@@ -63,6 +65,7 @@ function Login() {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

@@ -21,14 +21,15 @@ interface DecodedToken {
 
 export const UserContext = createContext<UserContextProps | null>(null);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+export const UserProvider = () => {
     const [token] = useState<string | null>(Cookies.get('token') || null);
 
     useEffect(() => {
         if (token) {
-            const decoded= jwtDecode<DecodedToken>(token);
-            setUser({ role: decoded.role, email: decoded.email, id: decoded.id });
+            try {
+                const decodedToken: DecodedToken = jwtDecode(token);
+                const user: User = (decodedToken.id, decodedToken.role, decodedToken.email);
+            }
         } else {
             setUser(null);
         }
@@ -37,8 +38,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, token}}>
-            {children}
+        <UserContext.Provider>
         </UserContext.Provider>
     );
 };
