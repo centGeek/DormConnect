@@ -1,7 +1,8 @@
 // src/context/UserContext.tsx
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode, Children } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
+import { HttpStatusCode } from 'axios';
 
 interface User {
     id: number;
@@ -21,14 +22,27 @@ interface DecodedToken {
 
 export const UserContext = createContext<UserContextProps | null>(null);
 
-export const UserProvider = () => {
+
+export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>  {
     const [token] = useState<string | null>(Cookies.get('token') || null);
+
+    // user - current state, setUser - change state of the user
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         if (token) {
             try {
                 const decodedToken: DecodedToken = jwtDecode(token);
-                const user: User = (decodedToken.id, decodedToken.role, decodedToken.email);
+                const user: User = {
+                    id: decodedToken.id,
+                    role: decodedToken.role, 
+                    email: decodedToken.email
+                }
+                setUser(user);
+            }
+            catch(err) {
+                console.error(HttpStatusCode.InternalServerError);
+                setUser(null);
             }
         } else {
             setUser(null);
@@ -38,7 +52,8 @@ export const UserProvider = () => {
 
 
     return (
-        <UserContext.Provider>
+        <UserContext.Provider value={{user, token}}>
+            {children}
         </UserContext.Provider>
     );
 };
