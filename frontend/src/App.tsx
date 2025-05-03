@@ -7,6 +7,7 @@ import EventsCreate from './Events/EventsCreate.tsx';
 import Events from './Events/Events.tsx';
 import {UserProvider} from "./Context/UserContext.tsx";
 import Rooms from "./Rooms/RoomPage.tsx";
+import AdminEvents from './Events/AdminEvents.tsx';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
                   <Route path="/events" element={<Events/>}/>
                   <Route path="/events/create" element={<EventsCreate/>}/>
                   <Route path="/rooms" element={<Rooms/>}/>
+                  <Route path="/admin/events" element={<AdminEvents />} />
               </Routes>
           </Router>
       </UserProvider>

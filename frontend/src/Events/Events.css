@@ -50,3 +50,44 @@
     margin: 5px 0;
     color: #333;
 }
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.page-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.page-button.active {
+    background-color: #0056b3;
+    font-weight: bold;
+}
+
+.join-button {
+    background-color: #4caf50;
+    color: white;
+    margin-top: 10px;
+}
+
+.leave-button {
+    background-color: #f44336;
+    color: white;
+    margin-top: 10px;
+}
+
+.event-image {
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
