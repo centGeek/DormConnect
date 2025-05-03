@@ -1,5 +1,5 @@
 // src/context/UserContext.tsx
-import { createContext, useState, useEffect, ReactNode, Children } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import { HttpStatusCode } from 'axios';
@@ -40,7 +40,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 }
                 setUser(user);
             }
-            catch(err) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            catch(error) {
                 console.error(HttpStatusCode.InternalServerError);
                 setUser(null);
             }
