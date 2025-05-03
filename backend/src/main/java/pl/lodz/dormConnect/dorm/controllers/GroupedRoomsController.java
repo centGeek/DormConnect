@@ -3,7 +3,10 @@ package pl.lodz.dormConnect.dorm.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.dorm.DTO.GroupRoomsRequest;
+import pl.lodz.dormConnect.dorm.DTO.GroupedRoomsDTO;
 import pl.lodz.dormConnect.dorm.entities.GroupedRoomsEntity;
+import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.GroupedRoomsService;
 
 import java.util.List;
@@ -25,13 +28,15 @@ public class GroupedRoomsController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GroupedRoomsEntity> createGroup(@RequestBody GroupedRoomsEntity group) {
-        return ResponseEntity.ok(groupedRoomsService.addGroup(group));
+    public ResponseEntity<GroupedRoomsEntity> createGroup(@RequestBody GroupRoomsRequest groupRoomsRequest) {
+        return ResponseEntity.ok(groupedRoomsService.addGroup(groupRoomsRequest));
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<GroupedRoomsEntity> getGroup(@PathVariable Long id) {
+    public ResponseEntity<GroupedRoomsDTO> getGroupById(@PathVariable Long id) {
         return groupedRoomsService.findById(id)
+                .map(GroupedRoomsMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

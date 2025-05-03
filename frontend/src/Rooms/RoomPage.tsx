@@ -4,7 +4,9 @@ import Template from "../Template/Template.tsx";
 
 const RoomPage: React.FC = () => {
     return (
-        <Template>
+        <Template
+        footerContent={<p></p>}
+        buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}>
             <div style={{padding: '20px'}}>
                 <h1 style={{fontSize: '2rem', marginBottom: '20px'}}>Manage Floor Rooms</h1>
                 <FloorCanvas/>

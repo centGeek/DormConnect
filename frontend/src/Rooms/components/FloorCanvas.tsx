@@ -4,12 +4,12 @@ import Room from './Room';
 import AddSlot from './AddSlot';
 import RoomModal from './RoomModal';
 import RoomEditModal from './RoomEditModal';
-import GroupRoomsModal from './GroupRoomsModal'; // NOWY MODAL
+import GroupRoomsModal from './GroupRoomsModal';
 import './floor.css';
 
 type GroupedRoomsType = {
     id: number;
-    groupName: string;
+    groupName: string | null;
 };
 
 type RoomType = {
@@ -29,7 +29,7 @@ const FloorCanvas: React.FC = () => {
     const [groupedRooms, setGroupedRooms] = useState<GroupedRoomsDisplay[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [groupModalOpen, setGroupModalOpen] = useState(false); // nowy modal do grupowania
+    const [groupModalOpen, setGroupModalOpen] = useState(false);
     const [insertIndex, setInsertIndex] = useState<number>(0);
     const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
     const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
@@ -39,27 +39,37 @@ const FloorCanvas: React.FC = () => {
             const response = await axios.get<RoomType[]>('/api/dorm/room');
             const grouped = groupRooms(response.data);
             setGroupedRooms(grouped);
-            setSelectedRooms(new Set()); // czyścimy zaznaczenie po odświeżeniu
+            setSelectedRooms(new Set());
         } catch (error) {
             console.error('Error fetching rooms', error);
         }
     };
 
     const groupRooms = (rooms: RoomType[]): GroupedRoomsDisplay[] => {
-        const map = new Map<string, GroupedRoomsDisplay>();
+        const groupsMap = new Map<string, GroupedRoomsDisplay>();
 
         rooms.forEach((room) => {
-            const key = room.groupedRooms?.id.toString() || `single-${room.id}`;
-            if (!map.has(key)) {
-                map.set(key, {
-                    groupName: room.groupedRooms?.groupName || null,
-                    rooms: [],
+            if (room.groupedRooms && room.groupedRooms.id !== null) {
+                const groupId = room.groupedRooms.id.toString();
+
+                if (!groupsMap.has(groupId)) {
+                    groupsMap.set(groupId, {
+                        groupName: room.groupedRooms.groupName || `Grupa ${groupId}`,
+                        rooms: [],
+                    });
+                }
+
+                groupsMap.get(groupId)!.rooms.push(room);
+            } else {
+                const singleKey = `single-${room.id}`;
+                groupsMap.set(singleKey, {
+                    groupName: null,
+                    rooms: [room],
                 });
             }
-            map.get(key)!.rooms.push(room);
         });
 
-        return Array.from(map.values());
+        return Array.from(groupsMap.values());
     };
 
     const handleOpenModal = (index: number) => {
@@ -87,7 +97,7 @@ const FloorCanvas: React.FC = () => {
         try {
             await axios.patch(`/api/dorm/room/${updatedRoom.id}`, {
                 name: updatedRoom.number,
-                floor: updatedRoom.floor
+                floor: updatedRoom.floor,
             });
             fetchRooms();
             setEditModalOpen(false);
@@ -110,7 +120,7 @@ const FloorCanvas: React.FC = () => {
         try {
             await axios.post('/api/dorm/room/group/create', {
                 groupName: groupName,
-                rooms: roomIds.map(id => ({ id })),
+                roomIds: roomIds,
             });
             fetchRooms();
             setGroupModalOpen(false);

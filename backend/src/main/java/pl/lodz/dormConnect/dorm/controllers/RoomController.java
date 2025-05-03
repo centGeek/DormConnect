@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dorm.DTO.RoomAssignDTO;
+import pl.lodz.dormConnect.dorm.DTO.RoomInGroupDTO;
 import pl.lodz.dormConnect.dorm.DTO.RoomUpdateDTO;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
+import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 import pl.lodz.dormConnect.security.service.JwtService;
 
@@ -36,8 +38,8 @@ public class RoomController {
     }
 
     @GetMapping("/room")
-    public List<RoomEntity> getRooms() {
-        return roomService.getAllRooms();
+    public List<RoomInGroupDTO> getRooms() {
+        return roomService.getAllRooms().stream().map(GroupedRoomsMapper::toRoomDto).toList();
     }
 
 
@@ -59,9 +61,18 @@ public class RoomController {
 
 
     @GetMapping("/room/{id}")
-    public ResponseEntity<RoomEntity> getRoomById(@PathVariable Long id) {
-        return roomService.findById(id).map(ResponseEntity::ok).
-                orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<RoomInGroupDTO> getRoomById(@PathVariable Long id) {
+        return roomService.findById(id)
+                .map(room -> new RoomInGroupDTO(
+                        room.getId(),
+                        room.getNumber(),
+                        room.getCapacity(),
+                        room.getFloor(),
+                        room.isActive(),
+                        room.getGroupedRooms() != null ? room.getGroupedRooms().getId() : null
+                ))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PatchMapping("/room/{id}")
