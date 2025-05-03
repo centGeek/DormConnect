@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.dorm.DTO.RoomAssignDTO;
+import pl.lodz.dormConnect.dorm.DTO.RoomUpdateDTO;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.services.RoomService;
-import pl.lodz.dormConnect.dorm.controllers.AssignmentsDTO;
 import pl.lodz.dormConnect.security.service.JwtService;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.lodz.dormConnect.dorm.controllers.AssignmentsDTO;
+import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.dormConnect.dorm.entities.RoomAssignEntity;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 public class RoomService {

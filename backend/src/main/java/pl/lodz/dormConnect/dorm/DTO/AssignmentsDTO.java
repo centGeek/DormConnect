@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.dorm.controllers;
+package pl.lodz.dormConnect.dorm.DTO;
 
 import java.time.LocalDate;
 
