@@ -132,4 +132,31 @@ public class RoomService {
                         assignment.getToDate()))
                 .toList();
     }
+
+    public boolean simulateAssignWithoutOverflow(List<RoomAssignEntity> existingAssignments, Long roomId, LocalDate newStart, LocalDate newEnd) {
+        int capacity = roomRepository.findCapacityById(roomId);
+        Map<LocalDate, Integer> occupancy = new HashMap<>();
+
+        for (RoomAssignEntity assignment : existingAssignments) {
+            LocalDate from = assignment.getFromDate();
+            LocalDate to = assignment.getToDate() != null ? assignment.getToDate() : LocalDate.MAX;
+
+            LocalDate effectiveStart = from.isAfter(newStart) ? from : newStart;
+            LocalDate effectiveEnd = to.isBefore(newEnd) ? to : newEnd;
+
+            for (LocalDate date = effectiveStart; !date.isAfter(effectiveEnd); date = date.plusDays(1)) {
+                occupancy.put(date, occupancy.getOrDefault(date, 0) + 1);
+            }
+        }
+
+        for (LocalDate date = newStart; !date.isAfter(newEnd); date = date.plusDays(1)) {
+            int current = occupancy.getOrDefault(date, 0);
+            if (current + 1 > capacity) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

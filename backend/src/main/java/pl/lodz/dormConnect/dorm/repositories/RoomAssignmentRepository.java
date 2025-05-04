@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -45,4 +46,7 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignEntity
             WHERE a.residentId = :studentId
             """)
     List<RoomAssignEntity> findAllAssignmentsByStudentId(@Param("studentId") Long studentId);
+
+    @Query("SELECT r FROM RoomAssignEntity r WHERE r.residentId = :studentId AND r.room.id = :roomId AND (r.toDate IS NULL OR r.toDate >= CURRENT_DATE)")
+    Optional<RoomAssignEntity> findCurrentAssignment(@Param("studentId") Long studentId, @Param("roomId") Long roomId);
 }

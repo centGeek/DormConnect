@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.dormConnect.dorm.DTO.RoomAssignDTO;
 import pl.lodz.dormConnect.dorm.DTO.RoomInGroupDTO;
 import pl.lodz.dormConnect.dorm.DTO.RoomUpdateDTO;
@@ -97,15 +98,15 @@ public class RoomController {
         }
     }
 
-//    @GetMapping("/assign/myAssigns")
-//    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
-//        try {
-//            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
-//            List<AssignmentsDTO> assignments = roomService.getAssignmentsByUserId(userId);
-//            return ResponseEntity.ok(assignments);
-//        } catch (Exception e) {
-//            logger.error("Error retrieving assignments: ", e);
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @GetMapping("/assign/myAssigns")
+    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+            List<AssignmentsDTO> assignments = roomService.getAssignmentsByUserId(userId);
+            return ResponseEntity.ok(assignments);
+        } catch (Exception e) {
+            logger.error("Error retrieving assignments: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

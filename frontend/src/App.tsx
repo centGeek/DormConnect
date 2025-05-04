@@ -9,6 +9,7 @@ import { UserContext } from './Context/UserContext.tsx';
 import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
+import MyAssignments from "./Rooms/components/MyAssignments.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
@@ -36,6 +37,8 @@ function App() {
                         <Route path="/events/create" element={<EventsCreate />} />
                         <Route path="/rooms" element={<Rooms />} />
                         <Route path="/rooms/form" element={<DormFormPage />} />
+                        <Route path="/rooms/assignment" element={<MyAssignments />} />
+
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                         )}

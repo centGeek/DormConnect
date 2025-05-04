@@ -5,41 +5,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "room_replacement_forms")
-public class RoomReplacementFormEntity {
+@Table(name = "single_room_requests")
+public class SingleRoomRequestEntity {
 
-    //Ids are used instead of entities cause it s easier
-    // to check it before and after then having a fight with circular dependencies...
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(nullable = false)
-    private Long requesterId;
+    private Long studentId;
 
-    private Long targetStudent;
+    // Obecny pokój, z którego student chce się przenieść
+    @Column(nullable = false)
+    private Long currentRoomId;
 
-    // Pokój, z którego wychodzi requester
-    private Long requesterRoom;
-
-    // Pokój, z którego wychodzi targetStudent
-    private Long targetRoom;
+    // Preferencje (opcjonalne)
+    private boolean onlySingleRoom; // czy zgadza się tylko na całkowicie jednoosobowy pokój
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FormStatus status = FormStatus.PENDING;
+    private RequestStatus status = RequestStatus.PENDING;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime respondedAt;
 
-    public enum FormStatus {
+    public enum RequestStatus {
         PENDING,
         ACCEPTED,
         REJECTED,
