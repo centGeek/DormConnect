@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
 import './Events.css';
+import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {
     eventId: number;
@@ -45,6 +46,12 @@ const Events = () => {
 
     const user = token ? parseJwt(token) : null;
     const userId = user?.id;
+
+    const userContext = useContext(UserContext);
+    const isAdmin = userContext?.user?.roles.includes('ADMIN');
+    const handleAdminNavigation = () => {
+        navigate('/events/admin/AdminEvents');
+    };
 
     const fetchEvents = async (page: number = 0) => {
         try {
@@ -118,6 +125,15 @@ const Events = () => {
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
                     Dodaj wydarzenie
                 </button>
+
+                {isAdmin && (
+                    <button
+                        className="btn btn-secondary admin-button"
+                        onClick={handleAdminNavigation}
+                    >
+                        Admin Panel
+                    </button>
+                )}
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
