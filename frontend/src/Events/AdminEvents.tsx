@@ -137,6 +137,9 @@ function AdminEvents() {
         >
             <div className="admin-events-container">
                 {successMessage && <div className="success-message">{successMessage}</div>}
+                <button className={"btn btn-primary add-event-button"} onClick={() => navigate('/events')}>
+                    Back
+                </button>
 
                 <h2>Oczekujące wydarzenia</h2>
 

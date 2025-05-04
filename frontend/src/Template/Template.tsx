@@ -38,25 +38,27 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
     return (
         <div className="template-container">
-            <header className="template-header">
-                <a href={"/home"}><img src={LogoPL} alt="Logo" className="template-logo" /></a>
-                {buttons && (
-                    <div className="template-buttons">
-                        {buttons.map((button: Button, index: number) => (
-                            <a key={index} href={button.link} className="template-button">
-                                {button.text}
-                            </a>
-                        ))}
-                    </div>
-                )}
-                <button className="logout-button" onClick={handleLogout}>Log out</button>
-            </header>
-            <main className="template-main">
-                {children}
-            </main>
-            <footer className="template-footer">
-                {footerContent || <p>Default footer</p>}
-            </footer>
+                <div className="template">
+                <header className="template-header">
+                    <a href={"/home"}><img src={LogoPL} alt="Logo" className="template-logo" /></a>
+                    {buttons && (
+                        <div className="template-buttons">
+                            {buttons.map((button: Button, index: number) => (
+                                <a key={index} href={button.link} className="template-button">
+                                    {button.text}
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                    <button className="logout-button" onClick={handleLogout}>Log out</button>
+                </header>
+                <main className="template-main">
+                    {children}
+                </main>
+                <footer className="template-footer">
+                    {footerContent || <p>Default footer</p>}
+                </footer>
+            </div>
         </div>
     );
 }

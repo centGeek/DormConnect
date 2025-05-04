@@ -12,7 +12,7 @@
 
 .events-create-container h2 {
     font-size: 1.8rem;
-    color: #007acc;
+    color: #388e3c;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -49,7 +49,7 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    border-color: #007acc;
+    border-color: #388e3c;
     outline: none;
 }
 
@@ -62,7 +62,7 @@ textarea {
     padding: 10px 20px;
     font-size: 1rem;
     color: #fff;
-    background-color: #007acc;
+    background-color: #66bb6a;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -70,5 +70,5 @@ textarea {
 }
 
 .btn-primary:hover {
-    background-color: #005fa3;
+    background-color: #388e3c;
 }
