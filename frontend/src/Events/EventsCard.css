@@ -6,6 +6,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 15px;
     transition: transform 0.3s ease;
 }
@@ -25,6 +26,7 @@
     font-size: 1rem;
     color: #333;
     margin: 0;
+    text-align: center;
 }
 
 /* --- Event image --- */
@@ -36,4 +38,47 @@
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtelny cień */
     margin: 0 auto;
+}
+
+/* --- Przyciski --- */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* --- Join Button --- */
+.join-button {
+    background-color: #66bb6a; /* Zieleń */
+    color: white;
+}
+
+.join-button:hover {
+    background-color: #57a05b;
+}
+
+/* --- Leave Button --- */
+.leave-button {
+    background-color: #ef5350; /* Czerwień */
+    color: white;
+}
+
+.leave-button:hover {
+    background-color: #d32f2f;
+}
+
+/* --- Edit Button --- */
+.edit-button {
+    background-color: #42a5f5; /* Niebieski */
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #1e88e5;
+    transform: scale(1.05);
 }
