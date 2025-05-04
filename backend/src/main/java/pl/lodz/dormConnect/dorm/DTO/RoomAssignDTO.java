@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.dorm.controllers;
+package pl.lodz.dormConnect.dorm.DTO;
 
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 
