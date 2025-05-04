@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
 import pl.lodz.dormConnect.dorm.DormTestRooms;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(PersistenceContainersTestConfiguration.class)
 @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
 class RoomControllerTest {
 
