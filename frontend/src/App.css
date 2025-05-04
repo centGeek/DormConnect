@@ -27,9 +27,26 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem; /* Mniejsze paddingi na mniejszych ekranach */
+  }
+
+  .events-grid {
+    grid-template-columns: 1fr; /* Pojedyncza kolumna na małych ekranach */
+  }
+
+  .logo {
+    height: 4em; /* Mniejsze logo */
+  }
+
+  .event-card-wrapper {
+    max-width: 100%;
+  }
+
+  .page-button {
+    padding: 8px;
+    font-size: 14px; /* Mniejsze przyciski na małych ekranach */
   }
 }
 
@@ -40,3 +57,4 @@
 .read-the-docs {
   color: #888;
 }
+
