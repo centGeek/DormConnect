@@ -1,11 +1,146 @@
 /* --- Events container and layout --- */
 .events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background-color: #e1ffbc; /* Pastelowa zieleń */
+    border-radius: 15px;
     padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1400px;
 }
 
-.events-section {
-    margin-top: 30px;
-    margin-bottom: 30px;
+.events-container h2 {
+    font-size: 2rem;
+    color: #66bb6a; /* Średnia zieleń */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* --- Buttons --- */
+.add-event-button {
+    padding: 15px 25px;
+    font-size: 16px;
+    background-color: #66bb6a; /* Średnia zieleń */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-event-button:hover {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+}
+
+/* --- Event List --- */
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* --- Pagination --- */
+.pagination {
+    display: flex;
+    justify-content: center;  /* Wyśrodkowanie poziome */
+    align-items: center;      /* Wyśrodkowanie pionowe */
+    gap: 10px;                /* Odstęp między przyciskami */
+    background-color: rgba(0, 0, 0, 0.1); /* Przezroczysty ciemniejszy kolor */
+    border-radius: 10px;
+    padding: 10px;
+    width: fit-content;       /* Dopasowanie szerokości do zawartości */
+    margin: 20px auto;        /* Wyśrodkowanie paginacji */
+}
+
+/* --- Przyciski paginacji --- */
+.page-button {
+    padding: 10px 20px;
+    background-color: #66bb6a; /* Średnia zieleń */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.page-button.active {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+    font-weight: bold;
+}
+
+.page-button:hover {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+}
+
+.page-button:disabled {
+    cursor: not-allowed;
+    background-color: #ddd;
+}
+
+/* --- Przyciski w sekcji wydarzeń --- */
+.add-event-button, .toggle-button {
+    display: block;
+    margin: 20px auto;        /* Wyśrodkowanie przycisków */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #66bb6a; /* Zielony */
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.add-event-button:hover, .toggle-button:hover {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+}
+
+/* --- Grid of Events --- */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* --- Join/Leave buttons --- */
+.join-button {
+    background-color: #66bb6a; /* Średnia zieleń */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.join-button:hover {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+}
+
+.leave-button {
+    background-color: #f44336; /* Czerwony */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.leave-button:hover {
+    background-color: #d32f2f; /* Ciemniejszy czerwony */
 }
 
 /* --- Messages --- */
@@ -17,26 +152,6 @@
 .error-message {
     color: red;
     margin-bottom: 15px;
-}
-
-/* --- Buttons --- */
-.btn {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 10px 5px;
-    transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #0056b3;
-}
-
-.add-event-button {
-    float: right;
 }
 
 /* --- Toggle buttons (Expand/Collapse) --- */
@@ -53,37 +168,4 @@
 
 .toggle-button:hover {
     background-color: #218838;
-}
-
-/* --- Grid of Events --- */
-.events-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-/* --- Pagination --- */
-.pagination {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.page-button {
-    background: none;
-    border: 1px solid #007bff;
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.page-button:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-.page-button.active {
-    background-color: #007bff;
-    color: white;
 }
