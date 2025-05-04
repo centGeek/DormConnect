@@ -116,7 +116,7 @@ const Events = () => {
     return (
         <Template
             buttons={[{ text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }]}
-            footerContent={<p>&copy; 2025 Wanderer. All rights reserved.</p>}
+            footerContent={<p></p>}
         >
             <div className="events-container">
                 {successMessage && <div className="success-message">{successMessage}</div>}
