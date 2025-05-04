@@ -7,6 +7,7 @@ import EventsCreate from './Events/EventsCreate.tsx';
 import Events from './Events/Events.tsx';
 import { UserContext } from './Context/UserContext.tsx';
 import Rooms from './Rooms/Rooms.tsx';
+import AdminEvents from './Events/AdminEvents.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -33,6 +34,9 @@ function App() {
                         <Route path="/events" element={<Events />} />
                         <Route path="/events/create" element={<EventsCreate />} />
                         <Route path="/rooms" element={<Rooms />} />
+                        {userContext?.user?.roles.includes('ADMIN') && (
+                            <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
+                        )}
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" replace />} />

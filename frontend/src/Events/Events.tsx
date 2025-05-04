@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
+import { UserContext } from '../Context/UserContext.tsx';
 import './Events.css';
 
 // Interfejs Event
@@ -148,6 +149,12 @@ function Events() {
             console.error('Błąd podczas opuszczania wydarzenia:', error);
         }
     };
+    const userContext = useContext(UserContext);
+    const isAdmin = userContext?.user?.roles.includes('ADMIN');
+    const handleAdminNavigation = () => {
+        navigate('/events/admin/AdminEvents');
+    };
+
 
     return (
         <Template
@@ -161,6 +168,14 @@ function Events() {
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
                     Add Event
                 </button>
+                {isAdmin && (
+                    <button
+                        className="btn btn-secondary admin-button"
+                        onClick={handleAdminNavigation}
+                    >
+                        Admin Panel
+                    </button>
+                )}
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
