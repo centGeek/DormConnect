@@ -1,93 +1,89 @@
+/* --- Events container and layout --- */
 .events-container {
     padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
 }
 
-.events-container h2 {
-    text-align: center;
-    color: #007acc;
-    margin-bottom: 20px;
+.events-section {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
-.add-event-button {
-    display: block;
-    margin: 0 auto 20px auto;
+/* --- Messages --- */
+.success-message {
+    color: green;
+    margin-bottom: 15px;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+}
+
+/* --- Buttons --- */
+.btn {
     padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #007acc;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.add-event-button:hover {
-    background-color: #005fa3;
-}
-
-.events-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.event-card {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.event-card h3 {
-    margin: 0 0 10px 0;
-    color: #007acc;
-}
-
-.event-card p {
-    margin: 5px 0;
-    color: #333;
-}
-
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.page-button {
-    padding: 8px 16px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.add-event-button {
+    float: right;
+}
+
+/* --- Toggle buttons (Expand/Collapse) --- */
+.toggle-button {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+    background-color: #218838;
+}
+
+/* --- Grid of Events --- */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* --- Pagination --- */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.page-button {
+    background: none;
+    border: 1px solid #007bff;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page-button:hover {
+    background-color: #007bff;
+    color: white;
 }
 
 .page-button.active {
-    background-color: #0056b3;
-    font-weight: bold;
-}
-
-.join-button {
-    background-color: #4caf50;
+    background-color: #007bff;
     color: white;
-    margin-top: 10px;
-}
-
-.leave-button {
-    background-color: #f44336;
-    color: white;
-    margin-top: 10px;
-}
-
-.event-image {
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
 }

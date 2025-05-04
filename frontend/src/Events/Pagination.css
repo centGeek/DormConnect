@@ -1,34 +1,18 @@
 .pagination {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 0.5rem;
 }
 
-/* Przycisk strony */
 .page-button {
-    padding: 8px 16px;
-    background-color: #007bff;
+    padding: 0.5rem;
+    background-color: #007acc;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
 }
 
-/* Aktywny przycisk */
 .page-button.active {
-    background-color: #0056b3;
-    font-weight: bold;
-}
-
-.page-button:hover {
-    background-color: #005fa3;
-}
-
-/* Przycisk nieaktywny */
-.page-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+    background-color: #005b8c;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EventsCard.css';
 
 interface Event {
@@ -12,66 +13,115 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
-    userId?: number;
-    editEvent?: (eventId: number) => void;
-    isOrganizerSection?: boolean;
 }
 
-const EventsCard: React.FC<Event> = ({
-                                         eventId, eventName, description, startDateTime, endDateTime, location, eventType,
-                                         maxParticipants, participantId, imageUrl, userId, editEvent, isOrganizerSection
-                                     }) => {
+interface EventCardProps {
+    event: Event;
+    userId: number | undefined;
+    isOrganizer: boolean;
+}
 
-    // Stan dla liczby dostępnych miejsc
-    const [availableSpots, setAvailableSpots] = useState<number>(maxParticipants - participantId.length);
-    const [participants, setParticipants] = useState<number[]>(participantId);
+const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer }) => {
+    const navigate = useNavigate();
+    const [availableSpots, setAvailableSpots] = useState<number>(event.maxParticipants - event.participantId.length);
+    const [participants, setParticipants] = useState<number[]>(event.participantId);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    // Używamy useEffect do aktualizacji dostępnych miejsc w przypadku zmiany uczestników
     useEffect(() => {
-        setAvailableSpots(maxParticipants - participants.length);
-    }, [maxParticipants, participants]);
+        setAvailableSpots(event.maxParticipants - participants.length);
+    }, [participants, event.maxParticipants]);
 
-    // Funkcja dołączania do wydarzenia
-    const joinEvent = () => {
-        if (availableSpots > 0 && userId && !participants.includes(userId)) {
-            setParticipants([...participants, userId]);  // Dodajemy użytkownika do listy uczestników
+    const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))?.split('=')[1];
+
+    // Dołącz do wydarzenia
+    const handleJoinEvent = async () => {
+        if (!userId || participants.includes(userId) || availableSpots <= 0 || !token) return;
+
+        try {
+            setLoading(true);
+
+            const response = await fetch(`/api/event/participant/${event.eventId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) throw new Error('Nie udało się dołączyć do wydarzenia.');
+
+            // Jeśli sukces — aktualizuj stan
+            setParticipants(prev => [...prev, userId]);
+        } catch (error) {
+            console.error(error);
+            alert('Wystąpił błąd przy dołączaniu do wydarzenia.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Funkcja opuszczania wydarzenia
-    const leaveEvent = () => {
-        if (userId && participants.includes(userId)) {
-            setParticipants(participants.filter(id => id !== userId));  // Usuwamy użytkownika z listy uczestników
+    // Opuść wydarzenie
+    const handleLeaveEvent = async () => {
+        if (!userId || !participants.includes(userId) || !token) return;
+
+        try {
+            setLoading(true);
+
+            const response = await fetch(`/api/event/participant/${event.eventId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+            });
+
+            if (!response.ok) throw new Error('Nie udało się opuścić wydarzenia.');
+
+            // Jeśli sukces — aktualizuj stan
+            setParticipants(prev => prev.filter(id => id !== userId));
+        } catch (error) {
+            console.error(error);
+            alert('Wystąpił błąd przy opuszczaniu wydarzenia.');
+        } finally {
+            setLoading(false);
         }
+    };
+
+    // Edytuj wydarzenie
+    const handleEditEvent = () => {
+        navigate(`/events/edit/${event.eventId}`);
     };
 
     return (
         <div className="event-card">
-            {imageUrl && <img src={imageUrl} alt={eventName} className="event-image" />}
-            <h3>{eventName}</h3>
-            <p>{description}</p>
-            <p><strong>Data:</strong> {new Date(startDateTime).toLocaleString()} - {new Date(endDateTime).toLocaleString()}</p>
-            <p><strong>Lokalizacja:</strong> {location}</p>
-            <p><strong>Typ:</strong> {eventType}</p>
+            {event.imageUrl && (
+                <img src={event.imageUrl} alt={event.eventName} className="event-image" />
+            )}
+
+            <h3>{event.eventName}</h3>
+            <p><strong>Opis:</strong> {event.description}</p>
+            <p><strong>Data:</strong> {new Date(event.startDateTime).toLocaleString()} - {new Date(event.endDateTime).toLocaleString()}</p>
+            <p><strong>Lokalizacja:</strong> {event.location}</p>
+            <p><strong>Typ wydarzenia:</strong> {event.eventType}</p>
             <p><strong>Dostępne miejsca:</strong> {availableSpots}</p>
 
-            {isOrganizerSection ? (
-                <button className="btn edit-button" onClick={() => editEvent && editEvent(eventId)}>
+            {isOrganizer ? (
+                <button className="btn edit-button" onClick={handleEditEvent}>
                     Edytuj
                 </button>
             ) : (
                 userId && (
                     participants.includes(userId) ? (
-                        <button className="btn leave-button" onClick={leaveEvent}>
-                            Opuść wydarzenie
+                        <button className="btn leave-button" onClick={handleLeaveEvent} disabled={loading}>
+                            {loading ? 'Leave...' : 'Leave event'}
                         </button>
                     ) : (
-                        <button
-                            className="btn join-button"
-                            onClick={joinEvent}
-                            disabled={availableSpots <= 0}
-                        >
-                            Dołącz do wydarzenia
+                        <button className="btn join-button" onClick={handleJoinEvent} disabled={loading || availableSpots <= 0}>
+                            {loading ? 'Join...' : 'Join event'}
                         </button>
                     )
                 )
@@ -80,4 +130,4 @@ const EventsCard: React.FC<Event> = ({
     );
 };
 
-export default EventsCard;
+export default EventCard;

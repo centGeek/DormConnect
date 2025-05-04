@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder.tsx';
-import Template from '../Template/Template.tsx';
-import EventsSection from './EventsSection';
+import { parseJwt } from '../JWT/JWTDecoder';
+import Template from '../Template/Template';
+import EventCard from './EventsCard';
+import Pagination from './Pagination';
 import './Events.css';
 
 interface Event {
@@ -16,10 +17,9 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
-    availableSpots: number;
 }
 
-function Events() {
+const Events = () => {
     const { state } = useLocation();
     const successMessage = state?.successMessage;
 
@@ -27,7 +27,15 @@ function Events() {
     const [organizedEvents, setOrganizedEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [isOrganizer, setIsOrganizer] = useState<boolean>(false);  // Stan, który będzie informował, czy użytkownik jest organizatorem
+    const [isOrganizer, setIsOrganizer] = useState<boolean>(false);
+
+    const [totalEventPages, setTotalEventPages] = useState<number>(0);
+    const [totalOrganizedPages, setTotalOrganizedPages] = useState<number>(0);
+    const [eventPage, setEventPage] = useState<number>(0);
+    const [organizedPage, setOrganizedPage] = useState<number>(0);
+
+    const [showOrganized, setShowOrganized] = useState<boolean>(false);
+    const [showAll, setShowAll] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -38,7 +46,7 @@ function Events() {
     const user = token ? parseJwt(token) : null;
     const userId = user?.id;
 
-    const fetchEvents = async () => {
+    const fetchEvents = async (page: number = 0) => {
         try {
             setLoading(true);
 
@@ -47,57 +55,50 @@ function Events() {
                 return;
             }
 
-            const response = await fetch(`/api/event?page=0&size=20&sort=startDateTime,asc`, {
+            const response = await fetch(`/api/event?page=${page}&size=4&sort=startDateTime,asc`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error('Nie udało się pobrać wydarzeń');
-            }
+            if (!response.ok) throw new Error('Nie udało się pobrać wydarzeń');
 
             const data = await response.json();
             setEvents(data.content || []);
+            setTotalEventPages(data.totalPages || 0);
         } catch (error: any) {
-            console.error('Błąd podczas pobierania wydarzeń:', error);
-            setError(error.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
+            setError(error.message || 'Wystąpił błąd.');
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchOrganizedEvents = async () => {
+    const fetchOrganizedEvents = async (page: number = 0) => {
         try {
             if (!token) {
                 navigate('/login');
                 return;
             }
 
-            const response = await fetch(`/api/event/organizer`, {
+            const response = await fetch(`/api/event/organizer?page=${page}&size=4`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error('Nie udało się pobrać organizowanych wydarzeń');
-            }
+            if (!response.ok) throw new Error('Nie udało się pobrać organizowanych wydarzeń');
 
             const data = await response.json();
             setOrganizedEvents(data.content || []);
-            setIsOrganizer(data.content.length > 0);  // Sprawdzamy, czy użytkownik jest organizatorem
+            setTotalOrganizedPages(data.totalPages || 0);
+            setIsOrganizer((data.content || []).length > 0);
         } catch (error: any) {
-            console.error('Błąd podczas pobierania organizowanych wydarzeń:', error);
+            console.error('Błąd pobierania organizowanych wydarzeń:', error);
         }
     };
 
-    const editEvent = (eventId: number) => {
-        navigate(`/events/edit/${eventId}`);
+    const handleAddEvent = () => {
+        navigate('/events/create');
     };
 
     useEffect(() => {
@@ -105,49 +106,74 @@ function Events() {
         fetchOrganizedEvents();
     }, []);
 
-    const handleAddEvent = () => {
-        navigate('/events/create');
-    };
-
     return (
         <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-            footerContent={<p></p>}
+            buttons={[{ text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }]}
+            footerContent={<p>&copy; 2025 Wanderer. All rights reserved.</p>}
         >
             <div className="events-container">
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
-                <h2>All Events</h2>
+                <h2>Wydarzenia</h2>
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
-                    Add Event
+                    Dodaj wydarzenie
                 </button>
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
-                {isOrganizer && (  // Wyświetlamy sekcję organizowanych wydarzeń tylko, jeśli użytkownik jest organizatorem
-                    <EventsSection
-                        title="Wydarzenia organizowane przez Ciebie"
-                        events={organizedEvents}
-                        editEvent={editEvent}
-                        userId={userId}
-                        pageSize={4}
-                        isOrganizerSection={true}
-                    />
+                {/* ORGANIZED EVENTS */}
+                {isOrganizer && (
+                    <div className="events-section">
+                        <button className="toggle-button" onClick={() => setShowOrganized(!showOrganized)}>
+                            {showOrganized ? 'Ukryj organizowane wydarzenia' : 'Pokaż organizowane wydarzenia'}
+                        </button>
+                        {showOrganized && (
+                            <>
+                                <div className="events-grid">
+                                    {organizedEvents.map(event => (
+                                        <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={true} />
+                                    ))}
+                                </div>
+                                <Pagination
+                                    totalPages={totalOrganizedPages}
+                                    currentPage={organizedPage}
+                                    onPageChange={(page) => {
+                                        setOrganizedPage(page);
+                                        fetchOrganizedEvents(page);
+                                    }}
+                                />
+                            </>
+                        )}
+                    </div>
                 )}
 
-                <EventsSection
-                    title="Wszystkie wydarzenia."
-                    events={events}
-                    joinEvent={() => {}}
-                    leaveEvent={() => {}}
-                    userId={userId}
-                    pageSize={4}
-                    isOrganizerSection={false}
-                />
+                {/* ALL EVENTS */}
+                <div className="events-section">
+                    <button className="toggle-button" onClick={() => setShowAll(!showAll)}>
+                        {showAll ? 'Ukryj wszystkie wydarzenia' : 'Pokaż wszystkie wydarzenia'}
+                    </button>
+                    {showAll && (
+                        <>
+                            <div className="events-grid">
+                                {events.map(event => (
+                                    <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={false} />
+                                ))}
+                            </div>
+                            <Pagination
+                                totalPages={totalEventPages}
+                                currentPage={eventPage}
+                                onPageChange={(page) => {
+                                    setEventPage(page);
+                                    fetchEvents(page);
+                                }}
+                            />
+                        </>
+                    )}
+                </div>
             </div>
         </Template>
     );
-}
+};
 
 export default Events;
