@@ -15,6 +15,7 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
+    isApproved: boolean; // Dodane
 }
 
 function AdminEvents() {
@@ -30,7 +31,6 @@ function AdminEvents() {
     const [page, setPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
 
-    // 1. Parse token tylko raz
     useEffect(() => {
         const tokenFromCookie = document.cookie
             .split('; ')
@@ -53,15 +53,14 @@ function AdminEvents() {
         setUserRoles(roles);
     }, [navigate]);
 
-    // 2. Fetch eventów tylko jak zmieni się token i page
     useEffect(() => {
-        if (!token) return; // czekamy aż token będzie ustawiony
+        if (!token) return;
 
         const fetchEvents = async () => {
             try {
                 setLoading(true);
 
-                const response = await fetch(`/api/event/administrate?page=${page}&size=5&sort=startDateTime,asc`, {
+                const response = await fetch(`/api/event/administrate?page=${page}&size=4&sort=startDateTime,asc`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -84,7 +83,7 @@ function AdminEvents() {
         };
 
         fetchEvents();
-    }, [token, page]); // teraz tylko token albo page zmieniają fetch
+    }, [token, page]);
 
     const handleApprove = async (eventId: number) => {
         try {
@@ -127,7 +126,9 @@ function AdminEvents() {
     };
 
     const handlePageChange = (newPage: number) => {
-        setPage(newPage);
+        if (newPage >= 0 && newPage < totalPages) {
+            setPage(newPage);
+        }
     };
 
     return (
@@ -137,7 +138,8 @@ function AdminEvents() {
         >
             <div className="admin-events-container">
                 {successMessage && <div className="success-message">{successMessage}</div>}
-                <button className={"btn btn-primary add-event-button"} onClick={() => navigate('/events')}>
+
+                <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
                     Back
                 </button>
 
@@ -163,6 +165,12 @@ function AdminEvents() {
                                 <p><strong>Lokalizacja:</strong> {event.location}</p>
                                 <p><strong>Typ:</strong> {event.eventType}</p>
                                 <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
+                                <p>
+                                    <strong>Status:</strong>{' '}
+                                    <span style={{ color: event.isApproved ? 'green' : 'red', fontWeight: 'bold' }}>
+                                        {event.isApproved ? 'Zatwierdzone' : 'Oczekujące'}
+                                    </span>
+                                </p>
 
                                 <div className="admin-buttons">
                                     <button className="btn approve-button" onClick={() => handleApprove(event.eventId)}>Zatwierdź</button>
@@ -174,15 +182,61 @@ function AdminEvents() {
                 </div>
 
                 <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            className={`page-button ${page === index ? 'active' : ''}`}
-                            onClick={() => handlePageChange(index)}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
+                    <button
+                        className="page-button"
+                        onClick={() => handlePageChange(0)}
+                        disabled={page === 0}
+                    >
+                        &lt;&lt;
+                    </button>
+                    <button
+                        className="page-button"
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page === 0}
+                    >
+                        &lt;
+                    </button>
+
+                    {(() => {
+                        const maxPagesToShow = 3;
+                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+                        let endPage = startPage + maxPagesToShow - 1;
+
+                        if (endPage >= totalPages) {
+                            endPage = totalPages - 1;
+                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
+                        }
+
+                        const pageNumbers = [];
+                        for (let i = startPage; i <= endPage; i++) {
+                            pageNumbers.push(i);
+                        }
+
+                        return pageNumbers.map(p => (
+                            <button
+                                key={p}
+                                className={`page-button ${page === p ? 'active' : ''}`}
+                                onClick={() => handlePageChange(p)}
+                            >
+                                {p + 1}
+                            </button>
+                        ));
+                    })()}
+
+                    <button
+                        className="page-button"
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page === totalPages - 1}
+                    >
+                        &gt;
+                    </button>
+                    <button
+                        className="page-button"
+                        onClick={() => handlePageChange(totalPages - 1)}
+                        disabled={page === totalPages - 1}
+                    >
+                        &gt;&gt;
+                    </button>
                 </div>
             </div>
         </Template>
