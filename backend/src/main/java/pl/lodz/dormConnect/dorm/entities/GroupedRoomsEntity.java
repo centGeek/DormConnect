@@ -1,9 +1,8 @@
 package pl.lodz.dormConnect.dorm.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,14 +15,17 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class GroupedRoomsEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //Tutaj to i tak generuje group_name
     private String groupName;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<RoomEntity> rooms;
 
 }
