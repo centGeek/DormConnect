@@ -6,8 +6,8 @@ import { HttpStatusCode } from 'axios';
 
 interface User {
     id: number;
-    role: string;
-    email: string;
+    roles: string[];
+    sub: string;
 }
 
 interface UserContextProps {
@@ -15,8 +15,8 @@ interface UserContextProps {
     token: string | null;
 }
 interface DecodedToken {
-    role: string;
-    email: string;
+    roles: string[];
+    sub: string;
     id: number;
 }
 
@@ -35,8 +35,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 const decodedToken: DecodedToken = jwtDecode(token);
                 const user: User = {
                     id: decodedToken.id,
-                    role: decodedToken.role, 
-                    email: decodedToken.email
+                    roles: decodedToken.roles,
+                    sub: decodedToken.sub
                 }
                 setUser(user);
             }
@@ -49,7 +49,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setUser(null);
         }
     }, [token]);
-
 
 
     return (
