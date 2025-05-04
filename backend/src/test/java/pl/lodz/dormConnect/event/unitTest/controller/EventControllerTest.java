@@ -65,10 +65,10 @@ public class EventControllerTest {
         EventCreateDTO createDto = new EventCreateDTO(
                 "Test Event",
                 "Opis",
-                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
                 LocalDateTime.now().plusHours(2),
                 "Location",
-                "PUBLIC",
+                "Meeting",
                 50,
                 "img.png",
                 1L,
@@ -78,14 +78,14 @@ public class EventControllerTest {
                 1L,
                 "Test Event",
                 "Opis",
-                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(1),
                 LocalDateTime.now().plusHours(2),
                 "Location",
-                "PUBLIC",
+                "Meeting",
                 50,
                 "img.png",
                 1L,
-                false,
+                true,
                 new ArrayList<>()
         );
 
@@ -117,19 +117,19 @@ public class EventControllerTest {
                 50,
                 "img.png",
                 1L,
-                false,
+                true,
                 new ArrayList<>()
         );
 
         Page<EventDTO> page = new PageImpl<>(List.of(eventDTO), PageRequest.of(0, 10), 1);
 
-        when(eventService.getAllEvents(any())).thenReturn(page);
+        when(eventService.getAllApprovedEvents(any())).thenReturn(page);
 
         mockMvc.perform(get("/api/event"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].eventName").value("Test Event"));
 
-        verify(eventService, times(1)).getAllEvents(any());
+        verify(eventService, times(1)).getAllApprovedEvents(any());
     }
 
 }

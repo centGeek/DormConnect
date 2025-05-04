@@ -37,7 +37,6 @@ public record EventCreateDTO(
         @NotNull(message = "Organizer ID must be provided.")
         Long organizerId,
 
-        @NotNull(message = "Participants list cannot be null.")
         List<Long> participantId
 )
 {}
