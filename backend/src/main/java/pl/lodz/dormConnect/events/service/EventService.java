@@ -50,7 +50,9 @@ public class EventService {
     @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
 
-        if (eventDTO.participantId().size() >= eventDTO.maxParticipants()) {
+        List<Long> participantIds = Optional.ofNullable(eventDTO.participantId()).orElse(List.of());
+
+        if (participantIds.size() >= eventDTO.maxParticipants()) {
             return Optional.empty();
         }
 
@@ -63,7 +65,7 @@ public class EventService {
             eventEntity.setMaxParticipants(eventDTO.maxParticipants());
             eventEntity.setImageUrl(eventDTO.imageUrl());
             eventEntity.setOrganizerId(eventDTO.organizerId());
-            eventEntity.setParticipantId(eventDTO.participantId());
+
             eventEntity.setEventType(eventDTO.eventType());
             eventEntity.setIsApproved(eventDTO.isApproved());
 
@@ -71,6 +73,7 @@ public class EventService {
             return eventMapper.toEventDTO(updatedEvent);
         });
     }
+
 
     @Transactional
     public void deleteEvent(Long eventId) {

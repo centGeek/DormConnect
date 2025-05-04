@@ -66,7 +66,6 @@ function EventsCreate() {
                 const errorData = await response.json();
 
                 if (errorData.errors) {
-                    // Usuwamy prefiksy (np. 'startDateTime: ') z komunikatów błędów
                     const cleanedErrors = errorData.errors.map((err: string) => {
                         const colonIndex = err.indexOf(':');
                         return colonIndex !== -1 ? err.slice(colonIndex + 1).trim() : err;

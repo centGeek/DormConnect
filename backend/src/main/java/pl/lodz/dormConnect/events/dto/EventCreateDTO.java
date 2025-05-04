@@ -38,5 +38,4 @@ public record EventCreateDTO(
         Long organizerId,
 
         List<Long> participantId
-)
-{}
+) {}

@@ -5,60 +5,72 @@ import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import './EventsCreate.css';
 
 function EventsEdit() {
+    const [eventData, setEventData] = useState({
+        eventName: '',
+        eventDescription: '',
+        startDateTime: '',
+        endDateTime: '',
+        location: '',
+        eventType: '',
+        availableSeats: '',
+        imageUrl: '',
+    });
+    const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { eventId } = useParams();
     const navigate = useNavigate();
 
-    const [eventName, setEventName] = useState('');
-    const [eventDescription, setEventDescription] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [location, setLocation] = useState('');
-    const [eventType, setEventType] = useState('');
-    const [availableSeats, setAvailableSeats] = useState<number | ''>('');
-    const [imageUrl, setImageUrl] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-    // Fetch event data by eventId
     useEffect(() => {
-        const fetchEventData = async () => {
-            const token = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('token='))?.split('=')[1];
-
-            if (!token) {
-                setError('No token found');
-                return;
-            }
-
+        const fetchEvent = async () => {
             try {
+                const token = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('token='))?.split('=')[1];
+
+                if (!token || !eventId) {
+                    setError('Event ID or token is missing');
+                    return;
+                }
+
                 const response = await fetch(`/api/event/${eventId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` },
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch event data');
+                    setError('Failed to fetch event');
+                    return;
                 }
 
-                const event = await response.json();
-
-                setEventName(event.eventName);
-                setEventDescription(event.description);
-                setStartDate(event.startDateTime);
-                setEndDate(event.endDateTime);
-                setLocation(event.location);
-                setEventType(event.eventType);
-                setAvailableSeats(event.maxParticipants);
-                setImageUrl(event.imageUrl || '');
+                const data = await response.json();
+                setEventData({
+                    eventName: data.eventName,
+                    eventDescription: data.description,
+                    startDateTime: formatDateTimeLocal(data.startDateTime),
+                    endDateTime: formatDateTimeLocal(data.endDateTime),
+                    location: data.location,
+                    eventType: data.eventType,
+                    availableSeats: data.maxParticipants,
+                    imageUrl: data.imageUrl || '',
+                });
             } catch (error: any) {
-                setError(error.message);
+                setError(error.message || 'Error fetching event data');
             }
         };
 
-        fetchEventData();
+        fetchEvent();
     }, [eventId]);
+
+    const formatDateTimeLocal = (dateTimeString: string) => {
+        if (!dateTimeString) return '';
+        const date = new Date(dateTimeString);
+        return date.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { id, value } = e.target;
+        setEventData((prevData) => ({ ...prevData, [id]: value }));
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -81,16 +93,17 @@ function EventsEdit() {
         }
 
         const updatedEvent = {
-            eventName: eventName,
-            description: eventDescription,
-            startDateTime: startDate,
-            endDateTime: endDate,
-            location: location,
-            eventType: eventType,
-            maxParticipants: availableSeats !== '' ? Number(availableSeats) : null,
-            imageUrl: imageUrl || null,
+            eventName: eventData.eventName,
+            description: eventData.eventDescription,
+            startDateTime: new Date(eventData.startDateTime).toISOString(),
+            endDateTime: new Date(eventData.endDateTime).toISOString(),
+            location: eventData.location,
+            eventType: eventData.eventType,
+            maxParticipants: eventData.availableSeats !== '' ? Number(eventData.availableSeats) : 1,
+            imageUrl: eventData.imageUrl || "placeholder.jpg", // ponieważ imageUrl nie może być pusty
             organizerId: organizerId,
-            participantId: []  // Assuming participantId is empty for the edit
+            isApproved: false,
+            participantId: [], // musisz wysyłać pustą listę, bo DTO tego wymaga
         };
 
         try {
@@ -98,7 +111,7 @@ function EventsEdit() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(updatedEvent),
                 credentials: 'include',
@@ -106,26 +119,14 @@ function EventsEdit() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-
-                if (errorData.errors) {
-                    const cleanedErrors = errorData.errors.map((err: string) => {
-                        const colonIndex = err.indexOf(':');
-                        return colonIndex !== -1 ? err.slice(colonIndex + 1).trim() : err;
-                    });
-
-                    setError(cleanedErrors.join('\n'));
-                } else {
-                    setError('Failed to update event');
-                }
+                setError(errorData.errors ? errorData.errors.join('\n') : 'Failed to update event');
                 return;
             }
 
             setSuccessMessage('Event updated successfully!');
             setError(null);
 
-            setTimeout(() => {
-                navigate('/events');
-            }, 1000);
+            setTimeout(() => navigate('/events'), 1000);
         } catch (error: any) {
             setError(error.message || 'Error updating event');
             setSuccessMessage(null);
@@ -133,20 +134,11 @@ function EventsEdit() {
     };
 
     return (
-        <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-            footerContent={<p></p>}
-        >
+        <Template buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]} footerContent={<p></p>}>
             <div className="events-create-container">
                 <h2>Edit Event</h2>
 
-                {error && (
-                    <div className="error-message">
-                        {error.split('\n').map((err, idx) => (
-                            <p key={idx}>{err}</p>
-                        ))}
-                    </div>
-                )}
+                {error && <div className="error-message">{error}</div>}
                 {successMessage && <p className="success-message">{successMessage}</p>}
 
                 <form onSubmit={handleSubmit} className="event-form">
@@ -155,82 +147,96 @@ function EventsEdit() {
                         <input
                             type="text"
                             id="eventName"
-                            value={eventName}
-                            onChange={(e) => setEventName(e.target.value)}
+                            value={eventData.eventName}
+                            onChange={handleChange}
                             required
+                            placeholder="Enter event's name"
                         />
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="eventDescription">Description</label>
                         <textarea
                             id="eventDescription"
-                            value={eventDescription}
-                            onChange={(e) => setEventDescription(e.target.value)}
+                            value={eventData.eventDescription}
+                            onChange={handleChange}
                             required
+                            placeholder="Enter event description"
                         />
                     </div>
+
                     <div className="form-group">
-                        <label htmlFor="startDate">Start Date</label>
+                        <label htmlFor="startDateTime">Start Date</label>
                         <input
                             type="datetime-local"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            id="startDateTime"
+                            value={eventData.startDateTime}
+                            onChange={handleChange}
                             required
                         />
                     </div>
+
                     <div className="form-group">
-                        <label htmlFor="endDate">End Date</label>
+                        <label htmlFor="endDateTime">End Date</label>
                         <input
                             type="datetime-local"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
+                            id="endDateTime"
+                            value={eventData.endDateTime}
+                            onChange={handleChange}
                             required
                         />
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="location">Location</label>
                         <input
                             type="text"
                             id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            value={eventData.location}
+                            onChange={handleChange}
                             required
+                            placeholder="Enter event location"
                         />
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="eventType">Type</label>
                         <select
                             id="eventType"
-                            value={eventType}
-                            onChange={(e) => setEventType(e.target.value)}
+                            value={eventData.eventType}
+                            onChange={handleChange}
                             required
                         >
+                            <option value="">Choose type</option>
                             <option value="party">Party</option>
                             <option value="meeting">Meeting</option>
                             <option value="workshop">Workshop</option>
                         </select>
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="availableSeats">Number of Participants</label>
                         <input
                             type="number"
                             id="availableSeats"
-                            value={availableSeats}
-                            onChange={(e) => setAvailableSeats(Number(e.target.value))}
+                            value={eventData.availableSeats}
+                            onChange={handleChange}
                             required
+                            placeholder="Enter number of available participants"
                         />
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="imageUrl">Image URL</label>
                         <input
                             type="text"
                             id="imageUrl"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
+                            value={eventData.imageUrl}
+                            onChange={handleChange}
+                            placeholder="Enter image URL (optional)"
                         />
                     </div>
+
                     <button type="submit" className="btn btn-primary">Update Event</button>
                 </form>
             </div>
