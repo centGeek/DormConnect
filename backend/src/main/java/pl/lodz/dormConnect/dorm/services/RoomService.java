@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.dormConnect.dorm.entities.RoomAssignEntity;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 public class RoomService {
@@ -54,14 +54,28 @@ public class RoomService {
     }
 
     @Transactional
+    public RoomEntity updateRoomPartial(Long id, String newName, Integer newFloor) {
+        RoomEntity room = roomRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+
+        if (newName != null) {
+            room.setNumber(newName);
+        }
+        if (newFloor != null) {
+            room.setFloor(newFloor);
+        }
+        return roomRepository.save(room);
+    }
+
+    @Transactional
     public boolean assignStudentToRoom(RoomEntity roomEntity, Long studentId, LocalDate fromDate, LocalDate toDate) {
         //LocalDate.MAX produces an Exception on the db side.
         LocalDate toDataTest = toDate != null ? toDate : LocalDate.of(2999, 12, 31);
         if (roomAssignmentRepository.existsAssignmentForStudentDuring(studentId, fromDate, toDataTest)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Student already has accommodation in the given period.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student already has accommodation in the given period.");
         }
         if (!canAssignNewResident(roomEntity.getId(), fromDate, toDataTest)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Room is full at some point of the given period.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room is full at some point of the given period.");
         }
         RoomAssignEntity roomAssignEntity = new RoomAssignEntity();
         roomAssignEntity.setRoom(roomEntity);
@@ -104,4 +118,18 @@ public class RoomService {
         return true; // OK, można dodać
     }
 
+    public List<AssignmentsDTO> getAssignmentsByUserId(Long userId) {
+        List<RoomAssignEntity> list = roomAssignmentRepository.findAllAssignmentsByStudentId(userId);
+        return list.stream()
+                .map(assignment -> new AssignmentsDTO(
+                        assignment.getId(),
+                        userId,
+                        null //TODO Pull data from another service using REST.
+                        ,
+                        assignment.getRoom().getNumber(),
+                        assignment.getRoom().getFloor(),
+                        assignment.getFromDate(),
+                        assignment.getToDate()))
+                .toList();
+    }
 }

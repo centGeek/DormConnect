@@ -38,4 +38,11 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignEntity
             @Param("studentId") Long studentId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    @Query("""
+            SELECT a
+            FROM RoomAssignEntity a
+            WHERE a.residentId = :studentId
+            """)
+    List<RoomAssignEntity> findAllAssignmentsByStudentId(@Param("studentId") Long studentId);
 }
