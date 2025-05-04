@@ -47,11 +47,6 @@ const Events = () => {
     const user = token ? parseJwt(token) : null;
     const userId = user?.id;
 
-    const userContext = useContext(UserContext);
-    const isAdmin = userContext?.user?.roles.includes('ADMIN');
-    const handleAdminNavigation = () => {
-        navigate('/events/admin/AdminEvents');
-    };
 
     const fetchEvents = async (page: number = 0) => {
         try {
@@ -125,15 +120,6 @@ const Events = () => {
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
                     Dodaj wydarzenie
                 </button>
-
-                {isAdmin && (
-                    <button
-                        className="btn btn-secondary admin-button"
-                        onClick={handleAdminNavigation}
-                    >
-                        Admin Panel
-                    </button>
-                )}
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
