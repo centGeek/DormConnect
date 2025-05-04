@@ -19,13 +19,24 @@ interface Event {
 interface EventsSectionProps {
     title: string;
     events: Event[];
-    joinEvent: (eventId: number) => void;
-    leaveEvent: (eventId: number) => void;
+    joinEvent?: (eventId: number) => void;
+    leaveEvent?: (eventId: number) => void;
+    editEvent?: (eventId: number) => void;
     userId: number | undefined;
     pageSize: number;
+    isOrganizerSection?: boolean; // <- Nowy prop
 }
 
-const EventsSection: React.FC<EventsSectionProps> = ({ title, events, joinEvent, leaveEvent, userId, pageSize }) => {
+const EventsSection: React.FC<EventsSectionProps> = ({
+                                                         title,
+                                                         events,
+                                                         joinEvent,
+                                                         leaveEvent,
+                                                         editEvent,
+                                                         userId,
+                                                         pageSize,
+                                                         isOrganizerSection,
+                                                     }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const toggleList = () => {
@@ -43,7 +54,9 @@ const EventsSection: React.FC<EventsSectionProps> = ({ title, events, joinEvent,
                     userId={userId}
                     joinEvent={joinEvent}
                     leaveEvent={leaveEvent}
+                    editEvent={editEvent}
                     pageSize={pageSize}
+                    isOrganizerSection={isOrganizerSection}
                 />
             )}
         </div>

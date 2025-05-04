@@ -27,6 +27,7 @@ function Events() {
     const [organizedEvents, setOrganizedEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [isOrganizer, setIsOrganizer] = useState<boolean>(false);  // Stan, który będzie informował, czy użytkownik jest organizatorem
 
     const navigate = useNavigate();
 
@@ -89,85 +90,24 @@ function Events() {
 
             const data = await response.json();
             setOrganizedEvents(data.content || []);
+            setIsOrganizer(data.content.length > 0);  // Sprawdzamy, czy użytkownik jest organizatorem
         } catch (error: any) {
             console.error('Błąd podczas pobierania organizowanych wydarzeń:', error);
         }
     };
 
-    const handleAddEvent = () => {
-        navigate('/events/create');
-    };
-
-    const joinEvent = async (eventId: number) => {
-        try {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
-            const response = await fetch(`/api/event/participant/${eventId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się dołączyć do wydarzenia');
-            }
-
-            setEvents(events.map(event => {
-                if (event.eventId === eventId) {
-                    return {
-                        ...event,
-                        participantId: [...event.participantId, userId!],  // Dodaj użytkownika
-                    };
-                }
-                return event;
-            }));
-        } catch (error: any) {
-            console.error('Błąd podczas dołączania do wydarzenia:', error);
-        }
-    };
-
-    const leaveEvent = async (eventId: number) => {
-        try {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
-            const response = await fetch(`/api/event/participant/${eventId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się opuścić wydarzenia');
-            }
-
-            setEvents(events.map(event => {
-                if (event.eventId === eventId) {
-                    return {
-                        ...event,
-                        participantId: event.participantId.filter(id => id !== userId),  // Usuń użytkownika
-                    };
-                }
-                return event;
-            }));
-        } catch (error: any) {
-            console.error('Błąd podczas opuszczania wydarzenia:', error);
-        }
+    const editEvent = (eventId: number) => {
+        navigate(`/events/edit/${eventId}`);
     };
 
     useEffect(() => {
         fetchEvents();
         fetchOrganizedEvents();
     }, []);
+
+    const handleAddEvent = () => {
+        navigate('/events/create');
+    };
 
     return (
         <Template
@@ -185,22 +125,25 @@ function Events() {
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
-                <EventsSection
-                    title="Wydarzenia organizowane przez Ciebie"
-                    events={organizedEvents}
-                    joinEvent={joinEvent}
-                    leaveEvent={leaveEvent}
-                    userId={userId}
-                    pageSize={4}
-                />
+                {isOrganizer && (  // Wyświetlamy sekcję organizowanych wydarzeń tylko, jeśli użytkownik jest organizatorem
+                    <EventsSection
+                        title="Wydarzenia organizowane przez Ciebie"
+                        events={organizedEvents}
+                        editEvent={editEvent}
+                        userId={userId}
+                        pageSize={4}
+                        isOrganizerSection={true}
+                    />
+                )}
 
                 <EventsSection
-                    title="Wydarzenia, w których bierzesz udział"
+                    title="Wszystkie wydarzenia."
                     events={events}
-                    joinEvent={joinEvent}
-                    leaveEvent={leaveEvent}
+                    joinEvent={() => {}}
+                    leaveEvent={() => {}}
                     userId={userId}
                     pageSize={4}
+                    isOrganizerSection={false}
                 />
             </div>
         </Template>

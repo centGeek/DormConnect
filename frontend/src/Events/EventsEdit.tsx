@@ -1,10 +1,13 @@
 import Template from '../Template/Template';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import './EventsCreate.css';
 
-function EventsCreate() {
+function EventsEdit() {
+    const { eventId } = useParams();
+    const navigate = useNavigate();
+
     const [eventName, setEventName] = useState('');
     const [eventDescription, setEventDescription] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -15,15 +18,54 @@ function EventsCreate() {
     const [imageUrl, setImageUrl] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const navigate = useNavigate();
+
+    // Fetch event data by eventId
+    useEffect(() => {
+        const fetchEventData = async () => {
+            const token = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('token='))?.split('=')[1];
+
+            if (!token) {
+                setError('No token found');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/event/${eventId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch event data');
+                }
+
+                const event = await response.json();
+
+                setEventName(event.eventName);
+                setEventDescription(event.description);
+                setStartDate(event.startDateTime);
+                setEndDate(event.endDateTime);
+                setLocation(event.location);
+                setEventType(event.eventType);
+                setAvailableSeats(event.maxParticipants);
+                setImageUrl(event.imageUrl || '');
+            } catch (error: any) {
+                setError(error.message);
+            }
+        };
+
+        fetchEventData();
+    }, [eventId]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const token = document.cookie
             .split('; ')
-            .find(row => row.startsWith('token='))
-            ?.split('=')[1];
+            .find(row => row.startsWith('token='))?.split('=')[1];
 
         if (!token) {
             setError('No token found');
@@ -38,7 +80,7 @@ function EventsCreate() {
             return;
         }
 
-        const newEvent = {
+        const updatedEvent = {
             eventName: eventName,
             description: eventDescription,
             startDateTime: startDate,
@@ -48,25 +90,24 @@ function EventsCreate() {
             maxParticipants: availableSeats !== '' ? Number(availableSeats) : null,
             imageUrl: imageUrl || null,
             organizerId: organizerId,
-            participantId: []
+            participantId: []  // Assuming participantId is empty for the edit
         };
 
         try {
-            const response = await fetch('/api/event/create', {
-                method: 'POST',
+            const response = await fetch(`/api/event/${eventId}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(newEvent),
-                credentials: 'include'
+                body: JSON.stringify(updatedEvent),
+                credentials: 'include',
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
 
                 if (errorData.errors) {
-                    // Usuwamy prefiksy (np. 'startDateTime: ') z komunikatów błędów
                     const cleanedErrors = errorData.errors.map((err: string) => {
                         const colonIndex = err.indexOf(':');
                         return colonIndex !== -1 ? err.slice(colonIndex + 1).trim() : err;
@@ -74,29 +115,19 @@ function EventsCreate() {
 
                     setError(cleanedErrors.join('\n'));
                 } else {
-                    setError('Failed to create event');
+                    setError('Failed to update event');
                 }
                 return;
             }
 
-            setSuccessMessage('Event created successfully!');
+            setSuccessMessage('Event updated successfully!');
             setError(null);
 
             setTimeout(() => {
                 navigate('/events');
             }, 1000);
-
-            // Czyszczenie formularza
-            setEventName('');
-            setEventDescription('');
-            setStartDate('');
-            setEndDate('');
-            setLocation('');
-            setEventType('');
-            setAvailableSeats('');
-            setImageUrl('');
         } catch (error: any) {
-            setError(error.message || 'Error creating event');
+            setError(error.message || 'Error updating event');
             setSuccessMessage(null);
         }
     };
@@ -107,7 +138,7 @@ function EventsCreate() {
             footerContent={<p></p>}
         >
             <div className="events-create-container">
-                <h2>Create Event</h2>
+                <h2>Edit Event</h2>
 
                 {error && (
                     <div className="error-message">
@@ -176,7 +207,6 @@ function EventsCreate() {
                             onChange={(e) => setEventType(e.target.value)}
                             required
                         >
-                            <option value="">Choose type</option>
                             <option value="party">Party</option>
                             <option value="meeting">Meeting</option>
                             <option value="workshop">Workshop</option>
@@ -201,11 +231,11 @@ function EventsCreate() {
                             onChange={(e) => setImageUrl(e.target.value)}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">Create Event</button>
+                    <button type="submit" className="btn btn-primary">Update Event</button>
                 </form>
             </div>
         </Template>
     );
 }
 
-export default EventsCreate;
+export default EventsEdit;

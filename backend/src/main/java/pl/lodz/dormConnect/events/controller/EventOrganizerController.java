@@ -46,4 +46,19 @@ public class EventOrganizerController {
         }
     }
 
+    @GetMapping("/has-events")
+    public ResponseEntity<Boolean> hasOrganizedEvent(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            String token = authorizationHeader.replace("Bearer ", "");
+            Long organizerId = jwtService.getIdFromToken(token);
+
+            boolean hasEvents = eventOrganizerService.hasOrganizedEvent(organizerId);
+            return new ResponseEntity<>(hasEvents, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error checking if organizer has events: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

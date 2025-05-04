@@ -20,12 +20,14 @@ interface Event {
 interface EventsListProps {
     events: Event[];
     userId: number | undefined;
-    joinEvent: (eventId: number) => void;
-    leaveEvent: (eventId: number) => void;
+    joinEvent?: (eventId: number) => void;
+    leaveEvent?: (eventId: number) => void;
+    editEvent?: (eventId: number) => void;
     pageSize: number;
+    isOrganizerSection?: boolean;
 }
 
-const EventsList: React.FC<EventsListProps> = ({ events, userId, joinEvent, leaveEvent, pageSize }) => {
+const EventsList: React.FC<EventsListProps> = ({ events, userId, joinEvent, leaveEvent, editEvent, pageSize, isOrganizerSection }) => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const totalPages = Math.ceil(events.length / pageSize);
 
@@ -53,8 +55,8 @@ const EventsList: React.FC<EventsListProps> = ({ events, userId, joinEvent, leav
                         imageUrl={event.imageUrl}
                         availableSpots={event.availableSpots}
                         userId={userId}
-                        joinEvent={joinEvent}
-                        leaveEvent={leaveEvent}
+                        editEvent={editEvent}
+                        isOrganizerSection={isOrganizerSection}
                     />
                 ))}
             </div>

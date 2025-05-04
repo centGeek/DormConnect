@@ -16,4 +16,6 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     Page<EventEntity> findByParticipantIdContaining(Long participantId, Pageable pageable);
 
     Page<EventEntity> findByOrganizerId(Long organizerId, Pageable pageable);
+
+    boolean existsByOrganizerId(Long organizerId);
 }
