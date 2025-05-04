@@ -11,7 +11,7 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 
     Page<EventEntity> findAll(Pageable pageable);
 
-    Page<EventEntity> findAllByIsApprovedTrue(Pageable pageable);
+    Page<EventEntity> findAllByIsApprovedIsTrue(Pageable pageable);
 
     Page<EventEntity> findByParticipantIdContaining(Long participantId, Pageable pageable);
 

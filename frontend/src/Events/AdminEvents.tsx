@@ -45,7 +45,7 @@ function AdminEvents() {
         const roles = user?.roles || [];
 
         if (!roles.includes('ADMIN') && !roles.includes('MANAGER')) {
-            navigate('/login');
+            navigate('/');
             return;
         }
 

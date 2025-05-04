@@ -1,5 +1,6 @@
 package pl.lodz.dormConnect.events.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +32,9 @@ public class EventController {
 
     // To przyjmuje prostego JSON bez id
     @PostMapping("/create")
-    public ResponseEntity<EventDTO> createEvent(@RequestBody EventCreateDTO eventCreateDTO) {
+    public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO) {
         try {
+
             return eventService.createEvent(eventCreateDTO)
                     .map(event -> new ResponseEntity<>(event, HttpStatus.CREATED))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
@@ -43,9 +45,9 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EventDTO>> getAllEvents(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<EventDTO>> getAllApprovedEvents(@PageableDefault Pageable pageable) {
         try {
-            Page<EventDTO> eventsPage = eventService.getAllEvents(pageable);
+            Page<EventDTO> eventsPage = eventService.getAllApprovedEvents(pageable);
             return ResponseEntity.ok(eventsPage);
         } catch (Exception e) {
             logger.error("Error retrieving events: ", e);
@@ -81,6 +83,5 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }

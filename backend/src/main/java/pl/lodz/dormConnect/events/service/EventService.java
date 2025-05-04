@@ -42,8 +42,8 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public Page<EventDTO> getAllEvents(Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findAll(pageable);
+    public Page<EventDTO> getAllApprovedEvents(Pageable pageable) {
+        Page<EventEntity> page = eventRepository.findAllByIsApprovedIsTrue(pageable);
         return page.map(eventMapper::toEventDTO);
     }
 
