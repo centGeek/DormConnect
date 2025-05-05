@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login/Login.tsx';
 import Chat from './Chat/Chat.tsx';
@@ -13,17 +13,10 @@ import DormFormPage from "./Rooms/DormFormPage.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (userContext) {
-            setIsLoading(false); // Ustaw isLoading na false, gdy kontekst zostanie załadowany
-        }
+        console.log('User context:', userContext?.user?.roles);
     }, [userContext]);
-
-    if (isLoading) {
-        return <div>Ładowanie...</div>; // Możesz tu dodać spinner lub inny placeholder
-    }
 
     return (
 

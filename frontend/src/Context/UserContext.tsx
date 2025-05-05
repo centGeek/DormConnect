@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, {createContext, useState, ReactNode, useEffect} from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import axios, { AxiosResponse } from 'axios';
@@ -80,7 +80,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
-
+    useEffect(() => {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUser({
+            id: decodedToken.id,
+            roles: decodedToken.roles,
+            sub: decodedToken.sub,
+        });
+        console.log('User logged in:', user);
+    }, []);
 
 
     return (
