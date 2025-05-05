@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
@@ -44,14 +43,13 @@ const Events = () => {
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
 
-    const user = token ? parseJwt(token) : null;
-    const userId = user?.id;
-
     const userContext = useContext(UserContext);
     const isAdmin = userContext?.user?.roles.includes('ADMIN');
     const handleAdminNavigation = () => {
         navigate('/events/admin/AdminEvents');
     };
+
+    const userId = userContext?.user?.id;
 
     const fetchEvents = async (page: number = 0) => {
         try {
