@@ -23,7 +23,7 @@ function Login() {
                 }
             );
             console.log('Login successful', response.data);
-            // Poczekaj na zapisanie ciasteczka, a potem przekieruj
+
             navigate('/home');  // Jeśli logowanie zakończyło się sukcesem
         } catch (error) {
             console.error('Login failed', error instanceof Error ? error.message : error);

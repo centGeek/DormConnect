@@ -45,11 +45,11 @@ const Events = () => {
 
     const userContext = useContext(UserContext);
     const isAdmin = userContext?.user?.roles.includes('ADMIN');
+    const userId = userContext?.user?.id;
+
     const handleAdminNavigation = () => {
         navigate('/events/admin/AdminEvents');
     };
-
-    const userId = userContext?.user?.id;
 
     const fetchEvents = async (page: number = 0) => {
         try {
@@ -124,15 +124,13 @@ const Events = () => {
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <h2>Wydarzenia</h2>
+
                 <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
                     Dodaj wydarzenie
                 </button>
 
                 {isAdmin && (
-                    <button
-                        className="btn btn-secondary admin-button"
-                        onClick={handleAdminNavigation}
-                    >
+                    <button className="btn btn-secondary admin-button" onClick={handleAdminNavigation}>
                         Admin Panel
                     </button>
                 )}
@@ -148,25 +146,31 @@ const Events = () => {
                         </button>
                         {showOrganized && (
                             <>
-                                <div className="events-grid">
-                                    {organizedEvents.map(event => (
-                                        <EventCard
-                                            key={event.eventId}
-                                            event={event}
-                                            userId={userId}
-                                            isOrganizer={true}
-                                            onEventDeleted={handleEventDeleted}
+                                {organizedEvents.length === 0 ? (
+                                    <p className="no-events-message">📅 Brak organizowanych wydarzeń.</p>
+                                ) : (
+                                    <>
+                                        <div className="events-grid">
+                                            {organizedEvents.map(event => (
+                                                <EventCard
+                                                    key={event.eventId}
+                                                    event={event}
+                                                    userId={userId}
+                                                    isOrganizer={true}
+                                                    onEventDeleted={handleEventDeleted}
+                                                />
+                                            ))}
+                                        </div>
+                                        <Pagination
+                                            totalPages={totalOrganizedPages}
+                                            currentPage={organizedPage}
+                                            onPageChange={(page) => {
+                                                setOrganizedPage(page);
+                                                fetchOrganizedEvents(page);
+                                            }}
                                         />
-                                    ))}
-                                </div>
-                                <Pagination
-                                    totalPages={totalOrganizedPages}
-                                    currentPage={organizedPage}
-                                    onPageChange={(page) => {
-                                        setOrganizedPage(page);
-                                        fetchOrganizedEvents(page);
-                                    }}
-                                />
+                                    </>
+                                )}
                             </>
                         )}
                     </div>
@@ -179,25 +183,31 @@ const Events = () => {
                     </button>
                     {showAll && (
                         <>
-                            <div className="events-grid">
-                                {events.map(event => (
-                                    <EventCard
-                                        key={event.eventId}
-                                        event={event}
-                                        userId={userId}
-                                        isOrganizer={false}
-                                        onEventDeleted={() => {}} // placeholder
+                            {events.length === 0 ? (
+                                <p className="no-events-message">📅 Brak dostępnych wydarzeń.</p>
+                            ) : (
+                                <>
+                                    <div className="events-grid">
+                                        {events.map(event => (
+                                            <EventCard
+                                                key={event.eventId}
+                                                event={event}
+                                                userId={userId}
+                                                isOrganizer={false}
+                                                onEventDeleted={() => {}}
+                                            />
+                                        ))}
+                                    </div>
+                                    <Pagination
+                                        totalPages={totalEventPages}
+                                        currentPage={eventPage}
+                                        onPageChange={(page) => {
+                                            setEventPage(page);
+                                            fetchEvents(page);
+                                        }}
                                     />
-                                ))}
-                            </div>
-                            <Pagination
-                                totalPages={totalEventPages}
-                                currentPage={eventPage}
-                                onPageChange={(page) => {
-                                    setEventPage(page);
-                                    fetchEvents(page);
-                                }}
-                            />
+                                </>
+                            )}
                         </>
                     )}
                 </div>

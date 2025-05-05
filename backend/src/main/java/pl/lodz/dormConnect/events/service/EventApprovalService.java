@@ -11,6 +11,8 @@ import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
+import java.time.LocalDateTime;
+
 @Service
 public class EventApprovalService {
 
@@ -43,7 +45,7 @@ public class EventApprovalService {
 
     @Transactional(readOnly = true)
     public Page<EventDTO> getAllEvents(Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findAll(pageable);
+        Page<EventEntity> page = eventRepository.findAllByStartDateTimeAfter(LocalDateTime.now(), pageable);
         return page.map(eventMapper::toEventDTO);
     }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
@@ -15,7 +15,7 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
-    isApproved: boolean; // Dodane
+    isApproved: boolean;
 }
 
 function AdminEvents() {
@@ -53,45 +53,41 @@ function AdminEvents() {
         setUserRoles(roles);
     }, [navigate]);
 
-    useEffect(() => {
+    const fetchEvents = useCallback(async (pageToFetch: number = page) => {
         if (!token) return;
 
-        const fetchEvents = async () => {
-            try {
-                setLoading(true);
+        try {
+            setLoading(true);
 
-                const response = await fetch(`/api/event/administrate?page=${page}&size=4&sort=startDateTime,asc`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    credentials: 'include',
-                });
+            const response = await fetch(`/api/event/administrate?page=${pageToFetch}&size=4&sort=startDateTime,asc`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` },
+                credentials: 'include',
+            });
 
-                if (!response.ok) {
-                    throw new Error('Nie udało się pobrać wydarzeń.');
-                }
-
-                const data = await response.json();
-                setEvents(data.content || []);
-                setTotalPages(data.totalPages || 1);
-            } catch (err: any) {
-                setError(err.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error('Nie udało się pobrać wydarzeń.');
             }
-        };
 
-        fetchEvents();
+            const data = await response.json();
+            setEvents(data.content || []);
+            setTotalPages(data.totalPages || 1);
+        } catch (err: any) {
+            setError(err.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
+        } finally {
+            setLoading(false);
+        }
     }, [token, page]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
 
     const handleApprove = async (eventId: number) => {
         try {
             const response = await fetch(`/api/event/administrate/${eventId}/approve`, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
             });
 
@@ -99,7 +95,7 @@ function AdminEvents() {
                 throw new Error('Nie udało się zatwierdzić wydarzenia.');
             }
 
-            setEvents(prevEvents => prevEvents.filter(event => event.eventId !== eventId));
+            await fetchEvents();
         } catch (error) {
             console.error('Błąd podczas zatwierdzania:', error);
         }
@@ -109,9 +105,7 @@ function AdminEvents() {
         try {
             const response = await fetch(`/api/event/administrate/${eventId}/reject`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
             });
 
@@ -119,7 +113,7 @@ function AdminEvents() {
                 throw new Error('Nie udało się odrzucić wydarzenia.');
             }
 
-            setEvents(prevEvents => prevEvents.filter(event => event.eventId !== eventId));
+            await fetchEvents();
         } catch (error) {
             console.error('Błąd podczas odrzucania:', error);
         }
@@ -128,6 +122,7 @@ function AdminEvents() {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
+            fetchEvents(newPage);
         }
     };
 
@@ -182,18 +177,10 @@ function AdminEvents() {
                 </div>
 
                 <div className="pagination">
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(0)}
-                        disabled={page === 0}
-                    >
+                    <button className="page-button" onClick={() => handlePageChange(0)} disabled={page === 0}>
                         &lt;&lt;
                     </button>
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page === 0}
-                    >
+                    <button className="page-button" onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
                         &lt;
                     </button>
 
@@ -223,18 +210,10 @@ function AdminEvents() {
                         ));
                     })()}
 
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page === totalPages - 1}
-                    >
+                    <button className="page-button" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
                         &gt;
                     </button>
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(totalPages - 1)}
-                        disabled={page === totalPages - 1}
-                    >
+                    <button className="page-button" onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
                         &gt;&gt;
                     </button>
                 </div>

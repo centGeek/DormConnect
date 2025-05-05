@@ -169,3 +169,10 @@
 .toggle-button:hover {
     background-color: #218838;
 }
+
+.no-events-message {
+    text-align: center;
+    font-size: 18px;
+    color: #777;
+    margin-top: 20px;
+}
