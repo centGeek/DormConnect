@@ -1,8 +1,8 @@
 import {ReactNode} from 'react';
 import './Template.css';
 import LogoPL from '../assets/Lodz University of Technology_v2.png';
-import { useNavigate } from 'react-router-dom';
-import axios, {AxiosResponse} from 'axios';
+import { useContext } from 'react';
+import { UserContext } from '../Context/UserContext.tsx';
 
 interface TemplateProps {
     children: ReactNode;
@@ -14,31 +14,13 @@ interface Button {
     link: string;
 }
 
-function Template({ children, footerContent, buttons }: TemplateProps) {
-    const navigate = useNavigate();
 
-    const handleLogout = async () => {
-        try {
-            const response : AxiosResponse = await axios.post(
-                'http://localhost:8091/api/auth/logout',
-                {},
-                {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            )
-            console.log('Logout successful', response.data);
-            navigate('/');
-        } catch (error) {
-            console.error('Logout failed:', error instanceof Error ? error.message : error);
-        }
-    }
+function Template({ children, footerContent, buttons }: TemplateProps) {
+    const userContext = useContext(UserContext);
 
     return (
         <div className="template-container">
-                <div className="template">
+            <div className="template">
                 <header className="template-header">
                     <a href={"/home"}><img src={LogoPL} alt="Logo" className="template-logo" /></a>
                     {buttons && (
@@ -50,7 +32,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                             ))}
                         </div>
                     )}
-                    <button className="logout-button" onClick={handleLogout}>Log out</button>
+                    <button className="logout-button" onClick={userContext?.handleLogout}>Log out</button>
                 </header>
                 <main className="template-main">
                     {children}
