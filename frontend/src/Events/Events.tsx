@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
-import Pagination from './Pagination';
+import Pagination from './Pagination'; // Paginacja
 import './Events.css';
 import { UserContext } from '../Context/UserContext.tsx';
 
@@ -109,9 +109,9 @@ const Events = () => {
     };
 
     useEffect(() => {
-        fetchEvents();
-        fetchOrganizedEvents();
-    }, []);
+        fetchEvents(eventPage);
+        fetchOrganizedEvents(organizedPage);
+    }, [eventPage, organizedPage]);
 
     return (
         <Template
@@ -151,6 +151,7 @@ const Events = () => {
                                         <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={true} />
                                     ))}
                                 </div>
+                                {/* Paginacja dla organizowanych wydarzeń */}
                                 <Pagination
                                     totalPages={totalOrganizedPages}
                                     currentPage={organizedPage}
@@ -176,6 +177,7 @@ const Events = () => {
                                     <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={false} />
                                 ))}
                             </div>
+                            {/* Paginacja dla wszystkich wydarzeń */}
                             <Pagination
                                 totalPages={totalEventPages}
                                 currentPage={eventPage}
