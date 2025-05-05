@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../PlatformIO/Projects/test_project_esp32"
+		},
+		{
+			"name": "nfc",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
