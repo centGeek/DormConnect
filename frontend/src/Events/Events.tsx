@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
-import Pagination from './Pagination'; // Paginacja
+import Pagination from './Pagination';
 import './Events.css';
 import { UserContext } from '../Context/UserContext.tsx';
 
@@ -108,6 +108,10 @@ const Events = () => {
         navigate('/events/create');
     };
 
+    const handleEventDeleted = (eventId: number) => {
+        setOrganizedEvents(prev => prev.filter(event => event.eventId !== eventId));
+    };
+
     useEffect(() => {
         fetchEvents(eventPage);
         fetchOrganizedEvents(organizedPage);
@@ -148,10 +152,15 @@ const Events = () => {
                             <>
                                 <div className="events-grid">
                                     {organizedEvents.map(event => (
-                                        <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={true} />
+                                        <EventCard
+                                            key={event.eventId}
+                                            event={event}
+                                            userId={userId}
+                                            isOrganizer={true}
+                                            onEventDeleted={handleEventDeleted}
+                                        />
                                     ))}
                                 </div>
-                                {/* Paginacja dla organizowanych wydarzeń */}
                                 <Pagination
                                     totalPages={totalOrganizedPages}
                                     currentPage={organizedPage}
@@ -174,10 +183,15 @@ const Events = () => {
                         <>
                             <div className="events-grid">
                                 {events.map(event => (
-                                    <EventCard key={event.eventId} event={event} userId={userId} isOrganizer={false} />
+                                    <EventCard
+                                        key={event.eventId}
+                                        event={event}
+                                        userId={userId}
+                                        isOrganizer={false}
+                                        onEventDeleted={() => {}} // placeholder
+                                    />
                                 ))}
                             </div>
-                            {/* Paginacja dla wszystkich wydarzeń */}
                             <Pagination
                                 totalPages={totalEventPages}
                                 currentPage={eventPage}
