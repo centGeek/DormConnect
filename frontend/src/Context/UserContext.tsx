@@ -79,18 +79,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error('Logout failed:', error instanceof Error ? error.message : error);
         }
     };
-
-    useEffect(() => {
-        const decodedToken: DecodedToken = jwtDecode(token as string);
-        setUser({
-            id: decodedToken.id,
-            roles: decodedToken.roles,
-            sub: decodedToken.sub,
-        });
-        console.log('User logged in:', user);
-    }, []);
-
-
+    
     return (
         <UserContext.Provider value={{ user, token, handleLogin, handleLogout }}>
             {children}

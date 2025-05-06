@@ -1,9 +1,9 @@
 package pl.lodz.dormConnect.schedule.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.schedule.entity.CommonRoom;
 import pl.lodz.dormConnect.schedule.repositories.CommonRoomRepository;
 
@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/common-room")
-@Controller
 class CommonRoomController {
     CommonRoomRepository repository;
 
@@ -20,16 +19,13 @@ class CommonRoomController {
     }
 
     @PostMapping("/add")
-    public CommonRoom addCommonRoom(CommonRoom commonRoom) {
-        return repository.save(commonRoom);
+    public ResponseEntity<CommonRoom> addCommonRoom(@RequestBody CommonRoom commonRoom) {
+        CommonRoom newRoom = repository.save(commonRoom);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
     }
 
-    @PostMapping("/delete/{id}")
-    public void deleteCommonRoom(Long id) {
-        repository.deleteCommonRoomById(id);
-    }
 
-    @PostMapping("/show")
+    @GetMapping("/show")
     public List<CommonRoom> showCommonRooms() {
         return repository.findAll();
     }
