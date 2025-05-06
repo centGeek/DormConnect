@@ -25,6 +25,9 @@ public class CommonRoom {
     @Column (name = "max_time_you_can_stay")
     private int maxTimeYouCanStay;
 
+    @Column (name = "how_many_times_a_week_you_can_use_it")
+    private int howManyTimesAWeekYouCanUseIt;
+
     @Column (name = "is_active")
     private boolean active = true;
 

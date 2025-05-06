@@ -28,6 +28,8 @@ public class CommonRoomAssigment {
     @ManyToMany
     private List<UserEntity> users = new ArrayList<>();
 
+    private boolean archived;
+
     private Date startDate;
     private Date endDate;
 }
