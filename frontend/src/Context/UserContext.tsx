@@ -81,7 +81,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     useEffect(() => {
-        const decodedToken: DecodedToken = jwtDecode(token);
+        const decodedToken: DecodedToken = jwtDecode(token as string);
         setUser({
             id: decodedToken.id,
             roles: decodedToken.roles,
