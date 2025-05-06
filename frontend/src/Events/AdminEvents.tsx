@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
 import './AdminEvents.css';
+import Pagination from './Pagination.tsx';
 
 interface Event {
     eventId: number;
@@ -176,47 +177,11 @@ function AdminEvents() {
                     )}
                 </div>
 
-                <div className="pagination">
-                    <button className="page-button" onClick={() => handlePageChange(0)} disabled={page === 0}>
-                        &lt;&lt;
-                    </button>
-                    <button className="page-button" onClick={() => handlePageChange(page - 1)} disabled={page === 0}>
-                        &lt;
-                    </button>
-
-                    {(() => {
-                        const maxPagesToShow = 3;
-                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
-                        let endPage = startPage + maxPagesToShow - 1;
-
-                        if (endPage >= totalPages) {
-                            endPage = totalPages - 1;
-                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
-                        }
-
-                        const pageNumbers = [];
-                        for (let i = startPage; i <= endPage; i++) {
-                            pageNumbers.push(i);
-                        }
-
-                        return pageNumbers.map(p => (
-                            <button
-                                key={p}
-                                className={`page-button ${page === p ? 'active' : ''}`}
-                                onClick={() => handlePageChange(p)}
-                            >
-                                {p + 1}
-                            </button>
-                        ));
-                    })()}
-
-                    <button className="page-button" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>
-                        &gt;
-                    </button>
-                    <button className="page-button" onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>
-                        &gt;&gt;
-                    </button>
-                </div>
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={page}
+                    onPageChange={handlePageChange}
+                />
             </div>
         </Template>
     );
