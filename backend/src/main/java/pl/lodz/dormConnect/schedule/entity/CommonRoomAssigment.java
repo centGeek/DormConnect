@@ -23,6 +23,7 @@ public class CommonRoomAssigment {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "common_room_id")
     private CommonRoom commonRoom;
 
     @ManyToMany
