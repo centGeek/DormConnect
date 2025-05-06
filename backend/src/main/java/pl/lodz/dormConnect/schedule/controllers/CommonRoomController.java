@@ -2,31 +2,57 @@ package pl.lodz.dormConnect.schedule.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.dormConnect.schedule.dto.CommonRoomCreateDTO;
 import pl.lodz.dormConnect.schedule.entity.CommonRoom;
-import pl.lodz.dormConnect.schedule.repositories.CommonRoomRepository;
+import pl.lodz.dormConnect.schedule.service.CommonRoomService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/common-room")
 class CommonRoomController {
-    CommonRoomRepository repository;
+    private final CommonRoomService service;
 
-    public CommonRoomController(CommonRoomRepository repository) {
-        this.repository = repository;
+    public CommonRoomController(CommonRoomService service) {
+        this.service = service;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CommonRoom> addCommonRoom(@RequestBody CommonRoom commonRoom) {
-        CommonRoom newRoom = repository.save(commonRoom);
+    public ResponseEntity<CommonRoom> addCommonRoom(@RequestBody CommonRoomCreateDTO commonRoomCreateDTO) {
+        CommonRoom newRoom = service.addCommonRoom(commonRoomCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
     }
 
 
     @GetMapping("/show")
     public List<CommonRoom> showCommonRooms() {
-        return repository.findAll();
+        return service.getAllCommonRooms();
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteCommonRoom(@PathVariable Long id) {
+        if (service.deleteCommonRoom(id)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CommonRoom> updateActiveStatus(@PathVariable Long id, @RequestParam boolean active) {
+        try {
+            CommonRoom updatedRoom = service.updateActiveStatus(id, active);
+            return ResponseEntity.ok(updatedRoom);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/show/{floor}")
+    public List<CommonRoom> showCommonRooms(@PathVariable Long floor) {
+        return service.getRoomByFloor(floor.intValue());
+    }
+
+
 }

@@ -15,4 +15,6 @@ public interface CommonRoomRepository extends JpaRepository<CommonRoom, Long> {
 
 
     void deleteCommonRoomById(Long id);
+
+    List<CommonRoom> findByFloor(int floor);
 }

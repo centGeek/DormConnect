@@ -2,10 +2,16 @@ package pl.lodz.dormConnect.schedule.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
+@Setter
+@Getter
 @Table (name = "common_room")
 public class CommonRoom {
     @Id
