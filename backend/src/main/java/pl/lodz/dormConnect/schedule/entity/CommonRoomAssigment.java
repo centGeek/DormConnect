@@ -23,7 +23,7 @@ public class CommonRoomAssigment {
     private Long id;
 
     @ManyToOne
-    private RoomEntity room;
+    private CommonRoom commonRoom;
 
     @ManyToMany
     private List<UserEntity> users = new ArrayList<>();

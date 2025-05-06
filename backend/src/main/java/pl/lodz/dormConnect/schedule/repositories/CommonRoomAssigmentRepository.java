@@ -16,8 +16,7 @@ public interface CommonRoomAssigmentRepository extends JpaRepository<CommonRoomA
     @Query("SELECT c FROM CommonRoomAssigment c JOIN c.users u WHERE u.id = :id")
     List<CommonRoomAssigment> findAssignmentsByUserId(@Param("id") Long id);
 
-    @Query("SELECT c FROM CommonRoomAssigment c WHERE c.room.id = :id")
-    CommonRoomAssigment findCommonRoomAssigmentByCommonRoomId(@Param("id") Long id);
+    CommonRoomAssigment findCommonRoomAssigmentByCommonRoom_Id(Long id);
 
     void deleteById(Long id);
 }
