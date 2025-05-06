@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.dormConnect.schedule.dto.CommonRoomCreateDTO;
 import pl.lodz.dormConnect.schedule.entity.CommonRoom;
 import pl.lodz.dormConnect.schedule.repositories.CommonRoomRepository;
+import pl.lodz.dormConnect.schedule.scheduler.CommonRoomAssignmentScheduler;
 import java.util.List;
 
 @Service
@@ -11,8 +12,11 @@ public class CommonRoomService {
 
     private final CommonRoomRepository repository;
 
-    public CommonRoomService(CommonRoomRepository repository) {
+    private final CommonRoomAssignmentScheduler scheduler;
+
+    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler) {
         this.repository = repository;
+        this.scheduler = scheduler;
     }
 
     public CommonRoom addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
@@ -32,6 +36,7 @@ public class CommonRoomService {
         commonRoom.setMaxTimeYouCanStay(commonRoomCreateDTO.maxTimeYouCanStay());
         commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt());
         commonRoom.setActive(commonRoomCreateDTO.active());
+        scheduler.createAssignmentsForNextWeek(commonRoom);
         return repository.save(commonRoom);
     }
 
