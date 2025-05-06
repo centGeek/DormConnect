@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.dormConnect.schedule.entity.CommonRoomAssigment;
 import pl.lodz.dormConnect.schedule.repositories.CommonRoomAssigmentRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,12 @@ public class CommonRoomAssigmentService {
     public CommonRoomAssigment createAssignment(CommonRoomAssigment assignment) {
         if (assignment.getStartDate().after(assignment.getEndDate())) {
             throw new IllegalArgumentException("Data rozpoczęcia nie może być późniejsza niż data zakończenia.");
+        }
+        if (assignment.getStartDate().before(new Date())) {
+            throw new IllegalArgumentException("Data rozpoczęcia nie może być wcześniejsza niż dzisiaj.");
+        }
+        if(assignment.getUsers().size() > assignment.getRoom().getCapacity()) {
+            throw new IllegalArgumentException("Przypisano więcej użytkowników niż pojemność pokoju.");
         }
         return repository.save(assignment);
     }
