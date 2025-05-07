@@ -70,9 +70,9 @@ function DormFormPage() {
 
     return (
         <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Akademiki', link: '/dorms' }]}
-            footerContent={<p></p>}
-        >
+        footerContent={<p></p>}
+        buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' },{text: 'Rooms', link: '/rooms'},{ text: 'Assigmnetns', link: '/rooms/assignment'},{text: 'Form', link: '/rooms/form'}]}>
+
             <div className="events-create-container">
                 <h2>Złóż wniosek o akademik</h2>
 

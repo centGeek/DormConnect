@@ -57,7 +57,9 @@ const MyAssignments: React.FC = () => {
     }, []);
 
     return (
-        <Template>
+        <Template
+        footerContent={<p></p>}
+        buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' },{text: 'Rooms', link: '/rooms'},{ text: 'Assigmnetns', link: '/rooms/assignment'},{text: 'Form', link: '/rooms/form'}]}>
             <div className="p-4">
                 <h2 className="text-xl font-bold mb-4">Moje przydziały</h2>
                 {error && <p className="text-red-500">{error}</p>}
