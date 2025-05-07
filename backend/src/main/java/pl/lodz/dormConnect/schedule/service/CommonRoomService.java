@@ -5,29 +5,29 @@ import pl.lodz.dormConnect.schedule.dto.CommonRoomCreateDTO;
 import pl.lodz.dormConnect.schedule.entity.CommonRoom;
 import pl.lodz.dormConnect.schedule.repositories.CommonRoomRepository;
 import pl.lodz.dormConnect.schedule.scheduler.CommonRoomAssignmentScheduler;
+
 import java.util.List;
 
 @Service
 public class CommonRoomService {
 
     private final CommonRoomRepository repository;
-
-    //private final CommonRoomAssignmentScheduler scheduler;
+    private final CommonRoomAssignmentScheduler scheduler;
 
     public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler) {
         this.repository = repository;
-        //this.scheduler = scheduler;
+        this.scheduler = scheduler;
     }
 
     public CommonRoom addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
         CommonRoom commonRoom = new CommonRoom();
-        if (commonRoomCreateDTO.capacity()<0){
+        if (commonRoomCreateDTO.capacity() < 0) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
-        if (commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt()<0){
+        if (commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt() < 0) {
             throw new IllegalArgumentException("How many times a week you can use it cannot be negative");
         }
-        if (commonRoomCreateDTO.maxTimeYouCanStay()<0){
+        if (commonRoomCreateDTO.maxTimeYouCanStay() < 0) {
             throw new IllegalArgumentException("Max time you can stay cannot be negative");
         }
         commonRoom.setType(commonRoomCreateDTO.type());
@@ -36,8 +36,13 @@ public class CommonRoomService {
         commonRoom.setMaxTimeYouCanStay(commonRoomCreateDTO.maxTimeYouCanStay());
         commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt());
         commonRoom.setActive(commonRoomCreateDTO.active());
-        //scheduler.createAssignmentsForNextWeek(commonRoom);
-        return repository.save(commonRoom);
+
+        CommonRoom savedRoom = repository.save(commonRoom);
+
+        // Wywołanie metody tworzącej przypisania
+        scheduler.createAssignmentsForNextWeek(savedRoom);
+
+        return savedRoom;
     }
 
     public List<CommonRoom> getAllCommonRooms() {
