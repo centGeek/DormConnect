@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.schedule.dto;
+package pl.lodz.dormConnect.commonRoom.dto;
 
 public record CommonRoomCreateDTO(
         String type,

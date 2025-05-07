@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.schedule.entity;
+package pl.lodz.dormConnect.commonRoom.entity;
 
 
 import jakarta.persistence.*;

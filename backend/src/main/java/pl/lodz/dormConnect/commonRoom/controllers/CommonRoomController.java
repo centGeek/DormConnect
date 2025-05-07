@@ -1,11 +1,11 @@
-package pl.lodz.dormConnect.schedule.controllers;
+package pl.lodz.dormConnect.commonRoom.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.dormConnect.schedule.dto.CommonRoomCreateDTO;
-import pl.lodz.dormConnect.schedule.entity.CommonRoom;
-import pl.lodz.dormConnect.schedule.service.CommonRoomService;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.service.CommonRoomService;
 
 import java.util.List;
 
