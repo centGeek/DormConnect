@@ -1,11 +1,11 @@
 package pl.lodz.dormConnect.commonRoom.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssigment;
 import pl.lodz.dormConnect.commonRoom.service.CommonRoomAssigmentService;
+import pl.lodz.dormConnect.security.service.JwtService;
 
 import java.util.List;
 
@@ -13,13 +13,46 @@ import java.util.List;
 @RequestMapping("/api/common-room-assigment")
 class CommonRoomAssigmentController {
     private final CommonRoomAssigmentService service;
+    private JwtService jwtService;
 
-    public CommonRoomAssigmentController(CommonRoomAssigmentService service) {
+    @Autowired
+    CommonRoomAssigmentController(CommonRoomAssigmentService service) {
         this.service = service;
+
     }
 
     @GetMapping("/get/{common_room_id}")
     public List<CommonRoomAssigment> getAssigmentsByCommonRoomId(@PathVariable Long common_room_id) {
         return service.getCommonRoomAssgimentsByCommonRoomId(common_room_id);
     }
+
+    @PutMapping("/join/{common_room_assigment_id}")
+    public ResponseEntity<?> joinAssigment(
+            @PathVariable Long common_room_assigment_id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+            return service.joinAssigment(common_room_assigment_id, userId);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Error joining common room assigment: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/leave/{common_room_assigment_id}")
+    public ResponseEntity<?> leaveAssigment(
+            @PathVariable Long common_room_assigment_id,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+            return service.leaveAssigment(common_room_assigment_id, userId);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Error leaving common room assigment: " + e.getMessage());
+        }
+    }
+
+
 }
