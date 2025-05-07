@@ -25,21 +25,23 @@ public class CommonRoomAssignmentScheduler {
         Date currentDate = new Date();
 
         for (int i = 0; i < TimeAhead; i++) { // Tworzenie przypisań na 7 dni
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(currentDate);
-            calendar.add(Calendar.DAY_OF_YEAR, i);
+            for (int j=0; j < commonRoom.getMaxTimeYouCanStay(); j++) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentDate);
+                calendar.add(Calendar.DAY_OF_YEAR, i);
 
-            Date startDate = calendar.getTime();
-            calendar.add(Calendar.HOUR, maxTimeYouCanStay);
-            Date endDate = calendar.getTime();
+                Date startDate = calendar.getTime();
+                calendar.add(Calendar.HOUR, maxTimeYouCanStay);
+                Date endDate = calendar.getTime();
 
-            CommonRoomAssigment assignment = new CommonRoomAssigment();
-            assignment.setCommonRoom(commonRoom);
-            assignment.setStartDate(startDate);
-            assignment.setEndDate(endDate);
-            assignment.setArchived(false);
+                CommonRoomAssigment assignment = new CommonRoomAssigment();
+                assignment.setCommonRoom(commonRoom);
+                assignment.setStartDate(startDate);
+                assignment.setEndDate(endDate);
+                assignment.setArchived(false);
 
-            assignmentRepository.save(assignment);
+                assignmentRepository.save(assignment);
+            }
         }
     }
 
