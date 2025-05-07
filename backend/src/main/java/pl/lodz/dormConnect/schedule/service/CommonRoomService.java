@@ -12,11 +12,11 @@ public class CommonRoomService {
 
     private final CommonRoomRepository repository;
 
-    private final CommonRoomAssignmentScheduler scheduler;
+    //private final CommonRoomAssignmentScheduler scheduler;
 
     public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler) {
         this.repository = repository;
-        this.scheduler = scheduler;
+        //this.scheduler = scheduler;
     }
 
     public CommonRoom addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
@@ -36,7 +36,7 @@ public class CommonRoomService {
         commonRoom.setMaxTimeYouCanStay(commonRoomCreateDTO.maxTimeYouCanStay());
         commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt());
         commonRoom.setActive(commonRoomCreateDTO.active());
-        scheduler.createAssignmentsForNextWeek(commonRoom);
+        //scheduler.createAssignmentsForNextWeek(commonRoom);
         return repository.save(commonRoom);
     }
 
