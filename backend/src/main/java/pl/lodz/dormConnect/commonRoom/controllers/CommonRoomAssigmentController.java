@@ -16,9 +16,9 @@ class CommonRoomAssigmentController {
     private JwtService jwtService;
 
     @Autowired
-    CommonRoomAssigmentController(CommonRoomAssigmentService service) {
+    CommonRoomAssigmentController(CommonRoomAssigmentService service, JwtService jwtService) {
         this.service = service;
-
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/get/{common_room_id}")
