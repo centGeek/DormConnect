@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.schedule.entity;
+package pl.lodz.dormConnect.commonRoom.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.dormConnect.database.entity.UserEntity;
-import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 
 import java.util.ArrayList;
 import java.util.Date;

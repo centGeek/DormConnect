@@ -1,11 +1,10 @@
-package pl.lodz.dormConnect.schedule.scheduler;
+package pl.lodz.dormConnect.commonRoom.scheduler;
 
-import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.schedule.entity.CommonRoom;
-import pl.lodz.dormConnect.schedule.entity.CommonRoomAssigment;
-import pl.lodz.dormConnect.schedule.repositories.CommonRoomAssigmentRepository;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssigment;
+import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssigmentRepository;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,24 +23,25 @@ public class CommonRoomAssignmentScheduler {
         int maxTimeYouCanStay = commonRoom.getMaxTimeYouCanStay();
         Date currentDate = new Date();
 
-        for (int i = 0; i < TimeAhead; i++) { // Tworzenie przypisań na 7 dni
-            for (int j=0; j < commonRoom.getMaxTimeYouCanStay(); j++) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(currentDate);
-                calendar.add(Calendar.DAY_OF_YEAR, i);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        if (calendar.MINUTE != 0){
+            calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
+        }
+        else{calendar.add(Calendar.HOUR,1);}
 
-                Date startDate = calendar.getTime();
-                calendar.add(Calendar.HOUR, maxTimeYouCanStay);
-                Date endDate = calendar.getTime();
+        for (int i = 0; i < TimeAhead * (24/commonRoom.getMaxTimeYouCanStay()); i++) { // Tworzenie przypisań na 7 dni
+            Date startDate = calendar.getTime();
+            calendar.add(Calendar.HOUR, maxTimeYouCanStay);
+            Date endDate = calendar.getTime();
 
-                CommonRoomAssigment assignment = new CommonRoomAssigment();
-                assignment.setCommonRoom(commonRoom);
-                assignment.setStartDate(startDate);
-                assignment.setEndDate(endDate);
-                assignment.setArchived(false);
+            CommonRoomAssigment assignment = new CommonRoomAssigment();
+            assignment.setCommonRoom(commonRoom);
+            assignment.setStartDate(startDate);
+            assignment.setEndDate(endDate);
+            assignment.setArchived(false);
 
-                assignmentRepository.save(assignment);
-            }
+            assignmentRepository.save(assignment);
         }
     }
 
@@ -66,6 +66,10 @@ public class CommonRoomAssignmentScheduler {
         newAssignment.setStartDate(startDate);
         newAssignment.setEndDate(endDate);
         newAssignment.setArchived(false);
+    }
+
+    public void deleteAllActiveAssigmentsForRoom(CommonRoom commonRoom) {
+        assignmentRepository.removeCommonRoomAssigmentsByCommonRoomAndArchived(commonRoom, false);
     }
 
     @Scheduled(fixedRate = 3600000) // co godzinę

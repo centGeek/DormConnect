@@ -1,7 +1,7 @@
-package pl.lodz.dormConnect.schedule.repositories;
+package pl.lodz.dormConnect.commonRoom.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lodz.dormConnect.schedule.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
 
 import java.util.List;
 

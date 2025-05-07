@@ -1,10 +1,10 @@
-package pl.lodz.dormConnect.schedule.service;
+package pl.lodz.dormConnect.commonRoom.service;
 
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.schedule.dto.CommonRoomCreateDTO;
-import pl.lodz.dormConnect.schedule.entity.CommonRoom;
-import pl.lodz.dormConnect.schedule.repositories.CommonRoomRepository;
-import pl.lodz.dormConnect.schedule.scheduler.CommonRoomAssignmentScheduler;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
+import pl.lodz.dormConnect.commonRoom.scheduler.CommonRoomAssignmentScheduler;
 
 import java.util.List;
 
@@ -51,6 +51,7 @@ public class CommonRoomService {
 
     public boolean deleteCommonRoom(Long id) {
         if (repository.existsById(id)) {
+            scheduler.deleteAllActiveAssigmentsForRoom(repository.findById(id).get());
             repository.deleteById(id);
             return true;
         }
