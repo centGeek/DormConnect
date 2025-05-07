@@ -66,7 +66,7 @@ public class CommonRoomAssignmentScheduler {
         newAssignment.setArchived(false);
     }
 
-    //@Scheduled(fixedRate = 3600000) // co godzinę
+    @Scheduled(fixedRate = 3600000) // co godzinę
     public void scheduleAssignments() {
         // Pobierz wszystkie aktywne pokoje
         for (CommonRoomAssigment commonRoomAssigment : assignmentRepository.findAllNotArchivedAssigments()) {
