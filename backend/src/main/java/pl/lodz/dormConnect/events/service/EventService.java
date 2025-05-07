@@ -42,15 +42,17 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public Page<EventDTO> getAllEvents(Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findAll(pageable);
+    public Page<EventDTO> getAllApprovedEvents(Pageable pageable) {
+        Page<EventEntity> page = eventRepository.findAllByIsApprovedIsTrue(pageable);
         return page.map(eventMapper::toEventDTO);
     }
 
     @Transactional
     public Optional<EventDTO> updateEvent(Long eventId, EventDTO eventDTO) {
 
-        if (eventDTO.participantId().size() >= eventDTO.maxParticipants()) {
+        List<Long> participantIds = Optional.ofNullable(eventDTO.participantId()).orElse(List.of());
+
+        if (participantIds.size() >= eventDTO.maxParticipants()) {
             return Optional.empty();
         }
 
@@ -63,7 +65,7 @@ public class EventService {
             eventEntity.setMaxParticipants(eventDTO.maxParticipants());
             eventEntity.setImageUrl(eventDTO.imageUrl());
             eventEntity.setOrganizerId(eventDTO.organizerId());
-            eventEntity.setParticipantId(eventDTO.participantId());
+
             eventEntity.setEventType(eventDTO.eventType());
             eventEntity.setIsApproved(eventDTO.isApproved());
 
@@ -71,6 +73,7 @@ public class EventService {
             return eventMapper.toEventDTO(updatedEvent);
         });
     }
+
 
     @Transactional
     public void deleteEvent(Long eventId) {

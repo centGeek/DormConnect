@@ -28,4 +28,9 @@ public class EventOrganizerService {
         return page.map(eventMapper::toEventDTO);
     }
 
+    public boolean hasOrganizedEvent(Long organizerId) {
+        // Zamiast liczyć wszystkie wydarzenia, sprawdzamy, czy istnieje jakiekolwiek
+        return eventRepository.existsByOrganizerId(organizerId);
+    }
+
 }

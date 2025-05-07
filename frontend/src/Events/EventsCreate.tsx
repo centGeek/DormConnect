@@ -1,9 +1,8 @@
 import Template from '../Template/Template';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importujemy useNavigate
+import { useNavigate } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import './EventsCreate.css';
-
 
 function EventsCreate() {
     const [eventName, setEventName] = useState('');
@@ -16,7 +15,7 @@ function EventsCreate() {
     const [imageUrl, setImageUrl] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const navigate = useNavigate(); // Inicjalizujemy funkcję nawigacji
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -31,7 +30,6 @@ function EventsCreate() {
             return;
         }
 
-        // Dekodujemy token, aby wyciągnąć organizerId
         const user = parseJwt(token);
         const organizerId = user?.id;
 
@@ -49,7 +47,7 @@ function EventsCreate() {
             eventType: eventType,
             maxParticipants: availableSeats !== '' ? Number(availableSeats) : null,
             imageUrl: imageUrl || null,
-            organizerId: organizerId, // <- tutaj teraz przekazujemy ID organizatora
+            organizerId: organizerId,
             participantId: []
         };
 
@@ -65,18 +63,29 @@ function EventsCreate() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create event');
+                const errorData = await response.json();
+
+                if (errorData.errors) {
+                    const cleanedErrors = errorData.errors.map((err: string) => {
+                        const colonIndex = err.indexOf(':');
+                        return colonIndex !== -1 ? err.slice(colonIndex + 1).trim() : err;
+                    });
+
+                    setError(cleanedErrors.join('\n'));
+                } else {
+                    setError('Failed to create event');
+                }
+                return;
             }
 
             setSuccessMessage('Event created successfully!');
             setError(null);
 
-            // Przekierowanie na stronę z wydarzeniami po pomyślnym utworzeniu
             setTimeout(() => {
-                navigate('/events'); // Przekierowuje do /events
-            }, 1000); // Odczekujemy 1 sekundę, by wyświetlić komunikat o sukcesie przed przekierowaniem
+                navigate('/events');
+            }, 1000);
 
-            // Czyścimy formularz
+            // Czyszczenie formularza
             setEventName('');
             setEventDescription('');
             setStartDate('');
@@ -99,7 +108,13 @@ function EventsCreate() {
             <div className="events-create-container">
                 <h2>Create Event</h2>
 
-                {error && <p className="error-message">{error}</p>}
+                {error && (
+                    <div className="error-message">
+                        {error.split('\n').map((err, idx) => (
+                            <p key={idx}>{err}</p>
+                        ))}
+                    </div>
+                )}
                 {successMessage && <p className="success-message">{successMessage}</p>}
 
                 <form onSubmit={handleSubmit} className="event-form">
