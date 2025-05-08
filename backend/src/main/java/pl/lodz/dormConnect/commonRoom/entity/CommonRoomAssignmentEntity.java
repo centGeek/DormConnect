@@ -16,14 +16,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class CommonRoomAssigment {
+@Table(name = "common_room_assignment")
+public class CommonRoomAssignmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "common_room_id")
-    private CommonRoom commonRoom;
+    private CommonRoomEntity commonRoom;
 
     @ManyToMany
     private List<UserEntity> users = new ArrayList<>();

@@ -3,7 +3,7 @@ package pl.lodz.dormConnect.commonRoom.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssigment;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
 import pl.lodz.dormConnect.commonRoom.service.CommonRoomAssigmentService;
 import pl.lodz.dormConnect.security.service.JwtService;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/common-room-assigment")
 class CommonRoomAssigmentController {
     private final CommonRoomAssigmentService service;
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     @Autowired
     CommonRoomAssigmentController(CommonRoomAssigmentService service, JwtService jwtService) {
@@ -22,7 +22,7 @@ class CommonRoomAssigmentController {
     }
 
     @GetMapping("/get/{common_room_id}")
-    public List<CommonRoomAssigment> getAssigmentsByCommonRoomId(@PathVariable Long common_room_id) {
+    public List<CommonRoomAssignmentEntity> assignmentsByCommonRoomId(@PathVariable Long common_room_id) {
         return service.getCommonRoomAssgimentsByCommonRoomId(common_room_id);
     }
 

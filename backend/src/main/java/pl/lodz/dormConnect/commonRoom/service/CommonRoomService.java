@@ -1,8 +1,8 @@
 package pl.lodz.dormConnect.commonRoom.service;
 
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
-import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomDTO;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
 import pl.lodz.dormConnect.commonRoom.scheduler.CommonRoomAssignmentScheduler;
 
@@ -19,25 +19,25 @@ public class CommonRoomService {
         this.scheduler = scheduler;
     }
 
-    public CommonRoom addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
-        CommonRoom commonRoom = new CommonRoom();
-        if (commonRoomCreateDTO.capacity() < 0) {
+    public CommonRoomEntity addCommonRoom(CommonRoomDTO commonRoomDTO) {
+        CommonRoomEntity commonRoom = new CommonRoomEntity();
+        if (commonRoomDTO.capacity() < 0) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
-        if (commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt() < 0) {
+        if (commonRoomDTO.howManyTimesAWeekYouCanUseIt() < 0) {
             throw new IllegalArgumentException("How many times a week you can use it cannot be negative");
         }
-        if (commonRoomCreateDTO.maxTimeYouCanStay() < 0) {
+        if (commonRoomDTO.maxTimeYouCanStay() < 0) {
             throw new IllegalArgumentException("Max time you can stay cannot be negative");
         }
-        commonRoom.setType(commonRoomCreateDTO.type());
-        commonRoom.setCapacity(commonRoomCreateDTO.capacity());
-        commonRoom.setFloor(commonRoomCreateDTO.floor());
-        commonRoom.setMaxTimeYouCanStay(commonRoomCreateDTO.maxTimeYouCanStay());
-        commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt());
-        commonRoom.setActive(commonRoomCreateDTO.active());
+        commonRoom.setCommonRoomType(commonRoomDTO.type());
+        commonRoom.setCapacity(commonRoomDTO.capacity());
+        commonRoom.setFloor(commonRoomDTO.floor());
+        commonRoom.setHoursOfTimeWindows(commonRoomDTO.maxTimeYouCanStay());
+        commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomDTO.howManyTimesAWeekYouCanUseIt());
+        commonRoom.setActive(commonRoomDTO.active());
 
-        CommonRoom savedRoom = repository.save(commonRoom);
+        CommonRoomEntity savedRoom = repository.save(commonRoom);
 
         // Wywołanie metody tworzącej przypisania
         scheduler.createAssignmentsForNextWeek(savedRoom);
@@ -45,7 +45,7 @@ public class CommonRoomService {
         return savedRoom;
     }
 
-    public List<CommonRoom> getAllCommonRooms() {
+    public List<CommonRoomEntity> getAllCommonRooms() {
         return repository.findAll();
     }
 
@@ -58,13 +58,13 @@ public class CommonRoomService {
         return false;
     }
 
-    public CommonRoom updateActiveStatus(Long id, boolean active) {
-        CommonRoom commonRoom = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found"));
+    public CommonRoomEntity updateActiveStatus(Long id, boolean active) {
+        CommonRoomEntity commonRoom = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found"));
         commonRoom.setActive(active);
         return repository.save(commonRoom);
     }
 
-    public List<CommonRoom> getRoomByFloor(int floor) {
+    public List<CommonRoomEntity> getRoomByFloor(int floor) {
         return repository.findByFloor(floor);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public record CommonRoomAssigmentCreateDTO(
+public record CommonRoomAssignmentCreateDTO(
     Long commonRoomId,
     List<Long> userIds,
     boolean archived,

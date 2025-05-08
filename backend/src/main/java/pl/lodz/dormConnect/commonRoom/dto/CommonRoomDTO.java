@@ -1,7 +1,9 @@
 package pl.lodz.dormConnect.commonRoom.dto;
 
-public record CommonRoomCreateDTO(
-        String type,
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
+
+public record CommonRoomDTO(
+        CommonRoomEntity.CommonRoomType type,
         int capacity,
         int floor,
         int maxTimeYouCanStay,

@@ -2,9 +2,9 @@ package pl.lodz.dormConnect.commonRoom.scheduler;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
-import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssigment;
-import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssigmentRepository;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
+import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssignmentRepository;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,15 +12,15 @@ import java.util.Date;
 @Service
 public class CommonRoomAssignmentScheduler {
 
-    private final CommonRoomAssigmentRepository assignmentRepository;
+    private final CommonRoomAssignmentRepository assignmentRepository;
 
-    public CommonRoomAssignmentScheduler(CommonRoomAssigmentRepository assignmentRepository) {
+    public CommonRoomAssignmentScheduler(CommonRoomAssignmentRepository assignmentRepository) {
         this.assignmentRepository = assignmentRepository;
     }
     private final int TimeAhead = 7;
     //Initialize schedule for common room
-    public void createAssignmentsForNextWeek(CommonRoom commonRoom) {
-        int maxTimeYouCanStay = commonRoom.getMaxTimeYouCanStay();
+    public void createAssignmentsForNextWeek(CommonRoomEntity commonRoom) {
+        int maxTimeYouCanStay = commonRoom.getHoursOfTimeWindows();
         Date currentDate = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -30,12 +30,12 @@ public class CommonRoomAssignmentScheduler {
         }
         else{calendar.add(Calendar.HOUR,1);}
 
-        for (int i = 0; i < TimeAhead * (24/commonRoom.getMaxTimeYouCanStay()); i++) { // Tworzenie przypisań na 7 dni
+        for (int i = 0; i < TimeAhead * (24/commonRoom.getHoursOfTimeWindows()); i++) { // Tworzenie przypisań na 7 dni
             Date startDate = calendar.getTime();
             calendar.add(Calendar.HOUR, maxTimeYouCanStay);
             Date endDate = calendar.getTime();
 
-            CommonRoomAssigment assignment = new CommonRoomAssigment();
+            CommonRoomAssignmentEntity assignment = new CommonRoomAssignmentEntity();
             assignment.setCommonRoom(commonRoom);
             assignment.setStartDate(startDate);
             assignment.setEndDate(endDate);
@@ -46,11 +46,11 @@ public class CommonRoomAssignmentScheduler {
     }
 
     //archive assigment and add new one
-    public void archiveOldAssigment ( CommonRoomAssigment commonRoomAssigment) {
-        commonRoomAssigment.setArchived(true);
-        assignmentRepository.save(commonRoomAssigment);
+    public void archiveOldAssigment ( CommonRoomAssignmentEntity commonRoomAssignmentEntity) {
+        commonRoomAssignmentEntity.setArchived(true);
+        assignmentRepository.save(commonRoomAssignmentEntity);
 
-        CommonRoom commonRoom = commonRoomAssigment.getCommonRoom();
+        CommonRoomEntity commonRoom = commonRoomAssignmentEntity.getCommonRoom();
         Date currentDate = new Date();
         Calendar calendar = Calendar.getInstance();
 
@@ -58,27 +58,27 @@ public class CommonRoomAssignmentScheduler {
         calendar.add(Calendar.DAY_OF_YEAR, TimeAhead);
 
         Date startDate = calendar.getTime();
-        calendar.add(Calendar.HOUR, commonRoom.getMaxTimeYouCanStay());
+        calendar.add(Calendar.HOUR, commonRoom.getHoursOfTimeWindows());
         Date endDate = calendar.getTime();
 
-        CommonRoomAssigment newAssignment = new CommonRoomAssigment();
+        CommonRoomAssignmentEntity newAssignment = new CommonRoomAssignmentEntity();
         newAssignment.setCommonRoom(commonRoom);
         newAssignment.setStartDate(startDate);
         newAssignment.setEndDate(endDate);
         newAssignment.setArchived(false);
     }
 
-    public void deleteAllActiveAssigmentsForRoom(CommonRoom commonRoom) {
+    public void deleteAllActiveAssigmentsForRoom(CommonRoomEntity commonRoom) {
         assignmentRepository.removeCommonRoomAssigmentsByCommonRoomAndArchived(commonRoom, false);
     }
 
     @Scheduled(fixedRate = 3600000) // co godzinę
     public void scheduleAssignments() {
         // Pobierz wszystkie aktywne pokoje
-        for (CommonRoomAssigment commonRoomAssigment : assignmentRepository.findAllNotArchivedAssigments()) {
+        for (CommonRoomAssignmentEntity commonRoomAssignmentEntity : assignmentRepository.findAllNotArchivedAssigments()) {
             // Sprawdź, czy są jakieś przypisania do archiwizacji
-            if (commonRoomAssigment.getEndDate().before(new Date())) {
-                archiveOldAssigment(commonRoomAssigment);
+            if (commonRoomAssignmentEntity.getEndDate().before(new Date())) {
+                archiveOldAssigment(commonRoomAssignmentEntity);
             }
         }
     }

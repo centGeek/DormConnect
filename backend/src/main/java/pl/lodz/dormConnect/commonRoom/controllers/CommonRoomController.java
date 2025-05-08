@@ -3,8 +3,8 @@ package pl.lodz.dormConnect.commonRoom.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
-import pl.lodz.dormConnect.commonRoom.entity.CommonRoom;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomDTO;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.service.CommonRoomService;
 
 import java.util.List;
@@ -19,14 +19,14 @@ class CommonRoomController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CommonRoom> addCommonRoom(@RequestBody CommonRoomCreateDTO commonRoomCreateDTO) {
-        CommonRoom newRoom = service.addCommonRoom(commonRoomCreateDTO);
+    public ResponseEntity<CommonRoomEntity> addCommonRoom(@RequestBody CommonRoomDTO commonRoomDTO) {
+        CommonRoomEntity newRoom = service.addCommonRoom(commonRoomDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
     }
 
 
     @GetMapping("/show")
-    public List<CommonRoom> showCommonRooms() {
+    public List<CommonRoomEntity> showCommonRooms() {
         return service.getAllCommonRooms();
     }
 
@@ -40,9 +40,9 @@ class CommonRoomController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CommonRoom> updateActiveStatus(@PathVariable Long id, @RequestParam boolean active) {
+    public ResponseEntity<CommonRoomEntity> updateActiveStatus(@PathVariable Long id, @RequestParam boolean active) {
         try {
-            CommonRoom updatedRoom = service.updateActiveStatus(id, active);
+            CommonRoomEntity updatedRoom = service.updateActiveStatus(id, active);
             return ResponseEntity.ok(updatedRoom);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -50,7 +50,7 @@ class CommonRoomController {
     }
 
     @GetMapping("/show/{floor}")
-    public List<CommonRoom> showCommonRooms(@PathVariable Long floor) {
+    public List<CommonRoomEntity> showCommonRooms(@PathVariable Long floor) {
         return service.getRoomByFloor(floor.intValue());
     }
 
