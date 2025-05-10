@@ -22,5 +22,17 @@ public class DormProblem {
     private LocalDate problemDate;
     @Enumerated(EnumType.STRING)
     private ProblemStatus problemStatus;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DormProblem)) return false;
+        DormProblem that = (DormProblem) o;
+        return that.getId() == getId()
+                && that.getStudentId() == getId()
+                && !that.getDescription().equals(getDescription())
+                && !that.getProblemDate().equals(getProblemDate())
+                && !(that.getProblemStatus() == getProblemStatus());
+    }
     
 }

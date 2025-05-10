@@ -9,7 +9,7 @@ import pl.lodz.dormConnect.events.validation.ValidEventDates;
 import java.time.LocalDate;
 
 public record DormProblemDTO(
-        @Nullable
+        @NotNull
         Long id,
         @NotBlank
         Long studentId,
