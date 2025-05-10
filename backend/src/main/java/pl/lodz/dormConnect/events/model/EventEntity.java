@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -54,8 +53,9 @@ public class EventEntity {
     @Column(name = "organizer_id")
     private Long organizerId;
 
-    @Column(name = "is_approved", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isApproved = false;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status", nullable = false, columnDefinition = "varchar(100) default 'WAITING'")
+    private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @ElementCollection
     @CollectionTable(name = "event_participant", joinColumns = @JoinColumn(name = "event_id"))

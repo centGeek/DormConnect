@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
+import pl.lodz.dormConnect.events.model.ApprovalStatus;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
@@ -30,7 +31,7 @@ public class EventApprovalService {
         EventEntity event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with ID: " + eventId));
 
-        event.setIsApproved(true);
+        event.setApprovalStatus(ApprovalStatus.APPROVED);
         eventRepository.save(event);
     }
 
@@ -39,7 +40,7 @@ public class EventApprovalService {
         EventEntity event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with ID: " + eventId));
 
-        event.setIsApproved(false);
+        event.setApprovalStatus(ApprovalStatus.DECLINED);
         eventRepository.save(event);
     }
 
@@ -47,5 +48,10 @@ public class EventApprovalService {
     public Page<EventDTO> getAllEvents(Pageable pageable) {
         Page<EventEntity> page = eventRepository.findAllByStartDateTimeAfter(LocalDateTime.now(), pageable);
         return page.map(eventMapper::toEventDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<EventDTO> getEventsByApprovalStatus(ApprovalStatus  status, Pageable pageable) {
+        return eventRepository.findByApprovalStatus(status, pageable).map(eventMapper::toEventDTO);
     }
 }

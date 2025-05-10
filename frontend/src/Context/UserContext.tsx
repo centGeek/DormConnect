@@ -81,14 +81,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     useEffect(() => {
-        const decodedToken: DecodedToken = jwtDecode(token);
-        setUser({
-            id: decodedToken.id,
-            roles: decodedToken.roles,
-            sub: decodedToken.sub,
-        });
-        console.log('User logged in:', user);
-    }, []);
+        if (token) {
+            try {
+                const decodedToken: DecodedToken = jwtDecode(token);
+                setUser({
+                    id: decodedToken.id,
+                    roles: decodedToken.roles,
+                    sub: decodedToken.sub,
+                });
+                console.log('User set from token:', decodedToken);
+            } catch (error) {
+                console.error('Invalid token:', error);
+                setUser(null);
+            }
+        } else {
+            setUser(null);
+        }
+    }, [token]);
 
 
     return (
