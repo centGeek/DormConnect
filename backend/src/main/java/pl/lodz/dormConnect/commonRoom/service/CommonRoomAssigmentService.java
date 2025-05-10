@@ -3,6 +3,7 @@ package pl.lodz.dormConnect.commonRoom.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomAssignmentGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
 import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomAssignmentsMapper;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssignmentRepository;
@@ -42,10 +43,11 @@ public class CommonRoomAssigmentService {
         return repository.findAssignmentsByUserId(userId);
     }
 
-    public ResponseEntity<?> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
+    public ResponseEntity<List<CommonRoomAssignmentGetDTO>> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
         List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.findCommonRoomAssigmentByCommonRoomId(commonRoomId);
         Optional<UserEntity> user = userRepository.findById(userId);
-        return (ResponseEntity<?>) mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, user);
+        List<CommonRoomAssignmentGetDTO> dtos = mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, user);
+        return ResponseEntity.ok(dtos);
     }
 
     @Transactional

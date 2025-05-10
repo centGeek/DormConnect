@@ -16,7 +16,10 @@ function CommonRoomSchedule() {
     const { id } = useParams<{ id: string }>();
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const token = localStorage.getItem('token');
+    const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))?.split('=')[1];
+
 
     const fetchAssignments = async () => {
         try {
@@ -40,6 +43,7 @@ function CommonRoomSchedule() {
     };
 
     const handleAssign = async (assignmentId: number) => {
+        console.log("dupa_zapisz");
         try {
             const response = await fetch(`/api/common-room-assignment/join/${assignmentId}`, {
                 method: "PUT",
@@ -57,6 +61,7 @@ function CommonRoomSchedule() {
     };
 
     const handleUnassign = async (assignmentId: number) => {
+        console.log("dupa_odpisz");
         try {
             const response = await fetch(`/api/common-room-assignment/leave/${assignmentId}`, {
                 method: "DELETE",
