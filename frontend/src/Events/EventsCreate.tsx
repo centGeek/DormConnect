@@ -1,10 +1,14 @@
 import Template from '../Template/Template';
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import './EventsCreate.css';
+import {UserContext} from "../Context/UserContext.tsx";
 
 function EventsCreate() {
+    const userContext = useContext(UserContext);
+    const isAdmin = userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER');
+    const organizerId = userContext?.user?.id;
+
     const [eventName, setEventName] = useState('');
     const [eventDescription, setEventDescription] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -29,9 +33,6 @@ function EventsCreate() {
             setError('No token found');
             return;
         }
-
-        const user = parseJwt(token);
-        const organizerId = user?.id;
 
         if (!organizerId) {
             setError('Invalid user token');
@@ -105,6 +106,17 @@ function EventsCreate() {
             buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
             footerContent={<p></p>}
         >
+            {/* Przycisk po lewej */}
+            <div className="back-button-container">
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => navigate('/events')}
+                >
+                    ← Back to Events
+                </button>
+            </div>
+
             <div className="events-create-container">
                 <h2>Create Event</h2>
 

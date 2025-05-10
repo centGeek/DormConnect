@@ -10,10 +10,14 @@
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .error-message {
     color: red;
+    background-color: #ffe6e6;
+    padding: 10px;
+    border-radius: 8px;
     margin-bottom: 20px;
 }
 
@@ -46,6 +50,7 @@
 
 .event-card p {
     color: #333;
+    margin: 5px 0;
 }
 
 .event-image {
@@ -59,6 +64,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: auto;
+    gap: 10px;
 }
 
 .approve-button {
@@ -68,6 +74,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    flex: 1;
 }
 
 .approve-button:hover {
@@ -81,50 +88,11 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    flex: 1;
 }
 
 .reject-button:hover {
     background-color: #d32f2f;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 30px;
-}
-
-.page-button {
-    background-color: #f0f0f0;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.page-button.active {
-    background-color: #66bb6a;
-    color: white;
-}
-
-.page-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.add-event-button {
-    background-color: #2196f3;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.add-event-button:hover {
-    background-color: #1976d2;
 }
 
 .pagination {
@@ -162,4 +130,68 @@
     color: #a0a0a0;
     border: 2px solid #a0a0a0;
     cursor: not-allowed;
+}
+
+.add-event-button {
+    background-color: #2196f3;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-event-button:hover {
+    background-color: #1976d2;
+}
+
+/* Style dla zakładek */
+.tabs {
+    display: flex;
+    justify-content: center; /* <-- wyśrodkowanie */
+    gap: 12px; /* odstęp między przyciskami */
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.tabs button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    color: #4caf50;
+    border: 2px solid #4caf50;
+}
+
+.tabs button:hover {
+    background-color: #4caf50;
+    color: white;
+}
+
+.tabs .active-tab {
+    background-color: #4caf50;
+    color: white;
+}
+
+
+/* Style dla statusu wydarzenia */
+.event-status {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.event-status.approved {
+    color: #4caf50;
+}
+
+.event-status.waiting {
+    color: #ffa500;
+}
+
+.event-status.declined {
+    color: #f44336;
 }

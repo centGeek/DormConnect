@@ -17,6 +17,7 @@ interface Event {
     participantId: number[];
     imageUrl?: string;
     isApproved: boolean;
+    approvalStatus: 'WAITING' | 'APPROVED' | 'DECLINED';
 }
 
 function AdminEvents() {
@@ -31,6 +32,7 @@ function AdminEvents() {
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'declined' | 'waiting'>('waiting');
 
     useEffect(() => {
         const tokenFromCookie = document.cookie
@@ -54,13 +56,20 @@ function AdminEvents() {
         setUserRoles(roles);
     }, [navigate]);
 
-    const fetchEvents = useCallback(async (pageToFetch: number = page) => {
+    const fetchEvents = useCallback(async (tab: 'all' | 'approved' | 'declined' | 'waiting', pageToFetch: number = page) => {
         if (!token) return;
 
         try {
             setLoading(true);
 
-            const response = await fetch(`/api/event/administrate?page=${pageToFetch}&size=4&sort=startDateTime,asc`, {
+            let url = '/api/event/administrate';
+            if (tab === 'approved') url += '/approved';
+            else if (tab === 'declined') url += '/declined';
+            else if (tab === 'waiting') url += '/waiting';
+
+            url += `?page=${pageToFetch}&size=4&sort=startDateTime,asc`;
+
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
@@ -81,8 +90,8 @@ function AdminEvents() {
     }, [token, page]);
 
     useEffect(() => {
-        fetchEvents();
-    }, [fetchEvents]);
+        fetchEvents(activeTab);
+    }, [fetchEvents, activeTab]);
 
     const handleApprove = async (eventId: number) => {
         try {
@@ -96,7 +105,7 @@ function AdminEvents() {
                 throw new Error('Nie udało się zatwierdzić wydarzenia.');
             }
 
-            await fetchEvents();
+            await fetchEvents(activeTab);
         } catch (error) {
             console.error('Błąd podczas zatwierdzania:', error);
         }
@@ -114,7 +123,7 @@ function AdminEvents() {
                 throw new Error('Nie udało się odrzucić wydarzenia.');
             }
 
-            await fetchEvents();
+            await fetchEvents(activeTab);
         } catch (error) {
             console.error('Błąd podczas odrzucania:', error);
         }
@@ -123,8 +132,49 @@ function AdminEvents() {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
-            fetchEvents(newPage);
+            fetchEvents(activeTab, newPage);
         }
+    };
+
+    const handleTabChange = (tab: 'all' | 'approved' | 'declined' | 'waiting') => {
+        setActiveTab(tab);
+        setPage(0);
+    };
+
+    const getStatusColor = (status: 'WAITING' | 'APPROVED' | 'DECLINED') => {
+        switch (status) {
+            case 'APPROVED':
+                return 'green';
+            case 'DECLINED':
+                return 'red';
+            case 'WAITING':
+                return 'orange';
+            default:
+                return 'black';
+        }
+    };
+
+    const getStatusLabel = (status: 'WAITING' | 'APPROVED' | 'DECLINED') => {
+        switch (status) {
+            case 'APPROVED':
+                return 'Zatwierdzone';
+            case 'DECLINED':
+                return 'Odrzucone';
+            case 'WAITING':
+                return 'Oczekujące';
+            default:
+                return 'Nieznany';
+        }
+    };
+
+    const formatDate = (date: string) => {
+        return new Date(date).toLocaleString('pl-PL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
     };
 
     return (
@@ -136,17 +186,44 @@ function AdminEvents() {
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
                 <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
-                    Back
+                    Wróć
                 </button>
 
-                <h2>Oczekujące wydarzenia</h2>
+                <div className="tabs">
+                    <button
+                        className={activeTab === 'waiting' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('waiting')}
+                    >
+                        Oczekujące
+                    </button>
+                    <button
+                        className={activeTab === 'approved' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('approved')}
+                    >
+                        Zatwierdzone
+                    </button>
+                    <button
+                        className={activeTab === 'declined' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('declined')}
+                    >
+                        Odrzucone
+                    </button>
+                    <button
+                        className={activeTab === 'all' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('all')}
+                    >
+                        Wszystkie
+                    </button>
+                </div>
+
+                <h2>Wydarzenia</h2>
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="events-list">
                     {events.length === 0 && !loading ? (
-                        <p>Brak wydarzeń do zatwierdzenia.</p>
+                        <p>Brak wydarzeń do wyświetlenia.</p>
                     ) : (
                         events.map((event) => (
                             <div key={event.eventId} className="event-card">
@@ -156,21 +233,25 @@ function AdminEvents() {
                                 <h3>{event.eventName}</h3>
                                 <p>{event.description}</p>
                                 <p>
-                                    <strong>Data:</strong> {new Date(event.startDateTime).toLocaleString()} - {new Date(event.endDateTime).toLocaleString()}
+                                    <strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
                                 </p>
                                 <p><strong>Lokalizacja:</strong> {event.location}</p>
                                 <p><strong>Typ:</strong> {event.eventType}</p>
                                 <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
                                 <p>
                                     <strong>Status:</strong>{' '}
-                                    <span style={{ color: event.isApproved ? 'green' : 'red', fontWeight: 'bold' }}>
-                                        {event.isApproved ? 'Zatwierdzone' : 'Oczekujące'}
+                                    <span className={`event-status ${event.approvalStatus.toLowerCase()}`}>
+                                        {getStatusLabel(event.approvalStatus)}
                                     </span>
                                 </p>
 
                                 <div className="admin-buttons">
-                                    <button className="btn approve-button" onClick={() => handleApprove(event.eventId)}>Zatwierdź</button>
-                                    <button className="btn reject-button" onClick={() => handleReject(event.eventId)}>Odrzuć</button>
+                                    <button className="btn approve-button" onClick={() => handleApprove(event.eventId)}>
+                                        Zatwierdź
+                                    </button>
+                                    <button className="btn reject-button" onClick={() => handleReject(event.eventId)}>
+                                        Odrzuć
+                                    </button>
                                 </div>
                             </div>
                         ))

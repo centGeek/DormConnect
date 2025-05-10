@@ -9,6 +9,12 @@
     align-items: center;
     gap: 15px;
     transition: transform 0.3s ease;
+    position: relative; /* Upewniamy się, że inne elementy będą wyświetlane w odpowiedniej kolejności */
+    z-index: 2; /* Zapewnia, że karta nie będzie zasłaniać pop-upa */
+}
+
+.event-card.no-hover {
+    transform: none !important;
 }
 
 .event-card:hover {
@@ -119,9 +125,10 @@
 
 /* --- Delete Wrapper --- */
 .delete-wrapper {
-    position: relative;
+    position: relative; /* Umożliwia pop-upowi ustawienie się w stosunku do tego elementu */
     flex: 1;
     min-width: 120px;
+    z-index: 3; /* Zapewnia, że przyciski nie będą zasłaniać pop-upa */
 }
 
 /* --- Delete Button --- */
@@ -147,7 +154,7 @@
 /* --- Confirm Popup (Potwierdzenie Usunięcia) --- */
 .confirm-popup {
     position: absolute;
-    top: calc(100% + 8px);
+    top: 100%; /* Ustalamy pop-up na stałej pozycji pod przyciskiem */
     left: 50%;
     transform: translateX(-50%);
     background: white;
@@ -155,9 +162,10 @@
     padding: 12px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 10;
+    z-index: 9999; /* Pop-up ma najwyższy z-index */
     width: 220px;
     text-align: center;
+    max-width: 90%;
 }
 
 /* --- Confirm Buttons inside Popup --- */
@@ -193,4 +201,10 @@
 
 .cancel-delete:hover {
     background-color: #757575;
+}
+
+/* --- Strzałki Paginacji --- */
+.pagination {
+    position: relative; /* Upewniamy się, że inne elementy są niżej w hierarchii */
+    z-index: 1; /* Strzałki mają niższy z-index niż pop-up */
 }

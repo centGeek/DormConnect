@@ -78,3 +78,47 @@
         font-size: 1.5rem;
     }
 }
+
+.events-edit-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.left-column, .right-column {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.center-column {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.events-create-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Styl przycisku */
+.left-column button {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.left-column button:hover {
+    background-color: #5a6268;
+}
+

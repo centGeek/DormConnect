@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EventsCard.css';
 
@@ -19,7 +19,7 @@ interface EventCardProps {
     event: Event;
     userId: number | undefined;
     isOrganizer: boolean;
-    onEventDeleted: (eventId: number) => void;  // Callback do usunięcia wydarzenia
+    onEventDeleted: (eventId: number) => void;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEventDeleted }) => {
@@ -28,10 +28,35 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
     const [participants, setParticipants] = useState<number[]>(event.participantId);
     const [loading, setLoading] = useState<boolean>(false);
     const [showConfirm, setShowConfirm] = useState<boolean>(false);
+    const confirmPopupRef = useRef<HTMLDivElement>(null);
+    const deleteButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         setAvailableSpots(event.maxParticipants - participants.length);
     }, [participants, event.maxParticipants]);
+
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        if (
+            confirmPopupRef.current &&
+            !confirmPopupRef.current.contains(event.target as Node) &&
+            deleteButtonRef.current &&
+            !deleteButtonRef.current.contains(event.target as Node)
+        ) {
+            setShowConfirm(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (showConfirm) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showConfirm, handleClickOutside]);
 
     const token = document.cookie
         .split('; ')
@@ -39,10 +64,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
 
     const handleJoinEvent = async () => {
         if (!userId || participants.includes(userId) || availableSpots <= 0 || !token) return;
-
         try {
             setLoading(true);
-
             const response = await fetch(`/api/event/participant/${event.eventId}`, {
                 method: 'PUT',
                 headers: {
@@ -51,9 +74,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
                 },
                 credentials: 'include',
             });
-
             if (!response.ok) throw new Error();
-
             setParticipants(prev => [...prev, userId]);
         } catch (error) {
             console.error(error);
@@ -64,10 +85,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
 
     const handleLeaveEvent = async () => {
         if (!userId || !participants.includes(userId) || !token) return;
-
         try {
             setLoading(true);
-
             const response = await fetch(`/api/event/participant/${event.eventId}`, {
                 method: 'DELETE',
                 headers: {
@@ -76,9 +95,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
                 },
                 credentials: 'include',
             });
-
             if (!response.ok) throw new Error();
-
             setParticipants(prev => prev.filter(id => id !== userId));
         } catch (error) {
             console.error(error);
@@ -93,10 +110,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
 
     const handleDeleteEvent = async () => {
         if (!token) return;
-
         try {
             setLoading(true);
-
             const response = await fetch(`/api/event/${event.eventId}`, {
                 method: 'DELETE',
                 headers: {
@@ -105,18 +120,24 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
                 },
                 credentials: 'include',
             });
-
             if (!response.ok) throw new Error();
-
-            // Wywołaj callback po usunięciu
             onEventDeleted(event.eventId);
-
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
             setShowConfirm(false);
         }
+    };
+
+    const formatDate = (date: string) => {
+        return new Date(date).toLocaleString('pl-PL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
     };
 
     return (
@@ -127,7 +148,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
 
             <h3>{event.eventName}</h3>
             <p><strong>Opis:</strong> {event.description}</p>
-            <p><strong>Data:</strong> {new Date(event.startDateTime).toLocaleString()} - {new Date(event.endDateTime).toLocaleString()}</p>
+            <p><strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}</p>
             <p><strong>Lokalizacja:</strong> {event.location}</p>
             <p><strong>Typ wydarzenia:</strong> {event.eventType}</p>
             <p><strong>Dostępne miejsca:</strong> {availableSpots}</p>
@@ -139,23 +160,29 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
                     </button>
 
                     <div className="delete-wrapper">
-                        {showConfirm ? (
-                            <div className="confirm-popup">
-                                <p>Czy na pewno?</p>
-                                <div className="confirm-buttons">
-                                    <button className="btn confirm-delete" onClick={handleDeleteEvent} disabled={loading}>
-                                        {loading ? 'Usuwanie...' : 'Tak'}
-                                    </button>
-                                    <button className="btn cancel-delete" onClick={() => setShowConfirm(false)}>
-                                        Nie
-                                    </button>
-                                </div>
+                        <button
+                            className="btn delete-button"
+                            ref={deleteButtonRef}
+                            onClick={() => setShowConfirm(prev => !prev)}
+                        >
+                            Usuń
+                        </button>
+
+                        <div
+                            className="confirm-popup"
+                            ref={confirmPopupRef}
+                            style={{ display: showConfirm ? 'block' : 'none' }}
+                        >
+                            <p>Czy na pewno?</p>
+                            <div className="confirm-buttons">
+                                <button className="btn confirm-delete" onClick={handleDeleteEvent} disabled={loading}>
+                                    {loading ? 'Usuwanie...' : 'Tak'}
+                                </button>
+                                <button className="btn cancel-delete" onClick={() => setShowConfirm(false)}>
+                                    Nie
+                                </button>
                             </div>
-                        ) : (
-                            <button className="btn delete-button" onClick={() => setShowConfirm(true)}>
-                                Usuń
-                            </button>
-                        )}
+                        </div>
                     </div>
                 </div>
             ) : (
