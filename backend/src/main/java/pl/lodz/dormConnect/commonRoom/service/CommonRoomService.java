@@ -1,10 +1,12 @@
 package pl.lodz.dormConnect.commonRoom.service;
 
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.commonRoom.dto.CommonRoomDTO;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
 import pl.lodz.dormConnect.commonRoom.scheduler.CommonRoomAssignmentScheduler;
+import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomMapper;
 
 import java.util.List;
 
@@ -13,31 +15,31 @@ public class CommonRoomService {
 
     private final CommonRoomRepository repository;
     private final CommonRoomAssignmentScheduler scheduler;
+    private final CommonRoomMapper mapper;
 
-    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler) {
+    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, CommonRoomMapper mapper) {
         this.repository = repository;
         this.scheduler = scheduler;
+        this.mapper = mapper;
     }
 
-    public CommonRoomEntity addCommonRoom(CommonRoomDTO commonRoomDTO) {
+    public CommonRoomEntity addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
         CommonRoomEntity commonRoom = new CommonRoomEntity();
-        if (commonRoomDTO.capacity() < 0) {
+        if (commonRoomCreateDTO.capacity() < 0) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
-        if (commonRoomDTO.howManyTimesAWeekYouCanUseIt() < 0) {
+        if (commonRoomCreateDTO.howManyTimesAWeekYouCanUseIt() < 0) {
             throw new IllegalArgumentException("How many times a week you can use it cannot be negative");
         }
-        if (commonRoomDTO.maxTimeYouCanStay() < 0) {
+        if (commonRoomCreateDTO.maxTimeYouCanStay() < 0) {
             throw new IllegalArgumentException("Max time you can stay cannot be negative");
         }
-        commonRoom.setCommonRoomType(commonRoomDTO.type());
-        commonRoom.setCapacity(commonRoomDTO.capacity());
-        commonRoom.setFloor(commonRoomDTO.floor());
-        commonRoom.setHoursOfTimeWindows(commonRoomDTO.maxTimeYouCanStay());
-        commonRoom.setHowManyTimesAWeekYouCanUseIt(commonRoomDTO.howManyTimesAWeekYouCanUseIt());
-        commonRoom.setActive(commonRoomDTO.active());
+        if (commonRoomCreateDTO.maxTimeYouCanStay()>4){
+            throw new IllegalArgumentException("Max time you can stay cannot be greater than 4");
+        }
 
-        CommonRoomEntity savedRoom = repository.save(commonRoom);
+
+        CommonRoomEntity savedRoom = repository.save(mapper.toCommonRoomEntity(commonRoomCreateDTO));
 
         // Wywołanie metody tworzącej przypisania
         scheduler.createAssignmentsForNextWeek(savedRoom);
@@ -45,8 +47,8 @@ public class CommonRoomService {
         return savedRoom;
     }
 
-    public List<CommonRoomEntity> getAllCommonRooms() {
-        return repository.findAll();
+    public List<CommonRoomGetDTO> getAllCommonRooms() {
+        return mapper.toCommonRoomGetDTOs(repository.findAll());
     }
 
     public boolean deleteCommonRoom(Long id) {
@@ -67,4 +69,5 @@ public class CommonRoomService {
     public List<CommonRoomEntity> getRoomByFloor(int floor) {
         return repository.findByFloor(floor);
     }
+
 }

@@ -3,7 +3,8 @@ package pl.lodz.dormConnect.commonRoom.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.dormConnect.commonRoom.dto.CommonRoomDTO;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
+import pl.lodz.dormConnect.commonRoom.dto.CommonRoomGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.service.CommonRoomService;
 
@@ -19,14 +20,14 @@ class CommonRoomController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CommonRoomEntity> addCommonRoom(@RequestBody CommonRoomDTO commonRoomDTO) {
-        CommonRoomEntity newRoom = service.addCommonRoom(commonRoomDTO);
+    public ResponseEntity<CommonRoomEntity> addCommonRoom(@RequestBody CommonRoomCreateDTO commonRoomCreateDTO) {
+        CommonRoomEntity newRoom = service.addCommonRoom(commonRoomCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
     }
 
 
     @GetMapping("/show")
-    public List<CommonRoomEntity> showCommonRooms() {
+    public List<CommonRoomGetDTO> showCommonRooms() {
         return service.getAllCommonRooms();
     }
 

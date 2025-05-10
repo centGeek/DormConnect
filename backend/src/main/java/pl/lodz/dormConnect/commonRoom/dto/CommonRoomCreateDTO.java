@@ -2,7 +2,7 @@ package pl.lodz.dormConnect.commonRoom.dto;
 
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 
-public record CommonRoomDTO(
+public record CommonRoomCreateDTO(
         CommonRoomEntity.CommonRoomType type,
         int capacity,
         int floor,
@@ -10,3 +10,4 @@ public record CommonRoomDTO(
         int howManyTimesAWeekYouCanUseIt,
         boolean active
 ) { }
+

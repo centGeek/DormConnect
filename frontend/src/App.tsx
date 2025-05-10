@@ -10,6 +10,7 @@ import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
+import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
@@ -31,6 +32,7 @@ function App() {
                             <Route path="/rooms" element={<Rooms />} />
                             <Route path="/rooms/form" element={<DormFormPage />} />
                             <Route path="/events/edit/:eventId" element={<EventsEdit />} />
+                            <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                             {userContext?.user?.roles.includes('ADMIN') && (
                                 <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                             )}

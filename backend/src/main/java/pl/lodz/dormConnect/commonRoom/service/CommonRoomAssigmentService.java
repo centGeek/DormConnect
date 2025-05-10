@@ -70,4 +70,5 @@ public class CommonRoomAssigmentService {
         repository.save(commonRoomAssignmentEntity);
         return ResponseEntity.ok("User left the assigment");
     }
+
 }
