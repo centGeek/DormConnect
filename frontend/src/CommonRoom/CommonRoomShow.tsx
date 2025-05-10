@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Template from "../Template/Template.tsx";
+import "./CommonRoomShow.css";
 
 interface CommonRoom {
     id: number;
-    type: string; // Zmieniono z commonRoomType na type
+    type: string;
     floor: number;
 }
 
 function CommonRoomShow() {
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRooms, setCommonRooms] = useState<CommonRoom[]>([]);
+    const navigate = useNavigate();
 
     const fetchCommonRooms = async () => {
         try {
@@ -24,9 +27,12 @@ function CommonRoomShow() {
             });
             if (!response.ok) throw new Error("Failed to fetch common rooms");
             const data = await response.json();
-            setCommonRooms(data || []); // Przypisanie danych bezpośrednio
-        } catch (error: any) {
-            console.error("Error fetching common rooms:", error);
+            setCommonRooms(data || []);
+        } catch (error: unknown) {
+            console.error(
+                "Error fetching common rooms:",
+                error instanceof Error ? error.message : error
+            );
         } finally {
             setLoading(false);
         }
@@ -48,7 +54,12 @@ function CommonRoomShow() {
                     "No common rooms found"
                 ) : (
                     commonRooms.map((commonRoom) => (
-                        <div key={commonRoom.id} className="common-room">
+                        <div
+                            key={commonRoom.id}
+                            className="common-room-card"
+                            onClick={() => navigate(`/common-room/${commonRoom.id}`)}
+                            style={{ cursor: "pointer" }}
+                        >
                             <h2>Common Room Type: {commonRoom.type}</h2>
                             <p>Floor: {commonRoom.floor}</p>
                         </div>

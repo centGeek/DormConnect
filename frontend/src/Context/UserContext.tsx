@@ -1,4 +1,4 @@
-import React, {createContext, useState, ReactNode, useEffect} from 'react';
+import React, {createContext, useState, ReactNode} from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import axios, { AxiosResponse } from 'axios';

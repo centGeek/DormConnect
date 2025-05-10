@@ -1,6 +1,7 @@
 package pl.lodz.dormConnect.commonRoom.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +39,7 @@ public class CommonRoomEntity {
     private boolean active = true;
 
     @OneToMany(mappedBy = "commonRoom")
+    @JsonIgnore
     private List<CommonRoomAssignmentEntity> commonRoomAssign = new ArrayList<>();
 
     public enum CommonRoomType {

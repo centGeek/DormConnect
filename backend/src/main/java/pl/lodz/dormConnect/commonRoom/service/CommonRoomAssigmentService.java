@@ -4,12 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
+import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomAssignmentsMapper;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssignmentRepository;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
 import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
 import pl.lodz.dormConnect.database.entity.UserEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommonRoomAssigmentService {
@@ -17,13 +19,16 @@ public class CommonRoomAssigmentService {
     private final CommonRoomAssignmentRepository repository;
     private final CommonRoomRepository commonRoomRepository;
     private final UserRepository userRepository;
+    private final CommonRoomAssignmentsMapper mapper;
 
     public CommonRoomAssigmentService(CommonRoomAssignmentRepository repository,
                                       CommonRoomRepository commonRoomRepository,
-                                      UserRepository userRepository) {
+                                      UserRepository userRepository,
+                                      CommonRoomAssignmentsMapper mapper) {
         this.repository = repository;
         this.commonRoomRepository = commonRoomRepository;
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     public List<CommonRoomAssignmentEntity> getAllCommonRoomAssigments() {
@@ -37,9 +42,10 @@ public class CommonRoomAssigmentService {
         return repository.findAssignmentsByUserId(userId);
     }
 
-    public List<CommonRoomAssignmentEntity> getCommonRoomAssgimentsByCommonRoomId(Long commonRoomId) {
+    public ResponseEntity<?> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
         List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.findCommonRoomAssigmentByCommonRoomId(commonRoomId);
-        return commonRoomAssigmentEntities;
+        Optional<UserEntity> user = userRepository.findById(userId);
+        return (ResponseEntity<?>) mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, user);
     }
 
     @Transactional
