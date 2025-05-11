@@ -34,7 +34,7 @@ public class CommonRoomAssigmentService {
 
 
     public ResponseEntity<List<CommonRoomAssignmentGetDTO>> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
-        List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.findCommonRoomAssigmentByCommonRoomId(commonRoomId);
+        List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.getAssignmentsByCommonRoomId(commonRoomId);
         List<CommonRoomAssignmentGetDTO> dtos = mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, userId);
         return ResponseEntity.ok(dtos);
     }

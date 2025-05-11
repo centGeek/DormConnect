@@ -12,10 +12,18 @@ interface assignmentProps {
     isFull: boolean;
 }
 
+interface CommonRoom {
+    id: number;
+    type: string;
+    floor: number;
+    capacity: number;
+}
+
 function CommonRoomSchedule() {
     const { id } = useParams<{ id: string }>();
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
@@ -36,6 +44,30 @@ function CommonRoomSchedule() {
             setAssignments(data || []);
         } catch (error) {
             console.error("Error fetching assignments details:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchCommonRoom = async () => {
+        try {
+            setLoading(true);
+
+            const response: Response = await fetch(`/api/common-room/get/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include"
+            });
+            if (!response.ok) throw new Error("Failed to fetch common rooms");
+            const data = await response.json();
+            setCommonRoom(data || null);
+        } catch (error: unknown) {
+            console.error(
+                "Error fetching common rooms:",
+                error instanceof Error ? error.message : error
+            );
         } finally {
             setLoading(false);
         }
@@ -88,6 +120,7 @@ function CommonRoomSchedule() {
     useEffect(() => {
         if (id) {
             fetchAssignments();
+            fetchCommonRoom();
         }
     }, [id]);
 
@@ -113,6 +146,16 @@ function CommonRoomSchedule() {
             buttons={[{ text: "Powrót", link: "/common-rooms" }]}
             footerContent={<p></p>}
         >
+            <header className="common-room-header">
+                <h1>Common Room Details</h1>
+                {commonRoom && (
+                    <div className="common-room-details">
+                        <p><strong>Type:</strong> {commonRoom.type}</p>
+                        <p><strong>Floor:</strong> {commonRoom.floor}</p>
+                        <p><strong>Capacity:</strong> {commonRoom.capacity}</p>
+                    </div>
+                )}
+            </header>
             <div className="common-room-schedule">
                 {loading ? (
                     <p>Loading...</p>
@@ -140,7 +183,7 @@ function CommonRoomSchedule() {
                                 hour: '2-digit',
                                 minute: '2-digit'
                             })}</p>
-                            <p>Number of Users: {assignment.numberOfUsers}</p>
+                            <p>Number of Users: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
                         </div>
                     ))
                 )}

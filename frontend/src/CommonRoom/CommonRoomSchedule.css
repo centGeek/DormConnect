@@ -35,3 +35,24 @@
     background-color: #ffcccb; /* Jasnoczerwony */
     color: #555555; /* Ciemniejszy tekst */
     border: 1px solid #ff9999; /* Jaśniejszy czerwony */}
+
+.common-room-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.common-room-details {
+    display: inline-block;
+    text-align: left;
+    margin-top: 10px;
+}
+
+.common-room-schedule {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 20px;

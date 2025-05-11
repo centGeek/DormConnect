@@ -7,6 +7,7 @@ interface CommonRoom {
     id: number;
     type: string;
     floor: number;
+    capacity: number;
 }
 
 function CommonRoomShow() {

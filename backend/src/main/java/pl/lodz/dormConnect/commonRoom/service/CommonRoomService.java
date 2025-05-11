@@ -69,5 +69,8 @@ public class CommonRoomService {
     public List<CommonRoomEntity> getRoomByFloor(int floor) {
         return repository.findByFloor(floor);
     }
+    public CommonRoomGetDTO getCommonRoomById(Long id) {
+        return mapper.toCommonRoomGetDTO(repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found")));
+    }
 
 }

@@ -27,7 +27,8 @@ public class CommonRoomMapper {
         return new CommonRoomGetDTO(
                 commonRoomEntity.getId(),
                 commonRoomEntity.getCommonRoomType(),
-                commonRoomEntity.getFloor()
+                commonRoomEntity.getFloor(),
+                commonRoomEntity.getCapacity()
         );
     }
 

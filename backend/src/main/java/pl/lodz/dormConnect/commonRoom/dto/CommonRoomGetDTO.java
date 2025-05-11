@@ -5,6 +5,6 @@ import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 public record CommonRoomGetDTO(
     Long id,
     CommonRoomEntity.CommonRoomType type,
-    int floor
-
+    int floor,
+    int capacity
     ){}

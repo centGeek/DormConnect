@@ -54,6 +54,15 @@ class CommonRoomController {
     public List<CommonRoomEntity> showCommonRooms(@PathVariable Long floor) {
         return service.getRoomByFloor(floor.intValue());
     }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<CommonRoomGetDTO> showCommonRoom(@PathVariable Long id) {
+        CommonRoomGetDTO commonRoom = service.getCommonRoomById(id);
+        if (commonRoom != null) {
+            return ResponseEntity.ok(commonRoom);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
 
 }
