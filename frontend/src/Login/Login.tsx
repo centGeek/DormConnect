@@ -1,18 +1,39 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import './Login.css';
-import { UserContext } from '../Context/UserContext.tsx';
+import axios, { AxiosResponse } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const userContext = useContext(UserContext);
+    const [error, setError] = useState<string>('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await userContext?.handleLogin(email, password);
+        try {
+            const response: AxiosResponse = await axios.post(
+                'http://localhost:8091/api/auth/login',
+                { email, password },
+                {
+                    withCredentials: true, // Upewnij się, że ciasteczka będą wysyłane
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Login successful', response.data);
+            // Poczekaj na zapisanie ciasteczka, a potem przekieruj
+            navigate('/home');  // Jeśli logowanie zakończyło się sukcesem
+        } catch (error) {
+            console.error('Login failed', error instanceof Error ? error.message : error);
+            setError('Invalid email or password');
+        }
     };
 
     return (
+        <>
+            <h1>Welcome in DormConnect</h1>
         <div className="login-container">
             <div className="login-box">
                 <h2>Login</h2>
@@ -38,11 +59,13 @@ function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
+                        {error && <p className="text-danger">{error}</p>}
                     </div>
                     <button type="submit" className="btn btn-primary">Login</button>
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

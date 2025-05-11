@@ -79,7 +79,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error('Logout failed:', error instanceof Error ? error.message : error);
         }
     };
-    
+
     return (
         <UserContext.Provider value={{ user, token, handleLogin, handleLogout }}>
             {children}
