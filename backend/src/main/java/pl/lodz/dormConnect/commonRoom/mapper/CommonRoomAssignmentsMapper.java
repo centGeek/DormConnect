@@ -3,28 +3,29 @@ package pl.lodz.dormConnect.commonRoom.mapper;
 import org.springframework.stereotype.Service;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomAssignmentGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
-import pl.lodz.dormConnect.database.entity.UserEntity;
+
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CommonRoomAssignmentsMapper {
-    public CommonRoomAssignmentGetDTO toCommonRoomAssignmentGetDTO(CommonRoomAssignmentEntity commonRoomAssignmentEntity, Optional<UserEntity> user) {
-        boolean isAssigned = commonRoomAssignmentEntity.getUsers().contains(user);
-        boolean isFull = commonRoomAssignmentEntity.getUsers().size() >= commonRoomAssignmentEntity.getCommonRoom().getCapacity();
+    public CommonRoomAssignmentGetDTO toCommonRoomAssignmentGetDTO(CommonRoomAssignmentEntity commonRoomAssignmentEntity, Long userId) {
+        boolean isAssigned = commonRoomAssignmentEntity.getUsersId().contains(userId);
+        boolean isFull = commonRoomAssignmentEntity.getUsersId().size() >= commonRoomAssignmentEntity.getCommonRoom().getCapacity();
         return new CommonRoomAssignmentGetDTO(
                 commonRoomAssignmentEntity.getId(),
                 commonRoomAssignmentEntity.getStartDate(),
                 commonRoomAssignmentEntity.getEndDate(),
-                commonRoomAssignmentEntity.getUsers().size(),
+                commonRoomAssignmentEntity.getUsersId().size(),
                 isAssigned,
                 isFull
         );
     }
-    public List<CommonRoomAssignmentGetDTO> toCommonRoomAssignmentGetDTOs(List<CommonRoomAssignmentEntity> commonRoomAssignmentEntities, Optional<UserEntity> user) {
+    public List<CommonRoomAssignmentGetDTO> toCommonRoomAssignmentGetDTOs(List<CommonRoomAssignmentEntity> commonRoomAssignmentEntities, Long userId) {
         return commonRoomAssignmentEntities.stream()
-                .map(entity -> toCommonRoomAssignmentGetDTO(entity, user))
+                .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate())) // Sortowanie po dacie rozpoczęcia
+                .map(entity -> toCommonRoomAssignmentGetDTO(entity, userId))
                 .toList();
     }
 

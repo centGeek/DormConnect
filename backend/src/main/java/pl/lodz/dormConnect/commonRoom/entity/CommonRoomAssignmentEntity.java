@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.lodz.dormConnect.database.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,8 +25,7 @@ public class CommonRoomAssignmentEntity {
     @JoinColumn(name = "common_room_id")
     private CommonRoomEntity commonRoom;
 
-    @ManyToMany
-    private List<UserEntity> users = new ArrayList<>();
+    private List<Long> usersId = new ArrayList<>();
 
     private boolean archived;
 

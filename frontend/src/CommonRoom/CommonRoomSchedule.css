@@ -27,7 +27,11 @@
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 .assigned {
-    background-color: #f44336; /* Czerwony */
+    background-color: #777777; /* Czerwony */
     color: white; /* Biały tekst dla lepszej czytelności */
-    border: 1px solid #d32f2f; /* Ciemniejszy czerwony */
+    border: 1px solid #555555; /* Ciemniejszy czerwony */
 }
+.full {
+    background-color: #ffcccb; /* Jasnoczerwony */
+    color: #555555; /* Ciemniejszy tekst */
+    border: 1px solid #ff9999; /* Jaśniejszy czerwony */}

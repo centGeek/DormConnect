@@ -32,21 +32,10 @@ public class CommonRoomAssigmentService {
         this.mapper = mapper;
     }
 
-    public List<CommonRoomAssignmentEntity> getAllCommonRoomAssigments() {
-        return repository.findAll();
-    }
-    public CommonRoomAssignmentEntity getCommonRoomAssigmentById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
-    }
-
-    public List<CommonRoomAssignmentEntity> getCommonRoomAssigmentsByUserId(Long userId) {
-        return repository.findAssignmentsByUserId(userId);
-    }
 
     public ResponseEntity<List<CommonRoomAssignmentGetDTO>> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
         List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.findCommonRoomAssigmentByCommonRoomId(commonRoomId);
-        Optional<UserEntity> user = userRepository.findById(userId);
-        List<CommonRoomAssignmentGetDTO> dtos = mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, user);
+        List<CommonRoomAssignmentGetDTO> dtos = mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, userId);
         return ResponseEntity.ok(dtos);
     }
 
@@ -58,23 +47,22 @@ public class CommonRoomAssigmentService {
 
         CommonRoomAssignmentEntity commonRoomAssignmentEntity = repository.findById(commonRoomAssigmentId).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (commonRoomAssignmentEntity.getUsers().contains(userId)) {
+        if (commonRoomAssignmentEntity.getUsersId().contains(userId)) {
             return ResponseEntity.badRequest().body("User already joined the assigment");
         }
-        if (commonRoomAssignmentEntity.getUsers().size()>= commonRoomAssignmentEntity.getCommonRoom().getCapacity()) {
+        if (commonRoomAssignmentEntity.getUsersId().size()>= commonRoomAssignmentEntity.getCommonRoom().getCapacity()) {
             return ResponseEntity.badRequest().body("Common room assigment is full");
         }
-        commonRoomAssignmentEntity.getUsers().add(user);
+        commonRoomAssignmentEntity.getUsersId().add(userId);
         repository.save(commonRoomAssignmentEntity);
         return ResponseEntity.ok("User joined the assigment");
     }
 
     public ResponseEntity<?> leaveAssigment(Long commonRoomAssigmentId, Long userId) {
         CommonRoomAssignmentEntity commonRoomAssignmentEntity = repository.findById(commonRoomAssigmentId).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!commonRoomAssignmentEntity.getUsers().contains(user)) {
+        if (!commonRoomAssignmentEntity.getUsersId().contains(userId)) {
             return ResponseEntity.badRequest().body("User not in the assigment");}
-        commonRoomAssignmentEntity.getUsers().remove(user);
+        commonRoomAssignmentEntity.getUsersId().remove(userId);
         repository.save(commonRoomAssignmentEntity);
         return ResponseEntity.ok("User left the assigment");
     }

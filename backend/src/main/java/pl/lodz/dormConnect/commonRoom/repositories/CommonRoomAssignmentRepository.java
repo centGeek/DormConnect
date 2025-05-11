@@ -14,11 +14,9 @@ import java.util.Optional;
 public interface CommonRoomAssignmentRepository extends JpaRepository<CommonRoomAssignmentEntity, Long> {
     Optional<CommonRoomAssignmentEntity> findById(Long id);
 
-    @Query("SELECT c FROM CommonRoomAssignmentEntity c JOIN c.users u WHERE u.id = :id")
-    List<CommonRoomAssignmentEntity> findAssignmentsByUserId(@Param("id") Long id);
 
-    @Query("SELECT c FROM CommonRoomAssignmentEntity c JOIN c.commonRoom cr WHERE cr.id = :id")
-    List<CommonRoomAssignmentEntity> findCommonRoomAssigmentByCommonRoomId(Long id);
+    @Query("SELECT c FROM CommonRoomAssignmentEntity c JOIN c.commonRoom cr WHERE cr.id = :id AND c.archived = false")
+    List<CommonRoomAssignmentEntity> getAssignmentsByCommonRoomId(@Param("id") Long id);
 
     void deleteById(Long id);
 

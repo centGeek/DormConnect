@@ -20,7 +20,6 @@ function CommonRoomSchedule() {
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
 
-
     const fetchAssignments = async () => {
         try {
             setLoading(true);
@@ -43,7 +42,6 @@ function CommonRoomSchedule() {
     };
 
     const handleAssign = async (assignmentId: number) => {
-        console.log("dupa_zapisz");
         try {
             const response = await fetch(`/api/common-room-assignment/join/${assignmentId}`, {
                 method: "PUT",
@@ -54,6 +52,7 @@ function CommonRoomSchedule() {
                 credentials: "include",
             });
             if (!response.ok) throw new Error('Cannot join the assignment.');
+            await fetchAssignments();
         } catch (error) {
             console.error("Error assigning to assignment:", error);
             alert("Cannot join the assignment.");
@@ -61,7 +60,6 @@ function CommonRoomSchedule() {
     };
 
     const handleUnassign = async (assignmentId: number) => {
-        console.log("dupa_odpisz");
         try {
             const response = await fetch(`/api/common-room-assignment/leave/${assignmentId}`, {
                 method: "DELETE",
@@ -72,6 +70,7 @@ function CommonRoomSchedule() {
                 credentials: "include",
             });
             if (!response.ok) throw new Error('Cannot leave the assignment.');
+            await fetchAssignments();
         } catch (error) {
             console.error("Error unassigning from assignment:", error);
             alert("Cannot leave the assignment.");
@@ -79,11 +78,9 @@ function CommonRoomSchedule() {
     };
 
     const handleClick = (assignment: assignmentProps) => {
-        if (assignment.isFull) return;
-
         if (assignment.isUserAssigned) {
             handleUnassign(assignment.id);
-        } else {
+        } else if (!assignment.isFull) {
             handleAssign(assignment.id);
         }
     };
@@ -93,6 +90,23 @@ function CommonRoomSchedule() {
             fetchAssignments();
         }
     }, [id]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        const savedPosition = sessionStorage.getItem('scrollPosition');
+        if (savedPosition) {
+            window.scrollTo(0, parseInt(savedPosition, 10));
+        }
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     return (
         <Template
@@ -108,9 +122,9 @@ function CommonRoomSchedule() {
                     assignments.map((assignment: assignmentProps) => (
                         <div
                             key={assignment.id}
-                            className={`assignment-card ${assignment.isUserAssigned ? 'assigned' : ''} ${assignment.isFull ? 'full' : ''}`}
+                            className={`assignment-card ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
                             onClick={() => handleClick(assignment)}
-                            style={{ cursor: assignment.isFull ? 'not-allowed' : 'pointer' }}
+                            style={{ cursor: (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
                         >
                             <p>Start Date: {new Date(assignment.startDate).toLocaleString(undefined, {
                                 year: 'numeric',
