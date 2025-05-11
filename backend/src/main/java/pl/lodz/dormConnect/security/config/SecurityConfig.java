@@ -60,7 +60,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/chat/get-message", "/api/auth/login","api/auth/logout").permitAll()
+                        .requestMatchers("/login", "/chat/get-message", "/api/auth/login",
+                                "api/auth/logout", "api/weather/**").permitAll()
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
