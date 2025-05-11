@@ -12,6 +12,7 @@ import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
 import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
+import DormProblemManage from './DormProblems/ManageProblem.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -42,6 +43,7 @@ function App() {
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
+                        <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                         )}

@@ -57,5 +57,11 @@ public class DormProblemController {
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 
+    @GetMapping("problem-statuses")
+    public ResponseEntity<List<GetDormProblemDTO>> getProblemStatuses() {
+        List< dormProblems = dormProblemService.getAllDormProblems();
+        return ResponseEntity.status(HttpStatus.OK).body(dormProblems);
+    }
+
 
 }

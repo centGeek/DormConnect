@@ -88,6 +88,10 @@ public class DormProblemService {
                 .toList();
     }
 
+    public List<ProblemStatus> getAllProblemStatuses() {
+        return List.of(ProblemStatus.values());
+    }
+
     private boolean checkProblemStatusChange(ProblemStatus current, ProblemStatus newStatus) {
         return (current == ProblemStatus.RESOLVED && newStatus == ProblemStatus.SUBMITTED)
                 || (current == ProblemStatus.RESOLVED && newStatus == ProblemStatus.REJECTED)
@@ -97,4 +101,6 @@ public class DormProblemService {
                 || (current == ProblemStatus.REJECTED && newStatus == ProblemStatus.IN_PROGRESS)
                 || (current == ProblemStatus.REJECTED && newStatus == ProblemStatus.SUBMITTED);
     }
+
+
 }
