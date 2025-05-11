@@ -76,6 +76,7 @@
 
 .common-room-details {
     display: inline-block;
+    flex: auto;
     text-align: left;
     margin-top: 10px;
 }

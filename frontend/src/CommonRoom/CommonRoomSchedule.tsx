@@ -1,8 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Template from "../Template/Template";
+// @ts-ignore
 import { groupBy } from "lodash";
 import "./CommonRoomSchedule.css";
+import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface assignmentProps {
     id: number;
@@ -152,27 +154,28 @@ function CommonRoomSchedule() {
         };
     }, []);
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <Template
             buttons={[{ text: "Powrót", link: "/common-rooms" }]}
             footerContent={<p></p>}
         >
             <header className="common-room-header">
-                <h1>Common Room Details</h1>
                 {commonRoom && (
                     <div className="common-room-details">
-                        <p><strong>Type:</strong> {commonRoom.type}</p>
-                        <p><strong>Floor:</strong> {commonRoom.floor}</p>
-                        <p><strong>Capacity:</strong> {commonRoom.capacity}</p>
-                        <p><strong>Limit of assignments:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
+                        <p><strong>Typ pokoju:</strong> {getRoomStatusTranslation(commonRoom.type)}</p>
+                        <p><strong>Piętro:</strong> {commonRoom.floor}</p>
+                        <p><strong>Pojemność:</strong> {commonRoom.capacity}</p>
+                        <p><strong>Limit zapisów:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
                     </div>
                 )}
             </header>
             <div className="common-room-schedule">
                 {loading ? (
-                    <p>Loading...</p>
+                    <p>Ładowanie...</p>
                 ) : assignments.length === 0 ? (
-                    <p>No assignments found</p>
+                    <p>Nie znaleziono żadnych rezerwacji</p>
                 ) : (
                     Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
                         new Date(assignment.startDate).toLocaleDateString()
@@ -193,7 +196,7 @@ function CommonRoomSchedule() {
                                         hour: '2-digit',
                                         minute: '2-digit'
                                     })}</p>
-                                    <p>Occupacy: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                                    <p>Zajęte: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
                                 </div>
                             ))}
                         </div>

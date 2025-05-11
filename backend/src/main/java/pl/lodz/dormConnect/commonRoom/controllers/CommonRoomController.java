@@ -63,6 +63,11 @@ class CommonRoomController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    @GetMapping("/get/enum")
+    public ResponseEntity<List<String>> getCommonRoomTypes() {
+        List<String> commonRoomTypes = service.getCommonRoomTypes();
+        return ResponseEntity.ok(commonRoomTypes);
+    }
 
 
 }

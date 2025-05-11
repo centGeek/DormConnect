@@ -75,4 +75,9 @@ public class CommonRoomService {
         return mapper.toCommonRoomGetDTO(repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found")));
     }
 
+    public List<String> getCommonRoomTypes() {
+        return List.of(CommonRoomEntity.CommonRoomType.values()).stream()
+                .map(Enum::name)
+                .toList();
+    }
 }
