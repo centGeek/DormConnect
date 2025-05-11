@@ -63,6 +63,8 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login","api/auth/logout").permitAll()
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
                         .requestMatchers("/api/dorm/**").permitAll()
+                        .requestMatchers("/api/common-room/**").permitAll()
+                        .requestMatchers(("/api/common-room-assignment/**")).permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
