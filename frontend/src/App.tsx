@@ -5,7 +5,7 @@ import Chat from './Chat/Chat.tsx';
 import Home from './Home/Home.tsx';
 import EventsCreate from './Events/EventsCreate.tsx';
 import Events from './Events/Events.tsx';
-import { UserContext, UserProvider } from './Context/UserContext.tsx';
+import { UserContext } from './Context/UserContext.tsx';
 import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import EventsEdit from './Events/EventsEdit.tsx';
