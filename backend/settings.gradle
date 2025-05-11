@@ -1,1 +1,9 @@
 rootProject.name = 'dormConnect'
+include(':app-logic')
+include(':eureka-server')
+include 'security-service'
+include 'jwt-common'
+include 'jwt-common'
+include 'dorm-connect-modules'
+include 'drm-connect-commons'
+
