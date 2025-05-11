@@ -8,27 +8,22 @@ import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
 import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomAssignmentsMapper;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssignmentRepository;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
-import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
-import pl.lodz.dormConnect.database.entity.UserEntity;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CommonRoomAssigmentService {
 
     private final CommonRoomAssignmentRepository repository;
     private final CommonRoomRepository commonRoomRepository;
-    private final UserRepository userRepository;
     private final CommonRoomAssignmentsMapper mapper;
 
     public CommonRoomAssigmentService(CommonRoomAssignmentRepository repository,
                                       CommonRoomRepository commonRoomRepository,
-                                      UserRepository userRepository,
                                       CommonRoomAssignmentsMapper mapper) {
         this.repository = repository;
         this.commonRoomRepository = commonRoomRepository;
-        this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
@@ -46,12 +41,18 @@ public class CommonRoomAssigmentService {
     ) {
 
         CommonRoomAssignmentEntity commonRoomAssignmentEntity = repository.findById(commonRoomAssigmentId).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         if (commonRoomAssignmentEntity.getUsersId().contains(userId)) {
             return ResponseEntity.badRequest().body("User already joined the assigment");
         }
         if (commonRoomAssignmentEntity.getUsersId().size()>= commonRoomAssignmentEntity.getCommonRoom().getCapacity()) {
             return ResponseEntity.badRequest().body("Common room assigment is full");
+        }
+        int assignmentsUserHas = 0;
+        for (CommonRoomAssignmentEntity assignment : repository.getAssignmentsByCommonRoomId(commonRoomAssignmentEntity.getCommonRoom().getId())) {
+            if (assignment.getUsersId().contains(userId)) {assignmentsUserHas++;}
+        }
+        if (assignmentsUserHas >= commonRoomAssignmentEntity.getCommonRoom().getHowManyTimesAWeekYouCanUseIt()) {
+                return ResponseEntity.badRequest().body("User has too many assignments in this week");
         }
         commonRoomAssignmentEntity.getUsersId().add(userId);
         repository.save(commonRoomAssignmentEntity);

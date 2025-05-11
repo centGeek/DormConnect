@@ -8,6 +8,7 @@ interface CommonRoom {
     type: string;
     floor: number;
     capacity: number;
+    timesAWeekYouCanUseIt: number;
 }
 
 function CommonRoomShow() {

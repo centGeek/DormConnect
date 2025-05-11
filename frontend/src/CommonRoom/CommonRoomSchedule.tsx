@@ -17,6 +17,7 @@ interface CommonRoom {
     type: string;
     floor: number;
     capacity: number;
+    timesAWeekYouCanUseIt: number;
 }
 
 function CommonRoomSchedule() {
@@ -83,7 +84,11 @@ function CommonRoomSchedule() {
                 },
                 credentials: "include",
             });
-            if (!response.ok) throw new Error('Cannot join the assignment.');
+            if (!response.ok) {
+                const errorMessage = await response.text(); // Pobierz komunikat błędu
+                alert(errorMessage); // Wyświetl powiadomienie użytkownikowi
+                return;
+            }
             await fetchAssignments();
         } catch (error) {
             console.error("Error assigning to assignment:", error);
@@ -153,6 +158,7 @@ function CommonRoomSchedule() {
                         <p><strong>Type:</strong> {commonRoom.type}</p>
                         <p><strong>Floor:</strong> {commonRoom.floor}</p>
                         <p><strong>Capacity:</strong> {commonRoom.capacity}</p>
+                        <p><strong>Limit of assignments:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
                     </div>
                 )}
             </header>

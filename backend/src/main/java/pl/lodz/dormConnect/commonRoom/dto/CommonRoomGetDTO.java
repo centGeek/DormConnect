@@ -6,5 +6,6 @@ public record CommonRoomGetDTO(
     Long id,
     CommonRoomEntity.CommonRoomType type,
     int floor,
-    int capacity
+    int capacity,
+    int timesAWeekYouCanUseIt
     ){}

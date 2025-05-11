@@ -28,7 +28,8 @@ public class CommonRoomMapper {
                 commonRoomEntity.getId(),
                 commonRoomEntity.getCommonRoomType(),
                 commonRoomEntity.getFloor(),
-                commonRoomEntity.getCapacity()
+                commonRoomEntity.getCapacity(),
+                commonRoomEntity.getHowManyTimesAWeekYouCanUseIt()
         );
     }
 
