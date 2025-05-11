@@ -25,5 +25,7 @@ public interface CommonRoomAssignmentRepository extends JpaRepository<CommonRoom
 
     void removeCommonRoomAssigmentsByCommonRoom(CommonRoomEntity commonRoom);
 
-    void removeCommonRoomAssigmentsByCommonRoomAndArchived(CommonRoomEntity commonRoom, boolean archived);
+    void removeAllByArchived(boolean archived);
+
+    List<CommonRoomAssignmentEntity> getByArchived(boolean archived);
 }
