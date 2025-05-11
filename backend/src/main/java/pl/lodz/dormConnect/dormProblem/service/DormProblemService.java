@@ -4,7 +4,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.lodz.dormConnect.dormProblem.dto.DormProblemDTO;
+import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
+import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
+import pl.lodz.dormConnect.dormProblem.dto.UpdateDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.exception.DormProblemNotFoundException;
 import pl.lodz.dormConnect.dormProblem.exception.IllegalProblemStatusChangeException;
 import pl.lodz.dormConnect.dormProblem.mapper.DormProblemMapper;
@@ -12,6 +14,7 @@ import pl.lodz.dormConnect.dormProblem.model.DormProblem;
 import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 import pl.lodz.dormConnect.dormProblem.repository.DormProblemRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,27 +28,32 @@ public class DormProblemService {
     }
 
     @Transactional
-    public DormProblemDTO createDormProblem(@NotNull DormProblemDTO dormProblemDTO) {;
-        DormProblem dormProblem = DormProblemMapper.mapToEntity(dormProblemDTO);
+    public GetDormProblemDTO createDormProblem(@NotNull CreateDormProblemDTO createDormProblemDTO) {;
+        DormProblem dormProblem = DormProblemMapper.mapCreateDTOToEntity(createDormProblemDTO);
         dormProblem.setId(0L);
+        dormProblem.setProblemStatus(ProblemStatus.SUBMITTED);
+        dormProblem.setSubmittedDate(LocalDate.now());
         DormProblem created = dormProblemRepository.save(dormProblem);
-        return DormProblemMapper.mapToDTO(created);
+        return DormProblemMapper.mapToGetDTO(created);
     }
 
     @Transactional
-    public DormProblemDTO updateDormProblem(@NotNull DormProblemDTO dormProblemDTO) {
-        DormProblem currentDormProblem = dormProblemRepository.findById(dormProblemDTO.id()).orElse(null);
+    public GetDormProblemDTO updateDormProblem(@NotNull UpdateDormProblemDTO updateDormProblemDTO) {
+        DormProblem currentDormProblem = dormProblemRepository.findById(updateDormProblemDTO.id()).orElse(null);
         if (currentDormProblem == null) {
-            throw new DormProblemNotFoundException("DormProblem with id " + dormProblemDTO.id() + " not found - cannot update");
+            throw new DormProblemNotFoundException("DormProblem with id " + updateDormProblemDTO.id() + " not found - cannot update");
         }
         ProblemStatus currProblemStatus = currentDormProblem.getProblemStatus();
-        if(!checkProblemStatusChange(currProblemStatus, dormProblemDTO.problemStatus())) {
-            throw new IllegalProblemStatusChangeException("Cannot change problem status from " + currProblemStatus + " to " + dormProblemDTO.problemStatus());
+        if(checkProblemStatusChange(currProblemStatus, updateDormProblemDTO.problemStatus())) {
+            throw new IllegalProblemStatusChangeException("Cannot change problem problemStatus from " + currProblemStatus + " to " + updateDormProblemDTO.problemStatus());
         }
 
-        DormProblem dormProblem = DormProblemMapper.mapToEntity(dormProblemDTO);
-        DormProblem saved = dormProblemRepository.save(dormProblem);
-        return DormProblemMapper.mapToDTO(saved);
+        currentDormProblem.setProblemStatus(updateDormProblemDTO.problemStatus());
+        currentDormProblem.setAnswer(updateDormProblemDTO.answer());
+        currentDormProblem.setDescription(updateDormProblemDTO.description());
+
+        DormProblem saved = dormProblemRepository.save(currentDormProblem);
+        return DormProblemMapper.mapToGetDTO(saved);
     }
 
     @Transactional
@@ -58,19 +66,26 @@ public class DormProblemService {
     }
 
     @Transactional
-    public List<DormProblemDTO> getAllDormProblems() {
+    public List<GetDormProblemDTO> getAllDormProblems() {
         return dormProblemRepository.findAll().stream()
-                .map(DormProblemMapper::mapToDTO)
+                .map(DormProblemMapper::mapToGetDTO)
                 .toList();
     }
 
     @Transactional
-    public DormProblemDTO getDormProblemById(@NotNull Long id) {
+    public GetDormProblemDTO getDormProblemById(@NotNull Long id) {
         Optional<DormProblem> dormProblem = dormProblemRepository.findById(id);
         if (dormProblem.isEmpty()) {
             throw new DormProblemNotFoundException("DormProblem with id " + id + " not found");
         }
-        return DormProblemMapper.mapToDTO(dormProblem.get());
+        return DormProblemMapper.mapToGetDTO(dormProblem.get());
+    }
+
+    @Transactional
+    public List<GetDormProblemDTO> getDormProblemByStatus(@NotNull ProblemStatus problemStatus) {
+        return dormProblemRepository.findByProblemStatus(problemStatus).stream()
+                .map( (d) -> DormProblemMapper.mapToGetDTO((DormProblem) d) )
+                .toList();
     }
 
     private boolean checkProblemStatusChange(ProblemStatus current, ProblemStatus newStatus) {

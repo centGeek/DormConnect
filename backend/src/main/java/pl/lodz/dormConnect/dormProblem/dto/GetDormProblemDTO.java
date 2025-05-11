@@ -1,21 +1,22 @@
 package pl.lodz.dormConnect.dormProblem.dto;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
-import pl.lodz.dormConnect.events.validation.ValidEventDates;
 
 import java.time.LocalDate;
 
-public record DormProblemDTO(
+public record GetDormProblemDTO(
         @NotNull
         Long id,
         @NotBlank
         Long studentId,
         String description,
+        String answer,
         @NotNull
         LocalDate problemDate,
+        @NotNull
+        LocalDate submittedDate,
         @NotNull
         ProblemStatus problemStatus
 ) {

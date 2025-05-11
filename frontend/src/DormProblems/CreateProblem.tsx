@@ -5,7 +5,6 @@ import { UserContext } from '../Context/UserContext';
 import Template from '../Template/Template';
 
 interface DormProblem {
-    id: number;
     studentId: number;
     description: string;
     problemDate: string;
@@ -14,18 +13,28 @@ interface DormProblem {
 }
 
 
-
 function DormProblemCreate() {
     const {state} = useLocation();
 
-
+    const [problemDesc, setProblemDesc] = useState('');
+    const [problemDate, setProblemDate] = useState('');
+    const [problemStatus, setProblemStatus] = useState('');
 
     // const {onSubmit, values} = useForm(
         // handle
     // );
 
-    async function handleSubmit() {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const newDormProblem = {
+            studentId: 1,
+            description: problemDesc,
+            problemDate: problemDate,
+            problemStatus: "SUBMITTED"
+        }
 
+        console.log("submitted");
+        console.log(newDormProblem);
     };
 
 
@@ -43,7 +52,7 @@ function DormProblemCreate() {
     >
         <div>Dormitory Problems</div>
         <div>
-            <form name='dorm-problem-form'>
+            <form name='dorm-problem-form' onSubmit={handleSubmit}>
                 <label>Problem date</label>
                 <input type='date' name='problemDate'></input>
                 <br/>

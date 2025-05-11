@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.dormProblem.mapper;
 
 import org.junit.jupiter.api.Test;
-import pl.lodz.dormConnect.dormProblem.dto.DormProblemDTO;
+import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.model.DormProblem;
 import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 
@@ -19,9 +19,9 @@ class DormProblemMapperTest {
     DormProblem problem = new DormProblem(id, studentId, description, problemDate, problemStatus);
 
     @Test
-    void mapToEntity() {
-        var dormProblemDTO = new DormProblemDTO(id, studentId, description, problemDate, problemStatus);
-        var dormProblem = DormProblemMapper.mapToEntity(dormProblemDTO);
+    void mapToGetEntity() {
+        var dormProblemDTO = new GetDormProblemDTO(id, studentId, description, problemDate, problemStatus);
+        var dormProblem = DormProblemMapper.mapToGetEntity(dormProblemDTO);
 
         assertEquals(dormProblem.getId(), dormProblemDTO.id());
         assertEquals(dormProblem.getStudentId(), dormProblemDTO.studentId());
@@ -31,10 +31,10 @@ class DormProblemMapperTest {
     }
 
     @Test
-    void mapToDTO() {
-        var dormProblemDTO = new DormProblemDTO(id, studentId, description, problemDate, problemStatus);
-        var dormProblem = DormProblemMapper.mapToEntity(dormProblemDTO);
-        var mappedDTO = DormProblemMapper.mapToDTO(dormProblem);
+    void mapToGetDTO() {
+        var dormProblemDTO = new GetDormProblemDTO(id, studentId, description, problemDate, problemStatus);
+        var dormProblem = DormProblemMapper.mapToGetEntity(dormProblemDTO);
+        var mappedDTO = DormProblemMapper.mapToGetDTO(dormProblem);
 
         assertEquals(mappedDTO.id(), dormProblem.getId());
         assertEquals(mappedDTO.studentId(), dormProblem.getStudentId());

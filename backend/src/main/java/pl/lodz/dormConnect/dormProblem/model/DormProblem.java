@@ -18,8 +18,11 @@ public class DormProblem {
     private long id;
     private long studentId;
     private String description;
+    private String answer;
     @Temporal(TemporalType.DATE)
     private LocalDate problemDate;
+    @Temporal(TemporalType.DATE)
+    private LocalDate submittedDate;
     @Enumerated(EnumType.STRING)
     private ProblemStatus problemStatus;
 
