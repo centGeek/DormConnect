@@ -9,6 +9,7 @@ interface CommonRoom {
     floor: number;
     capacity: number;
     timesAWeekYouCanUseIt: number;
+    isArchived: boolean;
 }
 
 function CommonRoomShow() {

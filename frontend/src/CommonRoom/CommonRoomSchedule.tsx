@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Template from "../Template/Template";
+import { groupBy } from "lodash";
 import "./CommonRoomSchedule.css";
 
 interface assignmentProps {
@@ -10,6 +11,7 @@ interface assignmentProps {
     numberOfUsers: number;
     isUserAssigned: boolean;
     isFull: boolean;
+    isArchived: boolean;
 }
 
 interface CommonRoom {
@@ -115,6 +117,10 @@ function CommonRoomSchedule() {
     };
 
     const handleClick = (assignment: assignmentProps) => {
+        if (assignment.isArchived) {
+            alert("This assignment is archived and cannot be modified.");
+            return;
+        }
         if (assignment.isUserAssigned) {
             handleUnassign(assignment.id);
         } else if (!assignment.isFull) {
@@ -168,34 +174,35 @@ function CommonRoomSchedule() {
                 ) : assignments.length === 0 ? (
                     <p>No assignments found</p>
                 ) : (
-                    assignments.map((assignment: assignmentProps) => (
-                        <div
-                            key={assignment.id}
-                            className={`assignment-card ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
-                            onClick={() => handleClick(assignment)}
-                            style={{ cursor: (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
-                        >
-                            <p>Start Date: {new Date(assignment.startDate).toLocaleString(undefined, {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}</p>
-                            <p>End Date: {new Date(assignment.endDate).toLocaleString(undefined, {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}</p>
-                            <p>Number of Users: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                    Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
+                        new Date(assignment.startDate).toLocaleDateString()
+                    )).map(([date, group]) => (
+                        <div key={date} className="assignment-column">
+                            <div className="assignment-column-header">{date}</div>
+                            {group.map((assignment: assignmentProps) => (
+                                <div
+                                    key={assignment.id}
+                                    className={`assignment-card ${assignment.isArchived ? 'archived' : ''} ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
+                                    onClick={() => handleClick(assignment)}
+                                    style={{ cursor: assignment.isArchived || (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
+                                >
+                                    <p>{new Date(assignment.startDate).toLocaleString(undefined, {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })} -  {new Date(assignment.endDate).toLocaleString(undefined, {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</p>
+                                    <p>Occupacy: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                                </div>
+                            ))}
                         </div>
                     ))
                 )}
             </div>
         </Template>
     );
+
 }
 
 export default CommonRoomSchedule;

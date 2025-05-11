@@ -8,6 +8,7 @@ public record CommonRoomAssignmentGetDTO(
         Date endDate,
         int numberOfUsers,
         boolean isUserAssigned,
-        boolean isFull
+        boolean isFull,
+        boolean isArchived
 ) {
 }
