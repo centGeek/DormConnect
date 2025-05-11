@@ -69,32 +69,34 @@ public class CommonRoomAssignmentScheduler {
     public void updateSchedule(){
         assignmentRepository.removeAllByArchived(true); //delete all old assignments
         for (CommonRoomEntity commonRoom: commonRoomRepository.getAllCommonRooms()){
+            if(!assignmentRepository.getByCommonRoomAndArchived(commonRoom, false).isEmpty()) {
+                int maxTimeYouCanStay = commonRoom.getHoursOfTimeWindows();
+                Date currentDate = new Date();
 
-            int maxTimeYouCanStay = commonRoom.getHoursOfTimeWindows();
-            Date currentDate = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentDate);
+                calendar.add(Calendar.DAY_OF_YEAR, TimeAhead - 1);
+                if (calendar.MINUTE != 0) {
+                    calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
+                } else {
+                    calendar.add(Calendar.HOUR, 1);
+                }
+                calendar.set(Calendar.SECOND, 0);
+                calendar.add(Calendar.HOUR, 24 - calendar.get(Calendar.HOUR_OF_DAY));
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(currentDate);
-            calendar.add(Calendar.DAY_OF_YEAR, TimeAhead-1);
-            if (calendar.MINUTE != 0){
-                calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
-            }
-            else{calendar.add(Calendar.HOUR,1);}
-            calendar.set(Calendar.SECOND, 0);
-            calendar.add(Calendar.HOUR, 24-calendar.get(Calendar.HOUR_OF_DAY));
+                for (int i = 0; i < (24 / commonRoom.getHoursOfTimeWindows()); i++) { // Tworzenie przypisań na 7 dni
+                    Date startDate = calendar.getTime();
+                    calendar.add(Calendar.HOUR, maxTimeYouCanStay);
+                    Date endDate = calendar.getTime();
 
-            for (int i = 0; i < (24/commonRoom.getHoursOfTimeWindows()); i++) { // Tworzenie przypisań na 7 dni
-                Date startDate = calendar.getTime();
-                calendar.add(Calendar.HOUR, maxTimeYouCanStay);
-                Date endDate = calendar.getTime();
+                    CommonRoomAssignmentEntity assignment = new CommonRoomAssignmentEntity();
+                    assignment.setCommonRoom(commonRoom);
+                    assignment.setStartDate(startDate);
+                    assignment.setEndDate(endDate);
+                    assignment.setArchived(false);
 
-                CommonRoomAssignmentEntity assignment = new CommonRoomAssignmentEntity();
-                assignment.setCommonRoom(commonRoom);
-                assignment.setStartDate(startDate);
-                assignment.setEndDate(endDate);
-                assignment.setArchived(false);
-
-                assignmentRepository.save(assignment);
+                    assignmentRepository.save(assignment);
+                }
             }
         }
     }
