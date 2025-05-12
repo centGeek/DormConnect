@@ -164,10 +164,10 @@ function CommonRoomSchedule() {
             <header className="common-room-header">
                 {commonRoom && (
                     <div className="common-room-details">
-                        <p><strong>Typ pokoju:</strong> {getRoomStatusTranslation(commonRoom.type)}</p>
-                        <p><strong>Piętro:</strong> {commonRoom.floor}</p>
-                        <p><strong>Pojemność:</strong> {commonRoom.capacity}</p>
-                        <p><strong>Limit zapisów:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
+                        <p><strong>Typ pokoju:</strong> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
+                        <strong>Piętro:</strong> {commonRoom.floor}&nbsp;&nbsp;&nbsp;
+                        <strong>Pojemność:</strong> {commonRoom.capacity}   &nbsp;&nbsp;&nbsp;
+                        <strong>Limit zapisów:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
                     </div>
                 )}
             </header>
