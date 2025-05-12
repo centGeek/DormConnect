@@ -9,6 +9,7 @@ import pl.lodz.dormConnect.dormProblem.model.DormProblem;
 import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface DormProblemRepository extends JpaRepository<DormProblem, Long> {
@@ -20,5 +21,9 @@ public interface DormProblemRepository extends JpaRepository<DormProblem, Long> 
 
     @Transactional
     @Query("SELECT d FROM DormProblem d WHERE d.problemStatus = ?1")
-    Optional<Object> findByProblemStatus(@NotNull ProblemStatus problemStatus);
+    List<DormProblem> findByProblemStatus(@NotNull ProblemStatus problemStatus);
+
+    @Query("SELECT d FROM DormProblem d WHERE d.studentId = ?1")
+    List<DormProblem> findByUserId(@NotNull Long id);
+
 }

@@ -3,7 +3,12 @@ package pl.lodz.dormConnect.dormProblem.service;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
+import pl.lodz.dormConnect.database.entity.UserEntity;
+import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
 import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.UpdateDormProblemDTO;
@@ -21,10 +26,12 @@ import java.util.Optional;
 @Service
 public class DormProblemService {
     private final DormProblemRepository dormProblemRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public DormProblemService(DormProblemRepository dormProblemRepository) {
+    public DormProblemService(DormProblemRepository dormProblemRepository, UserRepository userRepository) {
         this.dormProblemRepository = dormProblemRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -67,9 +74,27 @@ public class DormProblemService {
 
     @Transactional
     public List<GetDormProblemDTO> getAllDormProblems() {
-        return dormProblemRepository.findAll().stream()
-                .map(DormProblemMapper::mapToGetDTO)
-                .toList();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserEntity currentUser = userRepository.findByEmail(username).orElse(null);
+        if (currentUser == null) {
+            throw new DormProblemNotFoundException("User with email " + username + " not found");
+        }
+        RoleEntity role = currentUser.getRole();
+        if (role.getRoleName().equals("ADMIN")) {
+            return dormProblemRepository.findAll().stream()
+                    .map(DormProblemMapper::mapToGetDTO)
+                    .toList();
+        } else {
+            List<DormProblem> foundProblems =  dormProblemRepository.findByUserId(currentUser.getId());
+            return foundProblems.stream()
+                    .map(DormProblemMapper::mapToGetDTO)
+                    .toList();
+
+
+        }
+
+
     }
 
     @Transactional
@@ -89,7 +114,9 @@ public class DormProblemService {
     }
 
     public List<ProblemStatus> getAllProblemStatuses() {
-        return List.of(ProblemStatus.values());
+        List<ProblemStatus> problemStatuses =  List.of(ProblemStatus.values());
+        System.out.println(problemStatuses);
+        return  problemStatuses;
     }
 
     private boolean checkProblemStatusChange(ProblemStatus current, ProblemStatus newStatus) {

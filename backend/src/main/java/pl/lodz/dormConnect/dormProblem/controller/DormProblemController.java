@@ -1,5 +1,6 @@
 package pl.lodz.dormConnect.dormProblem.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.UpdateDormProblemDTO;
+import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 import pl.lodz.dormConnect.dormProblem.service.DormProblemService;
 
 import java.util.List;
@@ -57,9 +59,9 @@ public class DormProblemController {
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 
-    @GetMapping("problem-statuses")
-    public ResponseEntity<List<GetDormProblemDTO>> getProblemStatuses() {
-        List< dormProblems = dormProblemService.getAllDormProblems();
+    @GetMapping("/problem-statuses")
+    public ResponseEntity<List<ProblemStatus>> getProblemStatuses() {
+        List<ProblemStatus> dormProblems = dormProblemService.getAllProblemStatuses();
         return ResponseEntity.status(HttpStatus.OK).body(dormProblems);
     }
 

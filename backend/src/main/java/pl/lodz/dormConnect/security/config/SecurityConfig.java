@@ -62,7 +62,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login","api/auth/logout").permitAll()
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
-                        .requestMatchers("/api/dorm-problem/**").permitAll()
+                        .requestMatchers("/api/dorm-problem/**").authenticated()
+                        .requestMatchers("/problems/**").authenticated()
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()

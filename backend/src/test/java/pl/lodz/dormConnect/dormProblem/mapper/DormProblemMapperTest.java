@@ -35,7 +35,7 @@ class DormProblemMapperTest {
 
     @Test
     void mapToGetDTO() {
-        var dormProblemDTO = new GetDormProblemDTO(id, studentId, description, problemDate, problemStatus);
+        var dormProblemDTO = new GetDormProblemDTO(id, studentId, description, answer, problemDate, submittedDate, problemStatus);
         var dormProblem = DormProblemMapper.mapToGetEntity(dormProblemDTO);
         var mappedDTO = DormProblemMapper.mapToGetDTO(dormProblem);
 
