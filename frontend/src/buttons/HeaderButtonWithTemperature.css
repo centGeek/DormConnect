@@ -1,0 +1,10 @@
+.header-btn-with-temp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-temp {
+    font-size: 0.9rem;
+    color: #555;
+}

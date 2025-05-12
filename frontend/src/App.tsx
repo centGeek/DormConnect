@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login/Login.tsx';
 import Chat from './Chat/Chat.tsx';
 import Home from './Home/Home.tsx';
@@ -10,26 +10,22 @@ import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
+import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
+import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
+import { TemperatureProvider } from './context/TemperatureContext.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (userContext) {
-            setIsLoading(false); // Ustaw isLoading na false, gdy kontekst zostanie załadowany
-        }
+        console.log('User context:', userContext?.user?.roles);
     }, [userContext]);
 
-    if (isLoading) {
-        return <div>Ładowanie...</div>; // Możesz tu dodać spinner lub inny placeholder
-    }
-
     return (
-        <Router>
+        <TemperatureProvider>
             <Routes>
                 <Route path="/" element={<Login />} />
-                {userContext?.user ? (
+                {userContext?.token ? (
                     <>
                         <Route path="/home" element={<Home />} />
                         <Route path="/chat" element={<Chat />} />
@@ -38,6 +34,8 @@ function App() {
                         <Route path="/rooms" element={<Rooms />} />
                         <Route path="/rooms/form" element={<DormFormPage />} />
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
+                        <Route path="/common-rooms" element={<CommonRoomShow />} />
+                        <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                         )}
@@ -46,7 +44,7 @@ function App() {
                     <Route path="*" element={<Navigate to="/" replace />} />
                 )}
             </Routes>
-        </Router>
+        </TemperatureProvider>
     );
 }
 
