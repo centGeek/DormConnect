@@ -128,49 +128,18 @@
 //    }
 //
 //    @Test
-//    void shouldNotAcceptAlreadyRejectedForm() {
+//    void shouldCancelForm() {
 //        RoomReplacementFormEntity form = new RoomReplacementFormEntity();
 //        form.setRequesterId(studentA);
 //        form.setTargetStudent(studentB);
 //        form.setRequesterRoom(room1.getId());
 //        form.setTargetRoom(room2.getId());
-//        form.setStatus(RoomReplacementFormEntity.FormStatus.REJECTED);
-//        formRepository.save(form);
-//
-//        assertThrows(ResponseStatusException.class, () -> {
-//            roomReplacementFormService.acceptRoomSwapForm(form.getId());
-//        });
-//    }
-//
-//    @Test
-//    void shouldFailWhenRoomDoesNotExist() {
-//        RoomReplacementFormEntity form = new RoomReplacementFormEntity();
-//        form.setRequesterId(studentA);
-//        form.setTargetStudent(studentB);
-//        form.setRequesterRoom(9999L); // nieistniejący
-//        form.setTargetRoom(room2.getId());
 //        form.setStatus(RoomReplacementFormEntity.FormStatus.PENDING);
 //        formRepository.save(form);
 //
-//        assertThrows(ResponseStatusException.class, () -> {
-//            roomReplacementFormService.acceptRoomSwapForm(form.getId());
-//        });
+//        roomReplacementFormService.cancelFormByRequester(studentA, form.getId());
+//
+//        RoomReplacementFormEntity cancelled = formRepository.findById(form.getId()).orElseThrow();
+//        assertEquals(RoomReplacementFormEntity.FormStatus.CANCELLED, cancelled.getStatus());
 //    }
-//
-////    @Test
-////    void shouldCancelForm() {
-////        RoomReplacementFormEntity form = new RoomReplacementFormEntity();
-////        form.setRequesterId(studentA);
-////        form.setTargetStudent(studentB);
-////        form.setRequesterRoom(room1.getId());
-////        form.setTargetRoom(room2.getId());
-////        form.setStatus(RoomReplacementFormEntity.FormStatus.PENDING);
-////        formRepository.save(form);
-////
-////        roomReplacementFormService.cancelFormByRequester(studentA, form.getId());
-////
-////        RoomReplacementFormEntity cancelled = formRepository.findById(form.getId()).orElseThrow();
-////        assertEquals(RoomReplacementFormEntity.FormStatus.CANCELLED, cancelled.getStatus());
-////    }
-//
 //}
