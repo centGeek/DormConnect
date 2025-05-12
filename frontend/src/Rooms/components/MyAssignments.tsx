@@ -1,83 +1,100 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Template from "../../Template/Template.tsx";
-//TODO start here
+import './MyAssignments.css';
+
 const MyAssignments: React.FC = () => {
-    // Definicja DTO wewnątrz komponentu
     interface AssignmentsDTO {
         id: number;
         userId: number;
         userFullName: string;
         roomNumber: string;
         roomFloor: number;
-        startDate: string; // w formacie ISO, np. "2024-05-01"
-        endDate: string;
+        startDate: string;
+        endDate: string | null;
     }
 
-    const [assignments, setAssignments] = useState<AssignmentsDTO[]>([]); // Ustawiamy jako pustą tablicę
+    const [assignments, setAssignments] = useState<AssignmentsDTO[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [view, setView] = useState<'current' | 'historical'>('current');
 
     useEffect(() => {
         const fetchAssignments = async () => {
             try {
-                // Pobranie tokenu z cookie
                 const token = document.cookie
                     .split('; ')
                     .find(row => row.startsWith('token='))?.split('=')[1];
 
                 if (!token) {
-                    console.error('Brak tokenu w cookie');
-                    setError('Brak tokenu w cookie.');
+                    console.error('Token not found in cookie');
+                    setError('Token not found in cookie.');
                     return;
                 }
 
-                const user = parseJwt(token); // Zakładamy, że masz funkcję do parsowania JWT
-                const userId = user?.id;
-
-                console.log('Pobrany token:', token);
-                console.log('ID użytkownika:', userId);
-
-                // Pobranie przydziałów
                 const response = await axios.get<AssignmentsDTO[]>('/api/dorm/assign/myAssigns', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                console.log('Dane z endpointa:', response.status); // Logowanie odpowiedzi z API
-
-                setAssignments(response.data); // Zapewniamy, że odpowiedź to tablica
+                setAssignments(response.data);
             } catch (err) {
-                console.error('Błąd podczas pobierania przydziałów:', err);
-                setError('Wystąpił błąd przy ładowaniu przydziałów.');
+                console.error('Error while fetching assignments:', err);
+                setError('An error occurred while loading assignments.');
             }
         };
 
         fetchAssignments();
     }, []);
 
+    const now = new Date().toISOString();
+    const filteredAssignments = assignments
+        .filter(a => {
+            if (view === 'current') {
+                return !a.endDate || a.endDate >= now;
+            } else {
+                return a.endDate && a.endDate < now;
+            }
+        })
+        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
     return (
         <Template
-        footerContent={<p></p>}
-        buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' },{text: 'Rooms', link: '/rooms'},{ text: 'Assigmnetns', link: '/rooms/assignment'},{text: 'Form', link: '/rooms/form'}]}>
-            <div className="p-4">
-                <h2 className="text-xl font-bold mb-4">Moje przydziały</h2>
+            footerContent={<p></p>}
+            buttons={[
+                { text: 'Chat', link: '/chat' },
+                { text: 'Events', link: '/events' },
+                { text: 'Rooms', link: '/rooms' },
+                { text: 'Assignments', link: '/rooms/assignment' },
+                { text: 'Form', link: '/rooms/form' }
+            ]}
+        >
+            <div className="mb-6 flex items-center gap-4">
+                <span className={`font-medium ${view === 'current' ? 'text-blue-600' : 'text-gray-500'}`}>Current</span>
+                <label className="switch">
+                    <input
+                        type="checkbox"
+                        checked={view === 'historical'}
+                        onChange={() => setView(view === 'current' ? 'historical' : 'current')}
+                    />
+                    <span className="slider"></span>
+                </label>
+                <span className={`font-medium ${view === 'historical' ? 'text-blue-600' : 'text-gray-500'}`}>Historical</span>
+            </div>
+
+
+            <div>
                 {error && <p className="text-red-500">{error}</p>}
-                {assignments.length === 0 && !error && <p>Brak przydziałów.</p>}
-                <ul className="space-y-2">
-                    {Array.isArray(assignments) && assignments.map((a) => (
-                        <li
-                            key={a.id}
-                            className="border p-4 rounded-lg shadow-sm bg-white"
-                        >
+                {filteredAssignments.length === 0 && !error && <p>No assignments found.</p>}
+
+                <ul id="assignment-list">
+                    {filteredAssignments.map((a) => (
+                        <li key={a.id} className="assignment-item">
                             <p>
-                                <strong>Pokój:</strong> {a.roomNumber} (Piętro {a.roomFloor})
+                                <strong>Room:</strong> {a.roomNumber} (Floor {a.roomFloor})
                             </p>
                             <p>
-                                <strong>Okres:</strong> {a.startDate} – {a.endDate}
-                            </p>
-                            <p>
-                                <strong>Student:</strong> {a.userFullName}
+                                <strong>Period:</strong> {a.startDate} – {a.endDate ? a.endDate : 'ongoing'}
                             </p>
                         </li>
                     ))}
@@ -85,20 +102,6 @@ const MyAssignments: React.FC = () => {
             </div>
         </Template>
     );
-};
-
-// Funkcja do parsowania JWT - możesz ją dostosować, zależnie od tego, jak masz kodowane tokeny
-const parseJwt = (token: string) => {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-        atob(base64)
-            .split('')
-            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-            .join('')
-    );
-
-    return JSON.parse(jsonPayload);
 };
 
 export default MyAssignments;

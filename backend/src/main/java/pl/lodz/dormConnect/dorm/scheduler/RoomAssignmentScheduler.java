@@ -24,7 +24,7 @@ public class RoomAssignmentScheduler {
     private final RoomAssignmentRepository roomAssignRepository;
 
     @Transactional
-    @Scheduled(fixedRate = 60000) // co minutę
+    @Scheduled(fixedRate = 10000) // co minutę
     public void assignRooms() {
         List<DormFormEntity> forms = dormFormRepository.findByIsProcessedFalseOrderByPriorityScoreDesc();
         List<RoomEntity> allRooms = roomRepository.findAll();

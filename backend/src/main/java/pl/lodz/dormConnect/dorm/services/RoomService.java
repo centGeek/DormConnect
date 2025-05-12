@@ -129,7 +129,10 @@ public class RoomService {
                         assignment.getRoom().getNumber(),
                         assignment.getRoom().getFloor(),
                         assignment.getFromDate(),
-                        assignment.getToDate()))
+                        assignment.getToDate() != null && assignment.getToDate().equals(LocalDate.of(2999, 1, 1))
+                                ? null
+                                : assignment.getToDate()
+                        ))
                 .toList();
     }
 

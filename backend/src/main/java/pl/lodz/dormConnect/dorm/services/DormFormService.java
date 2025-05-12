@@ -57,7 +57,9 @@ public class DormFormService {
                         form.getId(),
                         form.getUserId(),
                         form.getStartDate(),
-                        form.getEndDate(),
+                        form.getEndDate() != null && form.getEndDate().equals(LocalDate.of(2999, 1, 1))
+                                ? null
+                                : form.getEndDate(),
                         form.isProcessed(),
                         form.getComments(),
                         form.getPriorityScore()))

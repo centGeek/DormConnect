@@ -7,6 +7,10 @@ import RoomEditModal from './RoomEditModal';
 import GroupRoomsModal from './GroupRoomsModal';
 import './floor.css';
 
+
+
+// ... (importy bez zmian)
+
 type GroupedRoomsType = {
     id: number;
     groupName: string | null;
@@ -18,6 +22,7 @@ type RoomType = {
     capacity: number;
     floor: number;
     groupedRooms: GroupedRoomsType | null;
+    startDate?: string; // ← tylko jeśli masz takie pole
 };
 
 type GroupedRoomsDisplay = {
@@ -30,7 +35,6 @@ const FloorCanvas: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [groupModalOpen, setGroupModalOpen] = useState(false);
-    const [insertIndex, setInsertIndex] = useState<number>(0);
     const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
     const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
 
@@ -69,11 +73,19 @@ const FloorCanvas: React.FC = () => {
             }
         });
 
-        return Array.from(groupsMap.values());
+        // Sortowanie pokoi w ramach każdej grupy po startDate (jeśli istnieje)
+        const groupedArray = Array.from(groupsMap.values()).map(group => ({
+            ...group,
+            rooms: [...group.rooms].sort((a, b) => {
+                if (!a.startDate || !b.startDate) return 0;
+                return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+            }),
+        }));
+
+        return groupedArray;
     };
 
-    const handleOpenModal = (index: number) => {
-        setInsertIndex(index);
+    const handleOpenModal = () => {
         setModalOpen(true);
     };
 
@@ -148,37 +160,38 @@ const FloorCanvas: React.FC = () => {
     return (
         <div className="floor-container">
             {selectedRooms.size > 0 && (
-                <button
-                    className="btn-primary"
-                    style={{ marginBottom: '20px' }}
-                    onClick={() => setGroupModalOpen(true)}
-                >
-                    Grupuj zaznaczone pokoje ({selectedRooms.size})
-                </button>
+                <div style={{ width: '100%', textAlign: 'center', marginBottom: '20px' }}>
+                    <button
+                        className="btn-primary"
+                        onClick={() => setGroupModalOpen(true)}
+                    >
+                        Grupuj zaznaczone pokoje ({selectedRooms.size})
+                    </button>
+                </div>
             )}
+
 
             {groupedRooms.map((group, groupIndex) => (
                 <div key={groupIndex} className="room-group">
                     {group.groupName && <div className="group-name">{group.groupName}</div>}
-                    {group.rooms.map((room, roomIndex) => (
-                        <React.Fragment key={room.id}>
-                            <div className="room-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedRooms.has(room.id)}
-                                    onChange={() => toggleRoomSelection(room.id)}
-                                    style={{ marginRight: '8px' }}
-                                />
-                                <div onClick={() => handleRoomClick(room)} style={{ flexGrow: 1 }}>
-                                    <Room room={room} />
-                                </div>
+                    {group.rooms.map((room) => (
+                        <div key={room.id} className="room-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                            <input
+                                type="checkbox"
+                                checked={selectedRooms.has(room.id)}
+                                onChange={() => toggleRoomSelection(room.id)}
+                                style={{ marginRight: '8px' }}
+                            />
+                            <div onClick={() => handleRoomClick(room)} style={{ flexGrow: 1 }}>
+                                <Room room={room} />
                             </div>
-                            <AddSlot onClick={() => handleOpenModal(roomIndex)} />
-                        </React.Fragment>
+                        </div>
                     ))}
                 </div>
             ))}
-            <AddSlot onClick={() => handleOpenModal(groupedRooms.length)} />
+
+            {/* Tylko jeden przycisk dodawania pokoju */}
+            <AddSlot onClick={handleOpenModal} />
 
             {modalOpen && (
                 <RoomModal
