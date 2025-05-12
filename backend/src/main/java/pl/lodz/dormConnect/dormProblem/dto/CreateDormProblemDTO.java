@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public record CreateDormProblemDTO(
         @NotBlank
         Long studentId,
+        String name,
         String description,
         @NotNull
         LocalDate problemDate

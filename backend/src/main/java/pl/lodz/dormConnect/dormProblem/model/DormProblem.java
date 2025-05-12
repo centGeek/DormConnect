@@ -17,6 +17,7 @@ public class DormProblem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long studentId;
+    private String name;
     private String description;
     private String answer;
     @Temporal(TemporalType.DATE)

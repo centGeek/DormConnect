@@ -11,6 +11,7 @@ public class DormProblemMapper {
         return new DormProblem(
                 getDormProblemDTO.id(),
                 getDormProblemDTO.studentId(),
+                getDormProblemDTO.name(),
                 getDormProblemDTO.description(),
                 getDormProblemDTO.answer(),
                 getDormProblemDTO.problemDate(),
@@ -22,6 +23,7 @@ public class DormProblemMapper {
         return new GetDormProblemDTO(
                 dormProblem.getId(),
                 dormProblem.getStudentId(),
+                dormProblem.getName(),
                 dormProblem.getDescription(),
                 dormProblem.getAnswer(),
                 dormProblem.getProblemDate(),
@@ -33,6 +35,7 @@ public class DormProblemMapper {
     public static CreateDormProblemDTO mapToCreateDTO(DormProblem dormProblem) {
         return new CreateDormProblemDTO(
                 dormProblem.getStudentId(),
+                dormProblem.getName(),
                 dormProblem.getDescription(),
                 dormProblem.getProblemDate()
         );
@@ -42,6 +45,7 @@ public class DormProblemMapper {
         return new DormProblem(
                 0,
                 createDormProblemDTO.studentId(),
+                createDormProblemDTO.name(),
                 createDormProblemDTO.description(),
                 null,
                 createDormProblemDTO.problemDate(),
@@ -54,6 +58,7 @@ public class DormProblemMapper {
         return new DormProblem(
                 updateDormProblemDTO.id(),
                 updateDormProblemDTO.studentId(),
+                updateDormProblemDTO.name(),
                 updateDormProblemDTO.description(),
                 updateDormProblemDTO.answer(),
                 null,
@@ -66,6 +71,7 @@ public class DormProblemMapper {
         return new UpdateDormProblemDTO(
                 dormProblem.getId(),
                 dormProblem.getStudentId(),
+                dormProblem.getName(),
                 dormProblem.getDescription(),
                 dormProblem.getAnswer(),
                 dormProblem.getProblemStatus()

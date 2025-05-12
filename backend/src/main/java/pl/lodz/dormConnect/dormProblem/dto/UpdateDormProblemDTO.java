@@ -9,6 +9,7 @@ public record UpdateDormProblemDTO(
         Long id,
         @NotNull
         Long studentId,
+        String name,
         @NotNull
         String description,
         @Nullable

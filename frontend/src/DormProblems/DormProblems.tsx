@@ -18,12 +18,12 @@ interface DormProblem {
 }
 
 function DormProblem() {
-    const {state} = useLocation();
+    const { state } = useLocation();
     const navigate = useNavigate();
     var decodedToken: TokenJwtPayload;
 
     const token = getToken();
-    
+
 
 
     const handleButtonClick = () => navigate('/problems/create');
@@ -48,7 +48,7 @@ function DormProblem() {
             const response = await fetch(`/api/dorm-problem/get`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type':  "application/json",
+                    'Content-Type': "application/json",
                     'Authorization': `Bearer ${token}`
                 },
                 credentials: 'include'
@@ -69,8 +69,8 @@ function DormProblem() {
     return (
         <Template
             buttons={[
-                { text: 'Home', link: '/home' }, 
-                { text: 'Chat', link: '/chat' }, 
+                { text: 'Home', link: '/home' },
+                { text: 'Chat', link: '/chat' },
                 { text: 'Events', link: '/events' }
             ]}
             footerContent={<p></p>}
@@ -78,14 +78,14 @@ function DormProblem() {
             <div className="dorm-problems-container">
                 <div className="problems-header">
                     <h2>Dormitory Problems</h2>
-                    <input 
-                        type="button" 
-                        className="submit-problem-btn" 
-                        value="Submit a problem" 
-                        onClick={handleButtonClick} 
+                    <input
+                        type="button"
+                        className="submit-problem-btn"
+                        value="Submit a problem"
+                        onClick={handleButtonClick}
                     />
                 </div>
-                
+
                 {loading ? (
                     <div>Loading problems...</div>
                 ) : (
@@ -99,10 +99,10 @@ function DormProblem() {
                                     Status: {problem.problemStatus}
                                 </p>
                                 <p>Date: {new Date(problem.problemDate).toLocaleDateString()}</p>
-                                <input 
-                                    type="button" 
-                                    className="manage-btn" 
-                                    value="Manage" 
+                                <input
+                                    type="button"
+                                    className="manage-btn"
+                                    value="Manage"
                                     onClick={() => handleManageButtonClick(problem.id)}
                                 />
                             </div>
