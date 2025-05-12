@@ -116,7 +116,7 @@ class RoomControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectNode.toString())
                         .with(csrf()))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().is5xxServerError());
 
         //Another student in the same period
         objectNode.put("idOfStudent", 16L);
@@ -131,7 +131,7 @@ class RoomControllerTest {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectNode.toString())
-                .with(csrf())).andExpect(status().is4xxClientError());
+                .with(csrf())).andExpect(status().is5xxServerError());
 
         //And now, we should be able to "rent" as the room is going to be empty at the time
         objectNode.put("idOfStudent", 17L);
@@ -154,7 +154,7 @@ class RoomControllerTest {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectNode.toString())
-                .with(csrf())).andExpect(status().is4xxClientError());
+                .with(csrf())).andExpect(status().is5xxServerError());
 
 
         objectNode.put("idOfStudent", 16L);

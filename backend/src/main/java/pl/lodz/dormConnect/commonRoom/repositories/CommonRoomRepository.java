@@ -1,0 +1,20 @@
+package pl.lodz.dormConnect.commonRoom.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
+
+import java.util.List;
+
+@Repository
+public interface CommonRoomRepository extends JpaRepository<CommonRoomEntity, Long> {
+    CommonRoomEntity findCommonRoomById(Long id);
+
+    CommonRoomEntity findCommonRoomByCommonRoomType(CommonRoomEntity.CommonRoomType commonRoomType);
+
+    List<CommonRoomEntity> findCommonRoomByFloor(int floor);
+
+    void deleteCommonRoomById(Long id);
+
+    List<CommonRoomEntity> findByFloor(int floor);
+}

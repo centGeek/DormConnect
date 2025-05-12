@@ -167,7 +167,7 @@ const Events = () => {
                 {/* ALL EVENTS */}
                 <div className="events-section">
                     <button className="toggle-button" onClick={() => setShowAll(!showAll)}>
-                        {showAll ? 'Ukryj wszystkie wydarzenia' : 'Pokaż wszystkie wydarzenia'}
+                            {showAll ? 'Ukryj wszystkie wydarzenia' : 'Pokaż wszystkie wydarzenia'}
                     </button>
                     {showAll && (
                         <>
