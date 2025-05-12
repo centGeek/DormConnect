@@ -54,13 +54,13 @@
 
 .full {
     background-color: #ffcccb; /* Jasnoczerwony */
-    color: #555555; /* Ciemniejszy tekst */
+    color: #a0a0a0; /* Ciemniejszy tekst */
     border: 1px solid #ff9999; /* Jaśniejszy czerwony */
 }
 
 .archived {
     background-color: #d3d3d3; /* Szary */
-    color: #a0a0a0; /* Jaśniejszy szary tekst */
+    color: #555555; /* Jaśniejszy szary tekst */
     border: 1px solid #c0c0c0; /* Ciemniejszy szary */
     cursor: not-allowed;
 }

@@ -20,7 +20,9 @@ public class CommonRoomAssignmentScheduler {
         this.assignmentRepository = assignmentRepository;
         this.commonRoomRepository = commonRoomRepository;
     }
+
     private final int TimeAhead = 7;
+
     //Initialize schedule for common room
     public void createAssignmentsForNextWeek(CommonRoomEntity commonRoom) {
         int maxTimeYouCanStay = commonRoom.getHoursOfTimeWindows();
@@ -28,14 +30,15 @@ public class CommonRoomAssignmentScheduler {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
-        if (calendar.MINUTE != 0){
+        if (Calendar.MINUTE != 0) {
             calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
+        } else {
+            calendar.add(Calendar.HOUR, 1);
         }
-        else{calendar.add(Calendar.HOUR,1);}
         calendar.set(Calendar.SECOND, 0);
-        calendar.add(Calendar.HOUR, 24-calendar.get(Calendar.HOUR_OF_DAY));
+        calendar.add(Calendar.HOUR, 24 - calendar.get(Calendar.HOUR_OF_DAY));
 
-        for (int i = 0; i < TimeAhead * (24/commonRoom.getHoursOfTimeWindows()); i++) { // Tworzenie przypisań na 7 dni
+        for (int i = 0; i < TimeAhead * (24 / commonRoom.getHoursOfTimeWindows()); i++) { // Tworzenie przypisań na 7 dni
             Date startDate = calendar.getTime();
             calendar.add(Calendar.HOUR, maxTimeYouCanStay);
             Date endDate = calendar.getTime();
@@ -62,21 +65,22 @@ public class CommonRoomAssignmentScheduler {
             // Sprawdź, czy są jakieś przypisania do archiwizacji
             if (commonRoomAssignmentEntity.getEndDate().before(new Date())) {
                 commonRoomAssignmentEntity.setArchived(true);
+                assignmentRepository.save(commonRoomAssignmentEntity);
             }
         }
     }
-    @Scheduled(cron="0 5 0  * * ?") // everyday at 00:05 function that creates new assigments for every room
-    public void updateSchedule(){
-        assignmentRepository.removeAllByArchived(true); //delete all old assignments
-        for (CommonRoomEntity commonRoom: commonRoomRepository.getAllCommonRooms()){
-            if(!assignmentRepository.getByCommonRoomAndArchived(commonRoom, false).isEmpty()) {
+
+    @Scheduled(cron = "0 5 0  * * ?") // everyday at 00:05 function that creates new assigments for every room
+    public void updateSchedule() {
+        for (CommonRoomEntity commonRoom : commonRoomRepository.getAllCommonRooms()) {
+            if (!assignmentRepository.getByCommonRoomAndArchived(commonRoom, false).isEmpty()) {
                 int maxTimeYouCanStay = commonRoom.getHoursOfTimeWindows();
                 Date currentDate = new Date();
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(currentDate);
                 calendar.add(Calendar.DAY_OF_YEAR, TimeAhead - 1);
-                if (calendar.MINUTE != 0) {
+                if (Calendar.MINUTE != 0) {
                     calendar.add(Calendar.MINUTE, 60 - calendar.get(Calendar.MINUTE));
                 } else {
                     calendar.add(Calendar.HOUR, 1);
@@ -97,7 +101,9 @@ public class CommonRoomAssignmentScheduler {
 
                     assignmentRepository.save(assignment);
                 }
+                assignmentRepository.removeAllByArchived(true); //delete all old assignments
             }
         }
+
     }
 }
