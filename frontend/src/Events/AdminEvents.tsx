@@ -16,7 +16,6 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
-    isApproved: boolean;
     approvalStatus: 'WAITING' | 'APPROVED' | 'DECLINED';
 }
 
@@ -26,12 +25,11 @@ function AdminEvents() {
     const navigate = useNavigate();
 
     const [token, setToken] = useState<string | null>(null);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
     const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [page, setPage] = useState<number>(0);
-    const [totalPages, setTotalPages] = useState<number>(1);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'declined' | 'waiting'>('waiting');
     const [sortOption, setSortOption] = useState<'startDateTime' | 'eventName'>('startDateTime');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -55,227 +53,134 @@ function AdminEvents() {
         }
 
         setToken(tokenFromCookie);
-        setUserRoles(roles);
     }, [navigate]);
 
-    const fetchEvents = useCallback(async (tab: 'all' | 'approved' | 'declined' | 'waiting', pageToFetch: number = page, sortBy: string = sortOption, order: string = sortOrder) => {
+    const fetchEvents = useCallback(async () => {
         if (!token) return;
 
         try {
             setLoading(true);
-
             let url = `/api/event/administrate`;
-            if (tab === 'approved') url += '/approved';
-            else if (tab === 'declined') url += '/declined';
-            else if (tab === 'waiting') url += '/waiting';
-
-            url += `?page=${pageToFetch}&size=4&sort=${sortBy},${order}`;
+            if (activeTab !== 'all') url += `/${activeTab}`;
+            url += `?page=${page}&size=6&sort=${sortOption},${sortOrder}`;
 
             const response = await fetch(url, {
                 method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${token}` },
                 credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error('Nie udało się pobrać wydarzeń.');
-            }
+            if (!response.ok) throw new Error('Błąd podczas pobierania wydarzeń.');
 
             const data = await response.json();
             setEvents(data.content || []);
             setTotalPages(data.totalPages || 1);
         } catch (err: any) {
-            setError(err.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
+            setError(err.message || 'Wystąpił błąd.');
         } finally {
             setLoading(false);
         }
-    }, [token, page, sortOption, sortOrder]);
+    }, [token, activeTab, page, sortOption, sortOrder]);
 
     useEffect(() => {
-        fetchEvents(activeTab, page, sortOption, sortOrder);
-    }, [fetchEvents, activeTab, page, sortOption, sortOrder]);
+        fetchEvents();
+    }, [fetchEvents]);
 
     const handleApprove = async (eventId: number) => {
-        try {
-            const response = await fetch(`/api/event/administrate/${eventId}/approve`, {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${token}` },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się zatwierdzić wydarzenia.');
-            }
-
-            await fetchEvents(activeTab);
-        } catch (error) {
-            console.error('Błąd podczas zatwierdzania:', error);
-        }
+        if (!token) return;
+        await fetch(`/api/event/administrate/${eventId}/approve`, {
+            method: 'PUT',
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include',
+        });
+        fetchEvents();
     };
 
     const handleReject = async (eventId: number) => {
-        try {
-            const response = await fetch(`/api/event/administrate/${eventId}/reject`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się odrzucić wydarzenia.');
-            }
-
-            await fetchEvents(activeTab);
-        } catch (error) {
-            console.error('Błąd podczas odrzucania:', error);
-        }
+        if (!token) return;
+        await fetch(`/api/event/administrate/${eventId}/reject`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include',
+        });
+        fetchEvents();
     };
 
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 0 && newPage < totalPages) {
-            setPage(newPage);
-            fetchEvents(activeTab, newPage, sortOption, sortOrder);  // Dodano sortowanie
-        }
-    };
-
-    const handleTabChange = (tab: 'all' | 'approved' | 'declined' | 'waiting') => {
+    const handleTabChange = (tab: typeof activeTab) => {
         setActiveTab(tab);
         setPage(0);
     };
 
-    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const [field, order] = event.target.value.split(',');
-        setSortOption(field);
-        setSortOrder(order as 'asc' | 'desc'); // Typowanie order
-        setPage(0); // Resetuje stronę
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const [field, order] = e.target.value.split(',');
+        setSortOption(field as 'startDateTime' | 'eventName');
+        setSortOrder(order as 'asc' | 'desc');
+        setPage(0);
     };
 
-    const getStatusColor = (status: 'WAITING' | 'APPROVED' | 'DECLINED') => {
-        switch (status) {
-            case 'APPROVED':
-                return 'green';
-            case 'DECLINED':
-                return 'red';
-            case 'WAITING':
-                return 'orange';
-            default:
-                return 'black';
-        }
-    };
-
-    const getStatusLabel = (status: 'WAITING' | 'APPROVED' | 'DECLINED') => {
-        switch (status) {
-            case 'APPROVED':
-                return 'Zatwierdzone';
-            case 'DECLINED':
-                return 'Odrzucone';
-            case 'WAITING':
-                return 'Oczekujące';
-            default:
-                return 'Nieznany';
-        }
-    };
-
-    const formatDate = (date: string) => {
-        return new Date(date).toLocaleString('pl-PL', {
+    const formatDate = (date: string) =>
+        new Date(date).toLocaleString('pl-PL', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
         });
-    };
 
     return (
-        <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}>
+        <Template buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}>
             <div className="admin-events-container">
-                {successMessage && <div className="success-message">{successMessage}</div>}
-
+                {/* Wróć button */}
                 <div className="back-button-container">
-                    <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
-                        Wróć
-                    </button>
+                    <button className="add-event-button" onClick={() => navigate('/events')}>Wróć</button>
                 </div>
 
-                <div className="filters-container">
+                {/* Główna zawartość */}
+                <div className="admin-content">
+                    {successMessage && <div className="success-message">{successMessage}</div>}
+
                     <div className="tabs">
-                        <button className={activeTab === 'waiting' ? 'active-tab' : ''} onClick={() => handleTabChange('waiting')}>
-                            Oczekujące
-                        </button>
-                        <button className={activeTab === 'approved' ? 'active-tab' : ''} onClick={() => handleTabChange('approved')}>
-                            Zatwierdzone
-                        </button>
-                        <button className={activeTab === 'declined' ? 'active-tab' : ''} onClick={() => handleTabChange('declined')}>
-                            Odrzucone
-                        </button>
-                        <button className={activeTab === 'all' ? 'active-tab' : ''} onClick={() => handleTabChange('all')}>
-                            Wszystkie
-                        </button>
+                        <button className={activeTab === 'waiting' ? 'active-tab' : ''} onClick={() => handleTabChange('waiting')}>Oczekujące</button>
+                        <button className={activeTab === 'approved' ? 'active-tab' : ''} onClick={() => handleTabChange('approved')}>Zatwierdzone</button>
+                        <button className={activeTab === 'declined' ? 'active-tab' : ''} onClick={() => handleTabChange('declined')}>Odrzucone</button>
+                        <button className={activeTab === 'all' ? 'active-tab' : ''} onClick={() => handleTabChange('all')}>Wszystkie</button>
                     </div>
-                </div>
 
-                <h2>Wydarzenia</h2>
-
-                {loading && <p>Ładowanie wydarzeń...</p>}
-                {error && <p className="error-message">{error}</p>}
-
-                {/* Dodany fragment sortowania */}
-                {!loading && events.length > 0 && (
-                    <div className="sort-container">
-                        <select className="sort-select" onChange={handleSortChange} value={`${sortOption},${sortOrder}`}>
-                            <option value="startDateTime,asc">Data (rosnąco)</option>
-                            <option value="startDateTime,desc">Data (malejąco)</option>
-                            <option value="eventName,asc">Nazwa (A-Z)</option>
-                            <option value="eventName,desc">Nazwa (Z-A)</option>
-                        </select>
-                    </div>
-                )}
-
-                <div className="events-list">
-                    {events.length === 0 && !loading ? (
-                        <p>Brak wydarzeń do wyświetlenia.</p>
-                    ) : (
-                        events.map((event) => (
-                            <div key={event.eventId} className="event-card">
-                                {event.imageUrl && (
-                                    <img src={event.imageUrl} alt={event.eventName} className="event-image" />
-                                )}
-
-                                <h3>{event.eventName}</h3>
-                                <p><strong>Opis:</strong> {event.description}</p>
-                                <p><strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}</p>
-                                <p><strong>Lokalizacja:</strong> {event.location}</p>
-                                <p><strong>Typ wydarzenia:</strong> {event.eventType}</p>
-                                <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
-
-                                <p>
-                                    <strong>Status:</strong>{' '}
-                                    <span className={`event-status ${event.approvalStatus.toLowerCase()}`}>
-                                        {getStatusLabel(event.approvalStatus)}
-                                    </span>
-                                </p>
-
-                                <div className="admin-buttons">
-                                    <button className="btn approve-button" onClick={() => handleApprove(event.eventId)}>
-                                        Zatwierdź
-                                    </button>
-                                    <button className="btn reject-button" onClick={() => handleReject(event.eventId)}>
-                                        Odrzuć
-                                    </button>
-                                </div>
-                            </div>
-                        ))
+                    {!loading && events.length > 0 && (
+                        <div className="sort-container">
+                            <select value={`${sortOption},${sortOrder}`} onChange={handleSortChange}>
+                                <option value="startDateTime,asc">Data (rosnąco)</option>
+                                <option value="startDateTime,desc">Data (malejąco)</option>
+                                <option value="eventName,asc">Nazwa (A-Z)</option>
+                                <option value="eventName,desc">Nazwa (Z-A)</option>
+                            </select>
+                        </div>
                     )}
-                </div>
 
-                {events.length >= 5 && (
-                    <Pagination
-                        totalPages={totalPages}
-                        currentPage={page}
-                        onPageChange={handlePageChange}
-                    />
-                )}
+                    {loading ? <p>Ładowanie...</p> : error ? <p className="error-message">{error}</p> : (
+                        <div className="events-grid">
+                            {events.map(event => (
+                                <div key={event.eventId} className="event-card">
+                                    {event.imageUrl && <img src={event.imageUrl} alt={event.eventName} className="event-image" />}
+                                    <h3>{event.eventName}</h3>
+                                    <p><strong>Opis:</strong> {event.description}</p>
+                                    <p><strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}</p>
+                                    <p><strong>Miejsce:</strong> {event.location}</p>
+                                    <p><strong>Typ:</strong> {event.eventType}</p>
+                                    <p><strong>Miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
+                                    <p><strong>Status:</strong> <span className={`status ${event.approvalStatus.toLowerCase()}`}>{event.approvalStatus}</span></p>
+
+                                    <div className="admin-buttons">
+                                        <button className="approve-button" onClick={() => handleApprove(event.eventId)}>Zatwierdź</button>
+                                        <button className="reject-button" onClick={() => handleReject(event.eventId)}>Odrzuć</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    <Pagination totalPages={totalPages} currentPage={page} onPageChange={(newPage) => setPage(newPage)} />
+                </div>
             </div>
         </Template>
     );

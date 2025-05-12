@@ -34,7 +34,7 @@ const Events = () => {
     const [page, setPage] = useState<number>(0);
 
     const [activeTab, setActiveTab] = useState<'organized' | 'participating' | 'all'>('participating');
-    const [sortType, setSortType] = useState<string>('startDateTime,asc'); // sortowanie
+    const [sortType, setSortType] = useState<string>('startDateTime,asc'); // Sortowanie
 
     const navigate = useNavigate();
     const userContext = useContext(UserContext);
@@ -211,11 +211,16 @@ const Events = () => {
                     </div>
                 )}
 
-                <Pagination
-                    totalPages={totalPages}
-                    currentPage={page}
-                    onPageChange={handlePageChange}
-                />            </div>
+                {/* Show pagination only if there are events and multiple pages */}
+                {!loading && getEventsToDisplay().length > 0 && totalPages > 1 && (
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={page}
+                        onPageChange={handlePageChange}
+                    />
+                )}
+
+            </div>
         </Template>
     );
 };
