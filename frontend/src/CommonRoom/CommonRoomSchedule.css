@@ -47,8 +47,8 @@
 }
 
 .assigned {
-    background-color: #b0b0b0; /* Jasnoszary */
-    color: white; /* Biały tekst dla lepszej czytelności */
+    background-color: #e1ffbc; /* Jasnoszary */
+    color: black; /* Biały tekst dla lepszej czytelności */
     border: 1px solid #888888; /* Ciemniejszy szary */
 }
 
@@ -59,7 +59,7 @@
 }
 
 .archived {
-    background-color: #d3d3d3; /* Szary */
+    background-color: #b0b0b0; /* Szary */
     color: #555555; /* Jaśniejszy szary tekst */
     border: 1px solid #c0c0c0; /* Ciemniejszy szary */
     cursor: not-allowed;

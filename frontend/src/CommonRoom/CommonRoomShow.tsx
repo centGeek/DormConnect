@@ -64,7 +64,7 @@ function CommonRoomShow() {
                             onClick={() => navigate(`/common-room/${commonRoom.id}`)}
                             style={{ cursor: "pointer" }}
                         >
-                            <h2>Typ pokoju: {getRoomStatusTranslation(commonRoom.type)}</h2>
+                            <h2>Typ pokoju:</h2><h2> {getRoomStatusTranslation(commonRoom.type)}</h2>
                             <p>Piętro: {commonRoom.floor}</p>
                         </div>
                     ))
