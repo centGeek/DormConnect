@@ -132,9 +132,14 @@ function EventsEdit() {
             setSuccessMessage('Event updated successfully!');
             setError(null);
 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setTimeout(() => navigate('/events'), 1000);
         } catch (error: any) {
             setError(error.message || 'Error updating event');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setSuccessMessage(null);
         }
     };
