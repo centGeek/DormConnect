@@ -13,7 +13,7 @@
 .events-create-container h2 {
     font-size: 1.8rem;
     color: #388e3c;
-    margin-bottom: 20px;
+    margin-bottom: 15px;  /* Zmniejszenie marginesu dolnego */
     text-align: center;
 }
 
@@ -21,24 +21,25 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;  /* Zmniejszenie odstępu między elementami formularza */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
+    margin-bottom: 10px;  /* Zmniejszenie marginesu dolnego w form-group */
 }
 
 .form-group label {
     font-size: 1rem;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 3px;  /* Zmniejszenie marginesu między etykietą a polem formularza */
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-    padding: 10px;
+    padding: 8px;  /* Zmniejszenie paddingu wewnętrznego */
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -55,11 +56,11 @@
 
 textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 80px;  /* Zmniejszenie minimalnej wysokości dla textarea */
 }
 
 .btn-primary {
-    padding: 10px 20px;
+    padding: 8px 16px;  /* Zmniejszenie paddingu w przycisku */
     font-size: 1rem;
     color: #fff;
     background-color: #66bb6a;
@@ -100,7 +101,6 @@ textarea {
     max-width: 600px;
 }
 
-/* Styl przycisku */
 .left-column button {
     background-color: #6c757d;
     color: white;
@@ -116,7 +116,7 @@ textarea {
     background-color: #5a6268;
 }
 
-
+/* Dodatkowe style */
 .back-button-container {
     display: flex;
     width: 100%;

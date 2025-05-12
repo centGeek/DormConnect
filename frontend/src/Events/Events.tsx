@@ -211,15 +211,11 @@ const Events = () => {
                     </div>
                 )}
 
-                {/* Pagination */}
-                {getEventsToDisplay().length > 6 && (
-                    <Pagination
-                        totalPages={totalPages}
-                        currentPage={page}
-                        onPageChange={handlePageChange}
-                    />
-                )}
-            </div>
+                <Pagination
+                    totalPages={totalPages}
+                    currentPage={page}
+                    onPageChange={handlePageChange}
+                />            </div>
         </Template>
     );
 };
