@@ -33,6 +33,8 @@ function AdminEvents() {
     const [page, setPage] = useState<number>(0);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'declined' | 'waiting'>('waiting');
+    const [sortOption, setSortOption] = useState<'startDateTime' | 'eventName'>('startDateTime');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     useEffect(() => {
         const tokenFromCookie = document.cookie
@@ -56,18 +58,18 @@ function AdminEvents() {
         setUserRoles(roles);
     }, [navigate]);
 
-    const fetchEvents = useCallback(async (tab: 'all' | 'approved' | 'declined' | 'waiting', pageToFetch: number = page) => {
+    const fetchEvents = useCallback(async (tab: 'all' | 'approved' | 'declined' | 'waiting', pageToFetch: number = page, sortBy: string = sortOption, order: string = sortOrder) => {
         if (!token) return;
 
         try {
             setLoading(true);
 
-            let url = '/api/event/administrate';
+            let url = `/api/event/administrate`;
             if (tab === 'approved') url += '/approved';
             else if (tab === 'declined') url += '/declined';
             else if (tab === 'waiting') url += '/waiting';
 
-            url += `?page=${pageToFetch}&size=4&sort=startDateTime,asc`;
+            url += `?page=${pageToFetch}&size=4&sort=${sortBy},${order}`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -87,11 +89,11 @@ function AdminEvents() {
         } finally {
             setLoading(false);
         }
-    }, [token, page]);
+    }, [token, page, sortOption, sortOrder]);
 
     useEffect(() => {
-        fetchEvents(activeTab);
-    }, [fetchEvents, activeTab]);
+        fetchEvents(activeTab, page, sortOption, sortOrder);
+    }, [fetchEvents, activeTab, page, sortOption, sortOrder]);
 
     const handleApprove = async (eventId: number) => {
         try {
@@ -132,13 +134,20 @@ function AdminEvents() {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
             setPage(newPage);
-            fetchEvents(activeTab, newPage);
+            fetchEvents(activeTab, newPage, sortOption, sortOrder);  // Dodano sortowanie
         }
     };
 
     const handleTabChange = (tab: 'all' | 'approved' | 'declined' | 'waiting') => {
         setActiveTab(tab);
         setPage(0);
+    };
+
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const [field, order] = event.target.value.split(',');
+        setSortOption(field);
+        setSortOrder(order as 'asc' | 'desc'); // Typowanie order
+        setPage(0); // Resetuje stronę
     };
 
     const getStatusColor = (status: 'WAITING' | 'APPROVED' | 'DECLINED') => {
@@ -179,47 +188,49 @@ function AdminEvents() {
 
     return (
         <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-            footerContent={<p></p>}
-        >
+            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}>
             <div className="admin-events-container">
                 {successMessage && <div className="success-message">{successMessage}</div>}
 
-                <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
-                    Wróć
-                </button>
+                <div className="back-button-container">
+                    <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
+                        Wróć
+                    </button>
+                </div>
 
-                <div className="tabs">
-                    <button
-                        className={activeTab === 'waiting' ? 'active-tab' : ''}
-                        onClick={() => handleTabChange('waiting')}
-                    >
-                        Oczekujące
-                    </button>
-                    <button
-                        className={activeTab === 'approved' ? 'active-tab' : ''}
-                        onClick={() => handleTabChange('approved')}
-                    >
-                        Zatwierdzone
-                    </button>
-                    <button
-                        className={activeTab === 'declined' ? 'active-tab' : ''}
-                        onClick={() => handleTabChange('declined')}
-                    >
-                        Odrzucone
-                    </button>
-                    <button
-                        className={activeTab === 'all' ? 'active-tab' : ''}
-                        onClick={() => handleTabChange('all')}
-                    >
-                        Wszystkie
-                    </button>
+                <div className="filters-container">
+                    <div className="tabs">
+                        <button className={activeTab === 'waiting' ? 'active-tab' : ''} onClick={() => handleTabChange('waiting')}>
+                            Oczekujące
+                        </button>
+                        <button className={activeTab === 'approved' ? 'active-tab' : ''} onClick={() => handleTabChange('approved')}>
+                            Zatwierdzone
+                        </button>
+                        <button className={activeTab === 'declined' ? 'active-tab' : ''} onClick={() => handleTabChange('declined')}>
+                            Odrzucone
+                        </button>
+                        <button className={activeTab === 'all' ? 'active-tab' : ''} onClick={() => handleTabChange('all')}>
+                            Wszystkie
+                        </button>
+                    </div>
                 </div>
 
                 <h2>Wydarzenia</h2>
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
+
+                {/* Dodany fragment sortowania */}
+                {!loading && events.length > 0 && (
+                    <div className="sort-container">
+                        <select className="sort-select" onChange={handleSortChange} value={`${sortOption},${sortOrder}`}>
+                            <option value="startDateTime,asc">Data (rosnąco)</option>
+                            <option value="startDateTime,desc">Data (malejąco)</option>
+                            <option value="eventName,asc">Nazwa (A-Z)</option>
+                            <option value="eventName,desc">Nazwa (Z-A)</option>
+                        </select>
+                    </div>
+                )}
 
                 <div className="events-list">
                     {events.length === 0 && !loading ? (
@@ -230,14 +241,14 @@ function AdminEvents() {
                                 {event.imageUrl && (
                                     <img src={event.imageUrl} alt={event.eventName} className="event-image" />
                                 )}
+
                                 <h3>{event.eventName}</h3>
-                                <p>{event.description}</p>
-                                <p>
-                                    <strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}
-                                </p>
+                                <p><strong>Opis:</strong> {event.description}</p>
+                                <p><strong>Data:</strong> {formatDate(event.startDateTime)} - {formatDate(event.endDateTime)}</p>
                                 <p><strong>Lokalizacja:</strong> {event.location}</p>
-                                <p><strong>Typ:</strong> {event.eventType}</p>
+                                <p><strong>Typ wydarzenia:</strong> {event.eventType}</p>
                                 <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
+
                                 <p>
                                     <strong>Status:</strong>{' '}
                                     <span className={`event-status ${event.approvalStatus.toLowerCase()}`}>
@@ -258,11 +269,13 @@ function AdminEvents() {
                     )}
                 </div>
 
-                <Pagination
-                    totalPages={totalPages}
-                    currentPage={page}
-                    onPageChange={handlePageChange}
-                />
+                {events.length >= 5 && (
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={page}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
         </Template>
     );

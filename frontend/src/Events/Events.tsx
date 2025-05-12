@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
@@ -25,99 +25,113 @@ const Events = () => {
 
     const [events, setEvents] = useState<Event[]>([]);
     const [organizedEvents, setOrganizedEvents] = useState<Event[]>([]);
+    const [participatingEvents, setParticipatingEvents] = useState<Event[]>([]);
+
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [isOrganizer, setIsOrganizer] = useState<boolean>(false);
 
-    const [totalEventPages, setTotalEventPages] = useState<number>(0);
-    const [totalOrganizedPages, setTotalOrganizedPages] = useState<number>(0);
-    const [eventPage, setEventPage] = useState<number>(0);
-    const [organizedPage, setOrganizedPage] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [page, setPage] = useState<number>(0);
 
-    const [showOrganized, setShowOrganized] = useState<boolean>(false);
-    const [showAll, setShowAll] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState<'organized' | 'participating' | 'all'>('participating');
+    const [sortType, setSortType] = useState<string>('startDateTime,asc'); // sortowanie
 
     const navigate = useNavigate();
+    const userContext = useContext(UserContext);
 
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
 
-    const userContext = useContext(UserContext);
-    const isAdmin = userContext?.user?.roles.includes('ADMIN');
     const userId = userContext?.user?.id;
+    const isAdmin = userContext?.user?.roles.includes('ADMIN');
 
     const handleAdminNavigation = () => {
         navigate('/events/admin/AdminEvents');
     };
 
-    const fetchEvents = async (page: number = 0) => {
+    const fetchEvents = useCallback(async (tab: 'organized' | 'participating' | 'all', pageToFetch: number = 0) => {
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
         try {
             setLoading(true);
+            let url = `/api/event?page=${pageToFetch}&size=6&sort=${sortType}`;  // Sortowanie po `sortType`
 
-            if (!token) {
-                navigate('/login');
-                return;
+            if (tab === 'organized') {
+                url = `/api/event/organizer?page=${pageToFetch}&size=6&sort=${sortType}`;
+            } else if (tab === 'participating') {
+                url = `/api/event/participant?page=${pageToFetch}&size=6&sort=${sortType}`;
             }
 
-            const response = await fetch(`/api/event?page=${page}&size=4&sort=startDateTime,asc`, {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include',
             });
 
-            if (!response.ok) throw new Error('Nie udało się pobrać wydarzeń');
+            if (!response.ok) throw new Error('Nie udało się pobrać wydarzeń.');
 
             const data = await response.json();
-            setEvents(data.content || []);
-            setTotalEventPages(data.totalPages || 0);
+
+            if (tab === 'organized') {
+                setOrganizedEvents(data.content || []);
+            } else if (tab === 'participating') {
+                setParticipatingEvents(data.content || []);
+            } else {
+                setEvents(data.content || []);
+            }
+
+            setTotalPages(data.totalPages || 1);
         } catch (error: any) {
             setError(error.message || 'Wystąpił błąd.');
         } finally {
             setLoading(false);
         }
-    };
+    }, [token, navigate, sortType]);
 
-    const fetchOrganizedEvents = async (page: number = 0) => {
-        try {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
+    useEffect(() => {
+        fetchEvents('participating', 0);
+        fetchEvents('organized', 0);
+    }, []); // Runs only once when the component is mounted
 
-            const response = await fetch(`/api/event/organizer?page=${page}&size=4`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${token}` },
-                credentials: 'include',
-            });
-
-            if (!response.ok) throw new Error('Nie udało się pobrać organizowanych wydarzeń');
-
-            const data = await response.json();
-            setOrganizedEvents(data.content || []);
-            setTotalOrganizedPages(data.totalPages || 0);
-            setIsOrganizer((data.content || []).length > 0);
-        } catch (error: any) {
-            console.error('Błąd pobierania organizowanych wydarzeń:', error);
-        }
-    };
+    useEffect(() => {
+        fetchEvents(activeTab, page);
+    }, [fetchEvents, activeTab, page]);
 
     const handleAddEvent = () => {
         navigate('/events/create');
     };
 
-    const handleEventDeleted = (eventId: number) => {
-        setOrganizedEvents(prev => prev.filter(event => event.eventId !== eventId));
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 0 && newPage < totalPages) {
+            setPage(newPage);
+            fetchEvents(activeTab, newPage);
+        }
     };
 
-    useEffect(() => {
-        fetchEvents(eventPage);
-        fetchOrganizedEvents(organizedPage);
-    }, [eventPage, organizedPage]);
+    const handleTabChange = (tab: 'organized' | 'participating' | 'all') => {
+        setActiveTab(tab);
+        setPage(0); // Reset page when tab is changed
+    };
+
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortType(event.target.value);
+        setPage(0); // Reset page when sorting changes
+    };
+
+    const getEventsToDisplay = () => {
+        if (activeTab === 'organized') return organizedEvents;
+        if (activeTab === 'participating') return participatingEvents;
+        return events;
+    };
 
     return (
         <Template
             buttons={[{ text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }]}
+
             footerContent={<p></p>}
         >
             <div className="events-container">
@@ -125,92 +139,86 @@ const Events = () => {
 
                 <h2>Wydarzenia</h2>
 
-                <button className="btn btn-primary add-event-button" onClick={handleAddEvent}>
-                    Dodaj wydarzenie
-                </button>
+                <div className="buttons-container">
+                    <div className="button-row">
+                        <button className="add-event-button" onClick={handleAddEvent}>
+                            Dodaj wydarzenie
+                        </button>
+                    </div>
+                    {isAdmin && (
+                        <div className="button-row">
+                            <button className="admin-button" onClick={handleAdminNavigation}>
+                                Admin Panel
+                            </button>
+                        </div>
+                    )}
+                </div>
 
-                {isAdmin && (
-                    <button className="btn btn-secondary admin-button" onClick={handleAdminNavigation}>
-                        Admin Panel
+
+                {/* Tab Navigation */}
+                <div className="tabs">
+                    <button
+                        className={activeTab === 'organized' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('organized')}
+                    >
+                        Organizowane
                     </button>
-                )}
+                    <button
+                        className={activeTab === 'participating' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('participating')}
+                    >
+                        Moje
+                    </button>
+                    <button
+                        className={activeTab === 'all' ? 'active-tab' : ''}
+                        onClick={() => handleTabChange('all')}
+                    >
+                        Wszystkie
+                    </button>
+                </div>
 
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
-                {/* ORGANIZED EVENTS */}
-                {isOrganizer && (
-                    <div className="events-section">
-                        <button className="toggle-button" onClick={() => setShowOrganized(!showOrganized)}>
-                            {showOrganized ? 'Ukryj organizowane wydarzenia' : 'Pokaż organizowane wydarzenia'}
-                        </button>
-                        {showOrganized && (
-                            <>
-                                {organizedEvents.length === 0 ? (
-                                    <p className="no-events-message">📅 Brak organizowanych wydarzeń.</p>
-                                ) : (
-                                    <>
-                                        <div className="events-grid">
-                                            {organizedEvents.map(event => (
-                                                <EventCard
-                                                    key={event.eventId}
-                                                    event={event}
-                                                    userId={userId}
-                                                    isOrganizer={true}
-                                                    onEventDeleted={handleEventDeleted}
-                                                />
-                                            ))}
-                                        </div>
-                                        <Pagination
-                                            totalPages={totalOrganizedPages}
-                                            currentPage={organizedPage}
-                                            onPageChange={(page) => {
-                                                setOrganizedPage(page);
-                                                fetchOrganizedEvents(page);
-                                            }}
-                                        />
-                                    </>
-                                )}
-                            </>
-                        )}
+                {/* Sort Dropdown */}
+                {!loading && getEventsToDisplay().length > 0 && (
+                    <div className="sort-container">
+                        <select className="sort-select" onChange={handleSortChange} value={sortType}>
+                            <option value="startDateTime,asc">Data (rosnąco)</option>
+                            <option value="startDateTime,desc">Data (malejąco)</option>
+                            <option value="eventName,asc">Nazwa (A-Z)</option>
+                            <option value="eventName,desc">Nazwa (Z-A)</option>
+                        </select>
                     </div>
                 )}
 
-                {/* ALL EVENTS */}
-                <div className="events-section">
-                    <button className="toggle-button" onClick={() => setShowAll(!showAll)}>
-                        {showAll ? 'Ukryj wszystkie wydarzenia' : 'Pokaż wszystkie wydarzenia'}
-                    </button>
-                    {showAll && (
-                        <>
-                            {events.length === 0 ? (
-                                <p className="no-events-message">📅 Brak dostępnych wydarzeń.</p>
-                            ) : (
-                                <>
-                                    <div className="events-grid">
-                                        {events.map(event => (
-                                            <EventCard
-                                                key={event.eventId}
-                                                event={event}
-                                                userId={userId}
-                                                isOrganizer={false}
-                                                onEventDeleted={() => {}}
-                                            />
-                                        ))}
-                                    </div>
-                                    <Pagination
-                                        totalPages={totalEventPages}
-                                        currentPage={eventPage}
-                                        onPageChange={(page) => {
-                                            setEventPage(page);
-                                            fetchEvents(page);
-                                        }}
-                                    />
-                                </>
-                            )}
-                        </>
-                    )}
-                </div>
+                {/* Display events or no events message */}
+                {getEventsToDisplay().length === 0 && !loading ? (
+                    <div className="no-events-wrapper">
+                        <p className="no-events-message">Brak wydarzeń do wyświetlenia.</p>
+                    </div>
+                ) : (
+                    <div className="events-grid">
+                        {getEventsToDisplay().map(event => (
+                            <EventCard
+                                key={event.eventId}
+                                event={event}
+                                userId={userId}
+                                isOrganizer={activeTab === 'organized'}
+                                onEventDeleted={() => fetchEvents(activeTab, page)}
+                            />
+                        ))}
+                    </div>
+                )}
+
+                {/* Pagination */}
+                {getEventsToDisplay().length > 6 && (
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={page}
+                        onPageChange={handlePageChange}
+                    />
+                )}
             </div>
         </Template>
     );

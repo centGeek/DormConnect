@@ -35,16 +35,16 @@
     text-align: center;
 }
 
-/* --- Event Image --- */
+/* --- Event Image Styling --- */
 .event-image {
     width: 100%;
-    max-width: 450px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    margin: 0 auto;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background-color: transparent;
 }
+
 
 /* --- Buttons Container --- */
 .buttons-container {

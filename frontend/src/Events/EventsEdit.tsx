@@ -98,6 +98,7 @@ function EventsEdit() {
         }
 
         const updatedEvent = {
+            eventId: Number(eventId),
             eventName: eventData.eventName,
             description: eventData.eventDescription,
             startDateTime: new Date(eventData.startDateTime).toISOString(),
@@ -107,7 +108,7 @@ function EventsEdit() {
             maxParticipants: eventData.availableSeats !== '' ? Number(eventData.availableSeats) : 1,
             imageUrl: eventData.imageUrl || 'placeholder.jpg',
             organizerId: user.id,
-            isApproved: false,
+            approvalStatus: 'WAITING',
             participantId: [],
         };
 

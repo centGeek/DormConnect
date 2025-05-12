@@ -53,12 +53,16 @@
     margin: 5px 0;
 }
 
+/* --- Event Image Styling --- */
 .event-image {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 10px;
+    margin-bottom: 15px;
+    background-color: transparent;
 }
+
 
 .admin-buttons {
     display: flex;
@@ -194,4 +198,44 @@
 
 .event-status.declined {
     color: #f44336;
+}
+/* To ensure the Back button is separated on the left side */
+.admin-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    gap: 10px;
+}
+
+/* Sorting options styling */
+.sort-options {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sort-options button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.sort-options button:hover {
+    background-color: #388e3c;
+}
+.back-button-container {
+    position: absolute; /* To make it stay in the same place */
+    top: 20px; /* Adjust distance from top */
+    left: 20px; /* Adjust distance from left */
+    z-index: 10; /* Ensure it's above other elements */
+}
+
+.admin-events-container {
+    position: relative; /* So that back button can be placed absolutely */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
