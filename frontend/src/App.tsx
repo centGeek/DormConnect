@@ -15,6 +15,7 @@ import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
 import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
+import DormProblemView from './DormProblems/ViewProblem.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -41,6 +42,7 @@ function App() {
                             <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
+                        <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
                         {userContext?.user?.roles.includes('ADMIN') && (
                                 <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                             )}

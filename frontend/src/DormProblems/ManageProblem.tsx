@@ -66,7 +66,7 @@ function DormProblemManage() {
                     credentials: 'include'
                 }); 
 
-                navigate('/problems');
+                navigate('/problems');  
             } catch(err) {
                 console.error(err);
             }
@@ -120,6 +120,7 @@ function DormProblemManage() {
 
             setDormProblem(data || [])
             setProblemStatus(dormProblem.problemStatus);
+            setProblemAnswer(dormProblem.answer || '');
 
 
         } catch (err) {

@@ -55,6 +55,7 @@ public class DormProblemService {
             throw new IllegalProblemStatusChangeException("Cannot change problem problemStatus from " + currProblemStatus + " to " + updateDormProblemDTO.problemStatus());
         }
 
+        currentDormProblem.setAnswer(updateDormProblemDTO.answer());
         currentDormProblem.setProblemStatus(updateDormProblemDTO.problemStatus());
         currentDormProblem.setAnswer(updateDormProblemDTO.answer());
         currentDormProblem.setDescription(updateDormProblemDTO.description());

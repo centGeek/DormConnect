@@ -11,6 +11,7 @@ import './CreateProblem.css'
 
 interface DormProblem {
     studentId: number;
+    name: string;
     description: string;
     problemDate: string;
     problemStatus: string
@@ -24,6 +25,7 @@ function DormProblemCreate() {
     var decodedToken: TokenJwtPayload;
     const [problemDesc, setProblemDesc] = useState('');
     const [problemDate, setProblemDate] = useState('');
+    const [problemName, setProblemName] = useState('');
     const handleButtonClick = () => navigate('/problems');
     const [problemStatus, setProblemStatus] = useState('');
     // const {onSubmit, values} = useForm(
@@ -40,6 +42,7 @@ function DormProblemCreate() {
         }
         const createdDormProblem = {
             studentId: decodedToken['id'],
+            name: problemName,
             description: problemDesc,
             problemDate: problemDate,
             problemStatus: "SUBMITTED"
@@ -71,11 +74,11 @@ function DormProblemCreate() {
 
     return (
         <Template
-            buttons={[
-                { text: 'Home', link: '/home' },
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' }
-            ]}
+        buttons={[
+            { text: 'Chat', link: '/chat' }, 
+            { text: 'Events', link: '/events' }, 
+            { text:"Common Rooms", link:'/common-rooms'}, 
+            { text: 'Problems', link: '/problems'}]}
             footerContent={<p></p>}
         >
             <div className="create-problem-container">
@@ -89,6 +92,16 @@ function DormProblemCreate() {
                 <h2>Report New Problem</h2>
 
                 <form className="create-form" name="dorm-problem-form" onSubmit={handleSubmit}>
+                    <div className='form-row'>
+                        <label>Problem name:</label>
+                        <input
+                            type='text'
+                            name='name'
+                            value={problemName}
+                            onChange={(e) => setProblemName(e.target.value)}
+                        />
+                    </div>
+
                     <div className="form-row">
                         <label>Problem Date:</label>
                         <input
