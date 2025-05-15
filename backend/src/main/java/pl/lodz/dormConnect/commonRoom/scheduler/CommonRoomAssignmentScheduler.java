@@ -58,11 +58,10 @@ public class CommonRoomAssignmentScheduler {
         assignmentRepository.removeCommonRoomAssigmentsByCommonRoom(commonRoom);
     }
 
-    @Scheduled(fixedRate = 60000) // co godzinę
+    @Scheduled(fixedRate = 60000) // every minute
     public void scheduleAssignments() {
         // Pobierz wszystkie aktywne pokoje
         for (CommonRoomAssignmentEntity commonRoomAssignmentEntity : assignmentRepository.findAllNotArchivedAssigments()) {
-            // Sprawdź, czy są jakieś przypisania do archiwizacji
             if (commonRoomAssignmentEntity.getEndDate().before(new Date())) {
                 commonRoomAssignmentEntity.setArchived(true);
                 assignmentRepository.save(commonRoomAssignmentEntity);
@@ -70,7 +69,7 @@ public class CommonRoomAssignmentScheduler {
         }
     }
 
-    @Scheduled(cron = "0 5 0  * * ?") // everyday at 00:05 function that creates new assigments for every room
+    @Scheduled(cron = "0 0 19 * * ?") // everyday at 00:05 function that creates new assigments for every room
     public void updateSchedule() {
         for (CommonRoomEntity commonRoom : commonRoomRepository.getAllCommonRooms()) {
             if (!assignmentRepository.getByCommonRoomAndArchived(commonRoom, false).isEmpty()) {
