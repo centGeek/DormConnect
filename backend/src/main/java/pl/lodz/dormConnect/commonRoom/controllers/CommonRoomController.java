@@ -51,7 +51,7 @@ class CommonRoomController {
     }
 
     @GetMapping("/show/{floor}")
-    public List<CommonRoomEntity> showCommonRooms(@PathVariable Long floor) {
+    public List<CommonRoomEntity> showCommonRoomsByFloor(@PathVariable Long floor) {
         return service.getRoomByFloor(floor.intValue());
     }
     @GetMapping("/get/{id}")

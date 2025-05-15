@@ -41,6 +41,7 @@ public class CommonRoomService {
         }
 
 
+
         CommonRoomEntity savedRoom = repository.save(mapper.toCommonRoomEntity(commonRoomCreateDTO));
 
         scheduler.createAssignmentsForNextWeek(savedRoom);

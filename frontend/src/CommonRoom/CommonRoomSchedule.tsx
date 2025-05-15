@@ -120,7 +120,7 @@ function CommonRoomSchedule() {
 
     const handleClick = (assignment: assignmentProps) => {
         if (assignment.isArchived) {
-            alert("This assignment is archived and cannot be modified.");
+            alert("You cannot join past assignments.");
             return;
         }
         if (assignment.isUserAssigned) {
