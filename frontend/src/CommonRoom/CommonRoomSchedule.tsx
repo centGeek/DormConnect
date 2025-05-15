@@ -1,7 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Template from "../Template/Template";
+// @ts-ignore
+import { groupBy } from "lodash";
 import "./CommonRoomSchedule.css";
+import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface assignmentProps {
     id: number;
@@ -10,6 +13,7 @@ interface assignmentProps {
     numberOfUsers: number;
     isUserAssigned: boolean;
     isFull: boolean;
+    isArchived: boolean;
 }
 
 interface CommonRoom {
@@ -115,6 +119,10 @@ function CommonRoomSchedule() {
     };
 
     const handleClick = (assignment: assignmentProps) => {
+        if (assignment.isArchived) {
+            alert("You cannot join past assignments.");
+            return;
+        }
         if (assignment.isUserAssigned) {
             handleUnassign(assignment.id);
         } else if (!assignment.isFull) {
@@ -146,56 +154,58 @@ function CommonRoomSchedule() {
         };
     }, []);
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <Template
             buttons={[{ text: "Powrót", link: "/common-rooms" }]}
             footerContent={<p></p>}
         >
             <header className="common-room-header">
-                <h1>Common Room Details</h1>
                 {commonRoom && (
                     <div className="common-room-details">
-                        <p><strong>Type:</strong> {commonRoom.type}</p>
-                        <p><strong>Floor:</strong> {commonRoom.floor}</p>
-                        <p><strong>Capacity:</strong> {commonRoom.capacity}</p>
-                        <p><strong>Limit of assignments:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
+                        <p><strong>Typ pokoju:</strong> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
+                        <strong>Piętro:</strong> {commonRoom.floor}&nbsp;&nbsp;&nbsp;
+                        <strong>Pojemność:</strong> {commonRoom.capacity}   &nbsp;&nbsp;&nbsp;
+                        <strong>Limit zapisów:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
                     </div>
                 )}
             </header>
             <div className="common-room-schedule">
                 {loading ? (
-                    <p>Loading...</p>
+                    <p>Ładowanie...</p>
                 ) : assignments.length === 0 ? (
-                    <p>No assignments found</p>
+                    <p>Nie znaleziono żadnych rezerwacji</p>
                 ) : (
-                    assignments.map((assignment: assignmentProps) => (
-                        <div
-                            key={assignment.id}
-                            className={`assignment-card ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
-                            onClick={() => handleClick(assignment)}
-                            style={{ cursor: (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
-                        >
-                            <p>Start Date: {new Date(assignment.startDate).toLocaleString(undefined, {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}</p>
-                            <p>End Date: {new Date(assignment.endDate).toLocaleString(undefined, {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}</p>
-                            <p>Number of Users: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                    Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
+                        new Date(assignment.startDate).toLocaleDateString()
+                    )).map(([date, group]) => (
+                        <div key={date} className="assignment-column">
+                            <div className="assignment-column-header">{date}</div>
+                            {group.map((assignment: assignmentProps) => (
+                                <div
+                                    key={assignment.id}
+                                    className={`assignment-card ${assignment.isArchived ? 'archived' : ''} ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
+                                    onClick={() => handleClick(assignment)}
+                                    style={{ cursor: assignment.isArchived || (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
+                                >
+                                    <p>{new Date(assignment.startDate).toLocaleString(undefined, {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })} -  {new Date(assignment.endDate).toLocaleString(undefined, {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</p>
+                                    <p>Zajęte: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                                </div>
+                            ))}
                         </div>
                     ))
                 )}
             </div>
         </Template>
     );
+
 }
 
 export default CommonRoomSchedule;

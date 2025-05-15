@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Template from "../Template/Template.tsx";
 import "./CommonRoomShow.css";
+import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface CommonRoom {
     id: number;
@@ -9,6 +10,7 @@ interface CommonRoom {
     floor: number;
     capacity: number;
     timesAWeekYouCanUseIt: number;
+    isArchived: boolean;
 }
 
 function CommonRoomShow() {
@@ -53,7 +55,7 @@ function CommonRoomShow() {
                 {loading ? (
                     <p>Ładowanie...</p>
                 ) : commonRooms.length === 0 ? (
-                    "No common rooms found"
+                    "Nie znaleziono żadnych pokoi"
                 ) : (
                     commonRooms.map((commonRoom) => (
                         <div
@@ -62,8 +64,8 @@ function CommonRoomShow() {
                             onClick={() => navigate(`/common-room/${commonRoom.id}`)}
                             style={{ cursor: "pointer" }}
                         >
-                            <h2>Common Room Type: {commonRoom.type}</h2>
-                            <p>Floor: {commonRoom.floor}</p>
+                            <h2>Typ pokoju:</h2><h2> {getRoomStatusTranslation(commonRoom.type)}</h2>
+                            <p>Piętro: {commonRoom.floor}</p>
                         </div>
                     ))
                 )}

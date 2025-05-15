@@ -12,7 +12,7 @@ import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
 import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
 import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
-import { TemperatureProvider } from './context/TemperatureContext.tsx';
+import { TemperatureProvider } from './Context/TemperatureContext.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
