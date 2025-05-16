@@ -19,7 +19,8 @@ public class CommonRoomAssignmentsMapper {
                 commonRoomAssignmentEntity.getEndDate(),
                 commonRoomAssignmentEntity.getUsersId().size(),
                 isAssigned,
-                isFull
+                isFull,
+                commonRoomAssignmentEntity.isArchived()
         );
     }
     public List<CommonRoomAssignmentGetDTO> toCommonRoomAssignmentGetDTOs(List<CommonRoomAssignmentEntity> commonRoomAssignmentEntities, Long userId) {
