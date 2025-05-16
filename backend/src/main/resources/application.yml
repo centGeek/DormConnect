@@ -6,6 +6,9 @@ spring:
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

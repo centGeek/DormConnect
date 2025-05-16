@@ -34,7 +34,6 @@ public class DormProblemService {
         this.userRepository = userRepository;
     }
 
-    @Transactional
     public GetDormProblemDTO createDormProblem(@NotNull CreateDormProblemDTO createDormProblemDTO) {;
         DormProblem dormProblem = DormProblemMapper.mapCreateDTOToEntity(createDormProblemDTO);
         dormProblem.setId(0L);
@@ -98,7 +97,6 @@ public class DormProblemService {
 
     }
 
-    @Transactional
     public GetDormProblemDTO getDormProblemById(@NotNull Long id) {
         Optional<DormProblem> dormProblem = dormProblemRepository.findById(id);
         if (dormProblem.isEmpty()) {
@@ -112,6 +110,10 @@ public class DormProblemService {
         return dormProblemRepository.findByProblemStatus(problemStatus).stream()
                 .map( (d) -> DormProblemMapper.mapToGetDTO((DormProblem) d) )
                 .toList();
+    }
+
+    public void deleteAll() {
+        dormProblemRepository.deleteAll();
     }
 
     public List<ProblemStatus> getAllProblemStatuses() {

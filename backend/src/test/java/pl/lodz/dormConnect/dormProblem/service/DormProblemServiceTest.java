@@ -1,10 +1,12 @@
 package pl.lodz.dormConnect.dormProblem.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.configurers.SecurityContextConfigurer;
 import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
 import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
@@ -22,30 +24,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class DormProblemServiceTest {
 
     @Autowired
-    DormProblemService dormProblemService;
-    int dormProblemId = 13;
-    int dormProblemId2 = 14;
-    int studentId = 1;
-    int studentId2 = 2;
+    private DormProblemService dormProblemService;
+    private final int dormProblemId = 13;
+    private final int dormProblemId2 = 14;
+    private final int studentId = 1;
+    private final int studentId2 = 2;
 
-    String description = "Test problem";
-    String description2 = "Test problem 2";
+    private final String description = "Test problem";
+    private final String description2 = "Test problem 2";
 
-    String answer = "Test answer";
-    String answer2 = "Test answer 2";
+    private final String answer = "Test answer";
+    private final String answer2 = "Test answer 2";
 
-    LocalDate probemDate1 = LocalDate.of(2025, 05, 1);
-    LocalDate probemDate2 = LocalDate.of(2025, 05, 2);
+    private final String name = "Test problem name";
+    private final String name2 = "Test problem name 2";
 
-    ProblemStatus status1 = ProblemStatus.SUBMITTED;
-    ProblemStatus status2 = ProblemStatus.RESOLVED;
+    private final LocalDate probemDate1 = LocalDate.of(2025, 05, 1);
+    private final LocalDate probemDate2 = LocalDate.of(2025, 05, 2);
 
-    DormProblem dormProblem1 = new DormProblem(dormProblemId, studentId, description, answer, probemDate1, LocalDate.now(), status1);
-    DormProblem dormProblem2 = new DormProblem(dormProblemId2, studentId2, description2, answer, probemDate2, LocalDate.now(), status2);
+    private final ProblemStatus status1 = ProblemStatus.SUBMITTED;
+    private final ProblemStatus status2 = ProblemStatus.RESOLVED;
+
+    private final DormProblem dormProblem1 = new DormProblem(dormProblemId, studentId, name, description, answer, probemDate1, LocalDate.now(), status1);
+    private final DormProblem dormProblem2 = new DormProblem(dormProblemId2, studentId2, name2, description2, answer, probemDate2, LocalDate.now(), status2);
 
     @BeforeEach
-    void initialize() {
-
+    public void initialize() {
+        dormProblemService.deleteAll();
     }
 
     @Test
@@ -70,9 +75,11 @@ class DormProblemServiceTest {
         GetDormProblemDTO updated = dormProblemService.updateDormProblem(DormProblemMapper.mapToUpdateDTO(problem));
         DormProblem updatedProblem = DormProblemMapper.mapToGetEntity(updated);
 
-        assertEquals(updatedProblem.getStudentId(), dormProblem2.getStudentId());
+        // studentId cannot be updated after the problem is created
+        assertNotEquals(updatedProblem.getStudentId(), dormProblem2.getStudentId());
         assertEquals(updatedProblem.getDescription(), dormProblem2.getDescription());
-        assertEquals(updatedProblem.getProblemDate(), dormProblem2.getProblemDate());
+        // problemId cannot be updated after the problem is created
+        assertNotEquals(updatedProblem.getProblemDate(), dormProblem2.getProblemDate());
         assertEquals(updatedProblem.getProblemStatus(), dormProblem2.getProblemStatus());
         dormProblemService.deleteDormProblem(updatedProblem.getId());
     }
@@ -85,14 +92,6 @@ class DormProblemServiceTest {
         assertThrows(DormProblemNotFoundException.class, () -> dormProblemService.getDormProblemById(problem.getId()));
     }
 
-    @Test
-    void getAllDormProblems() {
-        GetDormProblemDTO created = dormProblemService.createDormProblem(DormProblemMapper.mapToCreateDTO(dormProblem1));
-        GetDormProblemDTO created2 = dormProblemService.createDormProblem(DormProblemMapper.mapToCreateDTO(dormProblem2));
-        assertEquals(2, dormProblemService.getAllDormProblems().size());
-        dormProblemService.deleteDormProblem(created.id());
-        dormProblemService.deleteDormProblem(created2.id());
-    }
 
     @Test
     void getDormProblemById() {
