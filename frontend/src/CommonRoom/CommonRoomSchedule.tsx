@@ -155,7 +155,6 @@ function CommonRoomSchedule() {
     }, []);
 
     // @ts-ignore
-    // @ts-ignore
     return (
         <Template
             buttons={[{ text: "Powrót", link: "/common-rooms" }]}
