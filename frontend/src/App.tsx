@@ -12,7 +12,10 @@ import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
 import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
 import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
-import { TemperatureProvider } from './Context/TemperatureContext.tsx';
+import DormProblem from './DormProblems/DormProblems.tsx';
+import DormProblemCreate from './DormProblems/CreateProblem.tsx';
+import DormProblemManage from './DormProblems/ManageProblem.tsx';
+import DormProblemView from './DormProblems/ViewProblem.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -22,29 +25,33 @@ function App() {
     }, [userContext]);
 
     return (
-        <TemperatureProvider>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                {userContext?.token ? (
-                    <>
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/chat" element={<Chat />} />
-                        <Route path="/events" element={<Events />} />
-                        <Route path="/events/create" element={<EventsCreate />} />
-                        <Route path="/rooms" element={<Rooms />} />
-                        <Route path="/rooms/form" element={<DormFormPage />} />
-                        <Route path="/events/edit/:eventId" element={<EventsEdit />} />
-                        <Route path="/common-rooms" element={<CommonRoomShow />} />
-                        <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
+
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    {userContext?.token ? (
+                        <>
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/chat" element={<Chat />} />
+                            <Route path="/events" element={<Events />} />
+                            <Route path="/events/create" element={<EventsCreate />} />
+                            <Route path="/rooms" element={<Rooms />} />
+                            <Route path="/rooms/form" element={<DormFormPage />} />
+                            <Route path="/events/edit/:eventId" element={<EventsEdit />} />
+                            <Route path="/common-rooms" element={<CommonRoomShow/>}/>
+                            <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
+                            <Route path='/problems' element={<DormProblem/>}/>
+                        <Route path='/problems/create' element={<DormProblemCreate/>}/>
+                        <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
+                        <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
                         {userContext?.user?.roles.includes('ADMIN') && (
-                            <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
-                        )}
-                    </>
-                ) : (
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                )}
-            </Routes>
-        </TemperatureProvider>
+                                <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
+                            )}
+                        </>
+                    ) : (
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    )}
+                </Routes>
+
     );
 }
 
