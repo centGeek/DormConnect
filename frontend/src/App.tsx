@@ -16,6 +16,7 @@ import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
+import { TemperatureProvider } from './Context/TemperatureContext.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -25,7 +26,7 @@ function App() {
     }, [userContext]);
 
     return (
-
+            <TemperatureProvider>
                 <Routes>
                     <Route path="/" element={<Login />} />
                     {userContext?.token ? (
@@ -51,6 +52,7 @@ function App() {
                         <Route path="*" element={<Navigate to="/" replace />} />
                     )}
                 </Routes>
+            </TemperatureProvider>
 
     );
 }
