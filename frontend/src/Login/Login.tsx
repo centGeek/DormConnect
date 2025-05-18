@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import './Login.css';
-import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../Context/UserContext.tsx';
 
 function Login() {
