@@ -1,7 +1,7 @@
-import React, {createContext, useState, ReactNode, useEffect} from 'react';
+import React, {createContext, useState, ReactNode} from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
-import axios, {AxiosResponse, HttpStatusCode} from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 interface User {
@@ -29,27 +29,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(Cookies.get('token') || null);
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (token) {
-            try {
-                const decodedToken: DecodedToken = jwtDecode(token);
-                const user: User = {
-                    id: decodedToken.id,
-                    roles: decodedToken.roles,
-                    sub: decodedToken.sub
-                }
-                setUser(user);
-            }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            catch(error) {
-                console.error(HttpStatusCode.InternalServerError);
-                setUser(null);
-            }
-        } else {
-            setUser(null);
-        }
-    }, [token]);
 
     const handleLogin = async (email: string, password: string) => {
         try {
