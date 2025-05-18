@@ -2,7 +2,7 @@ import Template from '../Template/Template';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
-import './EventsCreate.css';
+// import './EventsCreate.css';
 
 function EventsCreate() {
     const [eventName, setEventName] = useState('');

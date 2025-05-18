@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Template from "../Template/Template";
 // @ts-ignore
 import { groupBy } from "lodash";
-import "./CommonRoomSchedule.css";
+// import "./CommonRoomSchedule.css";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface assignmentProps {

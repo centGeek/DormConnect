@@ -4,7 +4,7 @@ import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
-import './Events.css';
+// import './Events.css';
 import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {

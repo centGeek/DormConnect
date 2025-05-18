@@ -59,9 +59,9 @@ function Home() {
                 { text: 'Rooms', link: '/rooms' },
             ]}
         >
-            <div className="home-container">
-                <h1 className="text-black">Welcome to Dorm Connect</h1>
-                <h3>It's an application designed to manage your dormitory</h3>
+            <div className="justify-items-center">
+                <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-4">Welcome to Dorm Connect</h1>
+                <h3 className="text-lg text-gray-600 text-center mt-2">It's an application designed to manage your dormitory</h3>
             </div>
         </Template>
     );

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Template from '../Template/Template.tsx';
-import './Chat.css';
+// import './Chat.css';
 import axios from 'axios';
 
 interface Message {

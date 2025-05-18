@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
-import './AdminEvents.css';
+// import './AdminEvents.css';
 
 interface Event {
     eventId: number;

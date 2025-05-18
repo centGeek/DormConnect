@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Template from "../Template/Template.tsx";
-import "./CommonRoomShow.css";
+// import "./CommonRoomShow.css";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface CommonRoom {

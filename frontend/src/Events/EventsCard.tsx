@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './EventsCard.css';
+// import './EventsCard.css';
 
 interface Event {
     eventId: number;
