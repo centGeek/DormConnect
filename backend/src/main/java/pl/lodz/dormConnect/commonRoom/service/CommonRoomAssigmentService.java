@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomAssignmentGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
+import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomAssignmentsMapper;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomAssignmentRepository;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
@@ -66,6 +67,20 @@ public class CommonRoomAssigmentService {
         commonRoomAssignmentEntity.getUsersId().remove(userId);
         repository.save(commonRoomAssignmentEntity);
         return ResponseEntity.ok("User left the assigment");
+    }
+
+    @Transactional
+    public void exchangeAssignment(Long commonRoomAssignemntId, Long userGiveId, Long userReceiveId){
+        CommonRoomAssignmentEntity commonRoomAssignement = repository.findById(commonRoomAssignemntId).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
+        if (!commonRoomAssignement.getUsersId().contains(userGiveId)) {
+            throw new IllegalArgumentException("User not in the assigment");
+        }
+        if (commonRoomAssignement.getUsersId().contains(userReceiveId)) {
+            throw new IllegalArgumentException("User already in the assigment");
+        }
+        commonRoomAssignement.getUsersId().remove(userGiveId);
+        commonRoomAssignement.getUsersId().add(userReceiveId);
+        repository.save(commonRoomAssignement);
     }
 
 }

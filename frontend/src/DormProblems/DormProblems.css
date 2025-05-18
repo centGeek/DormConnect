@@ -1,0 +1,118 @@
+/* Problems List Container */
+.dorm-problems-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Header and Button Row */
+  .problems-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-left: 15%;
+  }
+  
+  .submit-problem-btn {
+    background-color: #52d657;
+    padding: 10px 15px;
+    border-radius: 5%;
+    margin-left: 10%;
+    width: 250px;
+  }
+  
+  /* Problems Grid */
+  .problems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Problem Card */
+  .problem-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  
+  .problem-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .problem-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .problem-card p {
+    margin: 8px 0;
+    color: #555;
+  }
+  
+  /* Status Badges */
+  .status-pending {
+    color: #e67e22;
+    font-weight: bold;
+  }
+  
+  .status-resolved {
+    color: #27ae60;
+    font-weight: bold;
+  }
+  
+  .status-rejected {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  
+  /* Manage Button */
+  .manage-btn {
+    background-color: rgb(133, 162, 243);
+    margin-top: 10px;
+  }
+
+  .view-btn {
+    border-radius: 5%;
+    background-color:#52d657;
+    margin: 10px;
+    margin-left: 25%;
+  }
+
+  .filter-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+    margin-left: 14%;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.status-filter {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+@media (max-width: 600px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-input {
+        max-width: 100%;
+    }
+}
