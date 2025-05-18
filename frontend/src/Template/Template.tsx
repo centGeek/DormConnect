@@ -1,8 +1,8 @@
-import {ReactNode} from 'react';
-import './Template.css';
-import LogoPL from '../assets/Lodz University of Technology_v2.png';
+import { ReactNode, useEffect } from 'react';
+import LogoPL from '../assets/logo_v1.1.png';
 import { useContext } from 'react';
-import {UserContext} from "../Context/UserContext.tsx";
+import { UserContext } from "../Context/UserContext.tsx";
+import { useTemperature } from "../Context/TemperatureContext.tsx";
 
 interface TemplateProps {
     children: ReactNode;
@@ -16,6 +16,7 @@ interface Button {
 
 function Template({ children, footerContent, buttons }: TemplateProps) {
     const userContext = useContext(UserContext);
+    const { temperature, loading, error } = useTemperature();
 
     const handleLogout = async () => {
         try {
@@ -23,31 +24,84 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
         } catch (error) {
             console.error('Logout failed:', error instanceof Error ? error.message : error);
         }
-    }
+    };
+
+    useEffect(() => {
+        const updateHeaderTemperature = () => {
+            const tempText = loading
+                ? 'Ładowanie...'
+                : error
+                    ? '--°C'
+                    : `${temperature}°C`;
+
+            const tooltip =
+                !loading && !error && temperature !== null
+                    ? temperature > 10
+                        ? 'Good weather for Flanki!'
+                        : 'Bad weather for Flanki'
+                    : '';
+
+            let el = document.querySelector('.header-temperature') as HTMLElement;
+            if (!el) {
+                el = document.createElement('span');
+                el.className = 'header-temperature text-black font-bold ml-auto mr-4';
+                const logoutButton = document.querySelector('button.bg-white.text-red-600');
+                logoutButton?.parentNode?.insertBefore(el, logoutButton);
+            }
+
+            el.innerHTML = tempText;
+            el.title = tooltip;
+        };
+
+        updateHeaderTemperature();
+        const intervalId = setInterval(updateHeaderTemperature, 30000);
+        return () => clearInterval(intervalId);
+    }, [temperature, loading, error]);
 
     return (
-        <div className="template-container">
-                <div className="template">
-                <header className="template-header">
-                    <a href={"/home"}><img src={LogoPL} alt="Logo" className="template-logo" /></a>
-                    {buttons && (
-                        <div className="template-buttons">
-                            {buttons.map((button: Button, index: number) => (
-                                <a key={index} href={button.link} className="template-button">
-                                    {button.text}
-                                </a>
-                            ))}
-                        </div>
-                    )}
-                    <button className="logout-button" onClick={handleLogout}>Log out</button>
-                </header>
-                <main className="template-main">
-                    {children}
-                </main>
-                <footer className="template-footer">
-                    {footerContent || <p>Default footer</p>}
-                </footer>
-            </div>
+        <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
+            {/* Nagłówek */}
+            <header className="bg-gray-200 text-white py-2 shadow-md border-green-700 rounded-t-lg">
+                <div className="container mx-auto flex items-center justify-start px-4 space-x-4">
+                    {/* Logo */}
+                    <a href="/home" className="flex items-center">
+                        <img
+                            src={LogoPL}
+                            alt="Logo"
+                            className="h-auto max-h-16 w-auto object-contain"
+                        />
+                    </a>
+                    {/* Przyciski nawigacyjne */}
+                    {buttons?.map((button: Button, index: number) => (
+                        <a
+                            key={index}
+                            href={button.link}
+                            className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition"
+                        >
+                            {button.text}
+                        </a>
+                    ))}
+                    {/* Temperatura zostanie dodana dynamicznie */}
+                    <button
+                        className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
+                        onClick={handleLogout}
+                    >
+                        Log out
+                    </button>
+                </div>
+            </header>
+
+            {/* Główna zawartość */}
+            <main className="flex-grow container mx-auto px-4 py-8">
+                {children}
+            </main>
+
+            {/* Stopka */}
+            <footer className="bg-gray-800 text-white py-4 rounded-b-lg">
+                <div className="container mx-auto text-center">
+                    {footerContent || <p>Dorm Connect 2025®</p>}
+                </div>
+            </footer>
         </div>
     );
 }
