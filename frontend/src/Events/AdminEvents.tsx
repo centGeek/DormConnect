@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
@@ -179,7 +179,13 @@ function AdminEvents() {
                         </div>
                     )}
 
-                    <Pagination totalPages={totalPages} currentPage={page} onPageChange={(newPage) => setPage(newPage)} />
+                    {!loading && events.length > 0 && totalPages > 1 && (
+                        <Pagination
+                            totalPages={totalPages}
+                            currentPage={page}
+                            onPageChange={handlePageChange}
+                        />
+                    )}
                 </div>
             </div>
         </Template>

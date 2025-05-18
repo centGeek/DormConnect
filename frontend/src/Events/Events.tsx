@@ -34,7 +34,7 @@ const Events = () => {
     const [page, setPage] = useState<number>(0);
 
     const [activeTab, setActiveTab] = useState<'organized' | 'participating' | 'all'>('participating');
-    const [sortType, setSortType] = useState<string>('startDateTime,asc'); // Sortowanie
+    const [sortType, setSortType] = useState<string>('startDateTime,asc');
 
     const navigate = useNavigate();
     const userContext = useContext(UserContext);
@@ -45,6 +45,10 @@ const Events = () => {
 
     const userId = userContext?.user?.id;
     const isAdmin = userContext?.user?.roles.includes('ADMIN');
+
+    const handleAddEvent = () => {
+        navigate('/events/create');
+    };
 
     const handleAdminNavigation = () => {
         navigate('/events/admin/AdminEvents');
@@ -58,7 +62,7 @@ const Events = () => {
 
         try {
             setLoading(true);
-            let url = `/api/event?page=${pageToFetch}&size=6&sort=${sortType}`;  // Sortowanie po `sortType`
+            let url = `/api/event?page=${pageToFetch}&size=6&sort=${sortType}`;
 
             if (tab === 'organized') {
                 url = `/api/event/organizer?page=${pageToFetch}&size=6&sort=${sortType}`;
@@ -95,15 +99,11 @@ const Events = () => {
     useEffect(() => {
         fetchEvents('participating', 0);
         fetchEvents('organized', 0);
-    }, []); // Runs only once when the component is mounted
+    }, []);
 
     useEffect(() => {
         fetchEvents(activeTab, page);
     }, [fetchEvents, activeTab, page]);
-
-    const handleAddEvent = () => {
-        navigate('/events/create');
-    };
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 0 && newPage < totalPages) {
@@ -114,12 +114,12 @@ const Events = () => {
 
     const handleTabChange = (tab: 'organized' | 'participating' | 'all') => {
         setActiveTab(tab);
-        setPage(0); // Reset page when tab is changed
+        setPage(0);
     };
 
     const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSortType(event.target.value);
-        setPage(0); // Reset page when sorting changes
+        setPage(0);
     };
 
     const getEventsToDisplay = () => {
@@ -130,8 +130,10 @@ const Events = () => {
 
     return (
         <Template
-            buttons={[{ text: 'Home', link: '/home' }, { text: 'Chat', link: '/chat' }]}
-
+            buttons={[
+                { text: 'Home', link: '/home' },
+                { text: 'Chat', link: '/chat' }
+            ]}
             footerContent={<p></p>}
         >
             <div className="events-container">
@@ -144,18 +146,14 @@ const Events = () => {
                         <button className="add-event-button" onClick={handleAddEvent}>
                             Dodaj wydarzenie
                         </button>
-                    </div>
-                    {isAdmin && (
-                        <div className="button-row">
+                        {isAdmin && (
                             <button className="admin-button" onClick={handleAdminNavigation}>
                                 Admin Panel
                             </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
-
-                {/* Tab Navigation */}
                 <div className="tabs">
                     <button
                         className={activeTab === 'organized' ? 'active-tab' : ''}
@@ -180,7 +178,6 @@ const Events = () => {
                 {loading && <p>Ładowanie wydarzeń...</p>}
                 {error && <p className="error-message">{error}</p>}
 
-                {/* Sort Dropdown */}
                 {!loading && getEventsToDisplay().length > 0 && (
                     <div className="sort-container">
                         <select className="sort-select" onChange={handleSortChange} value={sortType}>
@@ -192,7 +189,6 @@ const Events = () => {
                     </div>
                 )}
 
-                {/* Display events or no events message */}
                 {getEventsToDisplay().length === 0 && !loading ? (
                     <div className="no-events-wrapper">
                         <p className="no-events-message">Brak wydarzeń do wyświetlenia.</p>
@@ -211,7 +207,6 @@ const Events = () => {
                     </div>
                 )}
 
-                {/* Show pagination only if there are events and multiple pages */}
                 {!loading && getEventsToDisplay().length > 0 && totalPages > 1 && (
                     <Pagination
                         totalPages={totalPages}
@@ -219,7 +214,6 @@ const Events = () => {
                         onPageChange={handlePageChange}
                     />
                 )}
-
             </div>
         </Template>
     );

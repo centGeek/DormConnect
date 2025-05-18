@@ -5,7 +5,6 @@
     align-items: center;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fc;
     border-radius: 20px;
     padding: 30px 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -224,3 +223,31 @@
     }
 }
 
+.button-row {
+    display: flex;
+    gap: 10px; /* Tutaj ustawiamy odstęp między przyciskami */
+    margin-bottom: 20px;
+}
+
+.add-event-button, .admin-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.admin-button {
+    background-color: #2196F3; /* Niebieski kolor dla Admin Panel */
+}
+
+.add-event-button:hover, .admin-button:hover {
+    background-color: #45a049;
+}
+
+.admin-button:hover {
+    background-color: #1976D2;
+}
