@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Template from "../Template/Template.tsx";
-// import "./CommonRoomShow.css";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
+import getRoomIcon from "../ReusableComponents/CommonRoomIcon.tsx";
 
 interface CommonRoom {
     id: number;
@@ -49,23 +49,28 @@ function CommonRoomShow() {
     return (
         <Template
             buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-            footerContent={<p></p>}
         >
-            <div className="common-room-show-container">
+            <div className="common-room-show-container flex flex-wrap justify-center gap-6 p-6 bg-gray-200 rounded-lg shadow-lg">
                 {loading ? (
-                    <p>Ładowanie...</p>
+                    <p className="text-gray-500">Ładowanie...</p>
                 ) : commonRooms.length === 0 ? (
-                    "Nie znaleziono żadnych pokoi"
+                    <p className="text-gray-500">Nie znaleziono żadnych pokoi</p>
                 ) : (
                     commonRooms.map((commonRoom) => (
                         <div
                             key={commonRoom.id}
-                            className="common-room-card"
+                            className="common-room-card bg-white border border-gray-500 rounded-lg p-4 w-72 text-center shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 cursor-pointer"
                             onClick={() => navigate(`/common-room/${commonRoom.id}`)}
-                            style={{ cursor: "pointer" }}
                         >
-                            <h2>Typ pokoju:</h2><h2> {getRoomStatusTranslation(commonRoom.type)}</h2>
-                            <p>Piętro: {commonRoom.floor}</p>
+                            <img
+                                src={`/src/assets/common_room_icons/${getRoomIcon(commonRoom.type)}.png`}
+                                alt={getRoomStatusTranslation(commonRoom.type)}
+                                className="h-16 w-16 mx-auto mb-4"
+                            />
+                            <h2 className="text-lg font-bold text-gray-700 mb-2">
+                                {getRoomStatusTranslation(commonRoom.type)}
+                            </h2>
+                            <p className="text-gray-600">Piętro: {commonRoom.floor}</p>
                         </div>
                     ))
                 )}

@@ -1,9 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Template from "../Template/Template";
-// @ts-ignore
+// @ts-expect-error
 import { groupBy } from "lodash";
-// import "./CommonRoomSchedule.css";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 
 interface assignmentProps {
@@ -89,8 +88,8 @@ function CommonRoomSchedule() {
                 credentials: "include",
             });
             if (!response.ok) {
-                const errorMessage = await response.text(); // Pobierz komunikat błędu
-                alert(errorMessage); // Wyświetl powiadomienie użytkownikowi
+                const errorMessage = await response.text();
+                alert(errorMessage);
                 return;
             }
             await fetchAssignments();
@@ -135,7 +134,7 @@ function CommonRoomSchedule() {
             fetchAssignments();
             fetchCommonRoom();
         }
-    }, [id]);
+    }, [fetchAssignments, fetchCommonRoom, id]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -154,57 +153,68 @@ function CommonRoomSchedule() {
         };
     }, []);
 
-    // @ts-ignore
     return (
         <Template
             buttons={[{ text: "Powrót", link: "/common-rooms" }]}
             footerContent={<p></p>}
         >
-            <header className="common-room-header">
+            <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
                 {commonRoom && (
-                    <div className="common-room-details">
-                        <p><strong>Typ pokoju:</strong> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
-                        <strong>Piętro:</strong> {commonRoom.floor}&nbsp;&nbsp;&nbsp;
-                        <strong>Pojemność:</strong> {commonRoom.capacity}   &nbsp;&nbsp;&nbsp;
-                        <strong>Limit zapisów:</strong> {commonRoom.timesAWeekYouCanUseIt}</p>
+                    <div className="text-center text-gray-700">
+                        <p className="font-semibold">
+                            <span className="text-gray-600">Typ pokoju:</span> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
+                            <span className="text-gray-600">Piętro:</span> {commonRoom.floor}&nbsp;&nbsp;&nbsp;
+                            <span className="text-gray-600">Pojemność:</span> {commonRoom.capacity}&nbsp;&nbsp;&nbsp;
+                            <span className="text-gray-600">Limit zapisów:</span> {commonRoom.timesAWeekYouCanUseIt}
+                        </p>
                     </div>
                 )}
             </header>
-            <div className="common-room-schedule">
+            <div className="flex gap-5 overflow-x-auto max-w-6xl mx-auto p-4">
                 {loading ? (
-                    <p>Ładowanie...</p>
+                    <p className="text-center text-gray-500">Ładowanie...</p>
                 ) : assignments.length === 0 ? (
-                    <p>Nie znaleziono żadnych rezerwacji</p>
+                    <p className="text-center text-gray-500">Nie znaleziono żadnych rezerwacji</p>
                 ) : (
                     Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
                         new Date(assignment.startDate).toLocaleDateString()
                     )).map(([date, group]) => (
-                        <div key={date} className="assignment-column">
-                            <div className="assignment-column-header">{date}</div>
-                            {group.map((assignment: assignmentProps) => (
-                                <div
-                                    key={assignment.id}
-                                    className={`assignment-card ${assignment.isArchived ? 'archived' : ''} ${assignment.isUserAssigned ? 'assigned' : ''} ${(assignment.isFull && !assignment.isUserAssigned) ? 'full' : ''}`}
-                                    onClick={() => handleClick(assignment)}
-                                    style={{ cursor: assignment.isArchived || (assignment.isFull && !assignment.isUserAssigned) ? 'not-allowed' : 'pointer' }}
-                                >
-                                    <p>{new Date(assignment.startDate).toLocaleString(undefined, {
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })} -  {new Date(assignment.endDate).toLocaleString(undefined, {
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}</p>
-                                    <p>Zajęte: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
-                                </div>
-                            ))}
+                        <div key={date} className="flex flex-col border border-gray-500 bg-gray-300 p-4 rounded-lg shadow-md min-w-[200px]">
+                            <h3 className="text-lg font-bold text-gray-700 mb-3 text-center">{date}</h3>
+                            <div className="flex flex-col gap-3">
+                                {group.map((assignment: assignmentProps) => (
+                                    <div
+                                        key={assignment.id}
+                                        className={`p-3 rounded-lg shadow-md border text-center hover:bg-gray-200 cursor-pointer transition text-sm ${
+                                            assignment.isArchived
+                                                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                                : assignment.isUserAssigned
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : assignment.isFull
+                                                        ? 'bg-red-100 text-red-700 cursor-not-allowed'
+                                                        : 'bg-white text-gray-700 hover:shadow-lg'
+                                        }`}
+                                        onClick={() => handleClick(assignment)}
+                                    >
+                                        <p className="font-semibold">
+                                            {new Date(assignment.startDate).toLocaleTimeString([], {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })} - {new Date(assignment.endDate).toLocaleTimeString([], {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
+                                        </p>
+                                        <p>Zajęte: {assignment.numberOfUsers}/{commonRoom?.capacity}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ))
                 )}
             </div>
         </Template>
     );
-
 }
 
 export default CommonRoomSchedule;

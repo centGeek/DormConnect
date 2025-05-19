@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
-// import './Events.css';
 import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {
@@ -73,7 +72,7 @@ const Events = () => {
             const data = await response.json();
             setEvents(data.content || []);
             setTotalEventPages(data.totalPages || 0);
-        } catch (error: any) {
+        } catch (error) {
             setError(error.message || 'Wystąpił błąd.');
         } finally {
             setLoading(false);
@@ -99,7 +98,7 @@ const Events = () => {
             setOrganizedEvents(data.content || []);
             setTotalOrganizedPages(data.totalPages || 0);
             setIsOrganizer((data.content || []).length > 0);
-        } catch (error: any) {
+        } catch (error) {
             console.error('Błąd pobierania organizowanych wydarzeń:', error);
         }
     };
