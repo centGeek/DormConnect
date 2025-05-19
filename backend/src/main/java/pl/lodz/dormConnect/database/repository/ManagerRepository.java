@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import pl.lodz.dormConnect.database.entity.ManagerEntity;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
 import pl.lodz.dormConnect.database.entity.UserEntity;
 import pl.lodz.dormConnect.database.repository.jpa.ManagerJpaRepository;
 import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
@@ -25,7 +26,8 @@ public class ManagerRepository {
         ManagerEntity managerEntity = ManagerMapper.mapToEntity(manager);
         encodePassword(managerEntity, manager);
         conditionsToNotCreateManager(manager);
-
+        managerEntity.getUser().setRole(new RoleEntity(1L, "STUDENT"));
+        managerEntity.getUser().setActive(true);
         managerJpaRepository.saveAndFlush(managerEntity);
     }
 
