@@ -1,86 +1,151 @@
-/* --- Events container and layout --- */
+/* --- Events Container and Layout --- */
 .events-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-    background-color: #e1ffbc; /* Pastelowa zieleń */
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
-    width: 90%;
-    max-width: 1400px;
+    width: 100%;
+    max-width: 1300px;
 }
 
+/* --- Header --- */
 .events-container h2 {
-    font-size: 2rem;
-    color: #66bb6a; /* Średnia zieleń */
+    font-size: 2.5rem;
+    color: #2c3e50;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    font-weight: 600;
 }
 
-/* --- Buttons --- */
-.add-event-button {
-    padding: 15px 25px;
-    font-size: 16px;
-    background-color: #66bb6a; /* Średnia zieleń */
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-    text-align: center;
-    display: inline-block;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.add-event-button:hover {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
-}
-
-/* --- Event List --- */
-.events-list {
+/* --- Buttons Container --- */
+.buttons-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* --- Button Row --- */
+.button-row {
+    display: flex;
+    justify-content: center;
     width: 100%;
+}
+
+/* --- Add Event Button --- */
+.add-event-button,
+.admin-button {
+    padding: 14px 30px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
+    min-width: 200px;
+}
+
+.add-event-button:hover,
+.admin-button:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+/* --- Tabs --- */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tabs button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.tabs button:hover {
+    background-color: #f0f0f0;
+}
+
+.tabs .active-tab {
+    background-color: #4caf50;
+    color: white;
+}
+
+/* --- Sort Dropdown --- */
+.sort-container {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.sort-select {
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sort-select:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- Events Grid --- */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(2, 1fr);   /* 2 rows */
+    gap: 25px;
+    width: 100%;
+    margin-top: 20px;
 }
 
 /* --- Pagination --- */
 .pagination {
     display: flex;
-    justify-content: center;  /* Wyśrodkowanie poziome */
-    align-items: center;      /* Wyśrodkowanie pionowe */
-    gap: 10px;                /* Odstęp między przyciskami */
-    background-color: rgba(0, 0, 0, 0.1); /* Przezroczysty ciemniejszy kolor */
-    border-radius: 10px;
-    padding: 10px;
-    width: fit-content;       /* Dopasowanie szerokości do zawartości */
-    margin: 20px auto;        /* Wyśrodkowanie paginacji */
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+    flex-wrap: wrap;
 }
 
-/* --- Przyciski paginacji --- */
 .page-button {
-    padding: 10px 20px;
-    background-color: #66bb6a; /* Średnia zieleń */
+    padding: 12px 25px;
+    background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .page-button.active {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
+    background-color: #388e3c;
     font-weight: bold;
 }
 
 .page-button:hover {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
+    background-color: #388e3c;
+    transform: scale(1.05);
 }
 
 .page-button:disabled {
@@ -88,84 +153,101 @@
     background-color: #ddd;
 }
 
-/* --- Przyciski w sekcji wydarzeń --- */
-.add-event-button, .toggle-button {
-    display: block;
-    margin: 20px auto;        /* Wyśrodkowanie przycisków */
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #66bb6a; /* Zielony */
-    color: white;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.add-event-button:hover, .toggle-button:hover {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
-}
-
-/* --- Grid of Events --- */
-.events-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-/* --- Join/Leave buttons --- */
-.join-button {
-    background-color: #66bb6a; /* Średnia zieleń */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.join-button:hover {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
-}
-
-.leave-button {
-    background-color: #f44336; /* Czerwony */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.leave-button:hover {
-    background-color: #d32f2f; /* Ciemniejszy czerwony */
-}
-
-/* --- Messages --- */
+/* --- Success and Error Messages --- */
 .success-message {
-    color: green;
-    margin-bottom: 15px;
+    color: #2ecc71;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
 }
 
 .error-message {
-    color: red;
-    margin-bottom: 15px;
-}
-
-/* --- Toggle buttons (Expand/Collapse) --- */
-.toggle-button {
-    padding: 8px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    color: #e74c3c;
+    font-size: 1.2rem;
+    text-align: center;
     margin-bottom: 20px;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
-.toggle-button:hover {
-    background-color: #218838;
+/* --- No Events Message --- */
+.no-events-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.no-events-message {
+    color: #7f8c8d;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    .events-container {
+        padding: 20px;
+    }
+
+    .events-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .button-row {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .add-event-button,
+    .admin-button {
+        min-width: 160px;
+    }
+
+    .tabs button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    .sort-container {
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .sort-select {
+        margin-top: 10px;
+    }
+}
+
+.button-row {
+    display: flex;
+    gap: 10px; /* Tutaj ustawiamy odstęp między przyciskami */
+    margin-bottom: 20px;
+}
+
+.add-event-button, .admin-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.admin-button {
+    background-color: #2196F3; /* Niebieski kolor dla Admin Panel */
+}
+
+.add-event-button:hover, .admin-button:hover {
+    background-color: #45a049;
+}
+
+.admin-button:hover {
+    background-color: #1976D2;
 }

@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
+import pl.lodz.dormConnect.events.model.ApprovalStatus;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,7 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public Page<EventDTO> getAllApprovedEvents(Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findAllByIsApprovedIsTrue(pageable);
+        Page<EventEntity> page = eventRepository.findAllByApprovalStatusAndStartDateTimeAfter(ApprovalStatus.APPROVED, LocalDateTime.now(), pageable);
         return page.map(eventMapper::toEventDTO);
     }
 
@@ -67,7 +69,7 @@ public class EventService {
             eventEntity.setOrganizerId(eventDTO.organizerId());
 
             eventEntity.setEventType(eventDTO.eventType());
-            eventEntity.setIsApproved(eventDTO.isApproved());
+            eventEntity.setApprovalStatus(eventDTO.approvalStatus());
 
             EventEntity updatedEvent = eventRepository.save(eventEntity);
             return eventMapper.toEventDTO(updatedEvent);

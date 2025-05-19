@@ -1,10 +1,11 @@
 import Template from '../Template/Template';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder.tsx';
-// import './EventsCreate.css';
+import './EventsCreate.css';
+import { UserContext } from '../Context/UserContext.tsx';
 
 function EventsEdit() {
+    const { user } = useContext(UserContext);
     const [eventData, setEventData] = useState({
         eventName: '',
         eventDescription: '',
@@ -19,6 +20,8 @@ function EventsEdit() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { eventId } = useParams();
     const navigate = useNavigate();
+
+    const isAdminOrManager = user?.roles.includes('ADMIN') || user?.roles.includes('MANAGER');
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -50,7 +53,7 @@ function EventsEdit() {
                     endDateTime: formatDateTimeLocal(data.endDateTime),
                     location: data.location,
                     eventType: data.eventType,
-                    availableSeats: data.maxParticipants,
+                    availableSeats: data.maxParticipants.toString(),
                     imageUrl: data.imageUrl || '',
                 });
             } catch (error: any) {
@@ -75,6 +78,16 @@ function EventsEdit() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (!user) {
+            setError('User not logged in');
+            return;
+        }
+
+        if (!isAdminOrManager) {
+            setError('You do not have permission to edit events.');
+            return;
+        }
+
         const token = document.cookie
             .split('; ')
             .find(row => row.startsWith('token='))?.split('=')[1];
@@ -84,15 +97,8 @@ function EventsEdit() {
             return;
         }
 
-        const user = parseJwt(token);
-        const organizerId = user?.id;
-
-        if (!organizerId) {
-            setError('Invalid user token');
-            return;
-        }
-
         const updatedEvent = {
+            eventId: Number(eventId),
             eventName: eventData.eventName,
             description: eventData.eventDescription,
             startDateTime: new Date(eventData.startDateTime).toISOString(),
@@ -100,10 +106,10 @@ function EventsEdit() {
             location: eventData.location,
             eventType: eventData.eventType,
             maxParticipants: eventData.availableSeats !== '' ? Number(eventData.availableSeats) : 1,
-            imageUrl: eventData.imageUrl || "placeholder.jpg", // ponieważ imageUrl nie może być pusty
-            organizerId: organizerId,
-            isApproved: false,
-            participantId: [], // musisz wysyłać pustą listę, bo DTO tego wymaga
+            imageUrl: eventData.imageUrl || 'placeholder.jpg',
+            organizerId: user.id,
+            approvalStatus: 'WAITING',
+            participantId: [],
         };
 
         try {
@@ -126,119 +132,149 @@ function EventsEdit() {
             setSuccessMessage('Event updated successfully!');
             setError(null);
 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setTimeout(() => navigate('/events'), 1000);
         } catch (error: any) {
             setError(error.message || 'Error updating event');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setSuccessMessage(null);
         }
     };
 
     return (
         <Template buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]} footerContent={<p></p>}>
-            <div className="events-create-container">
-                <h2>Edit Event</h2>
+            <div className="events-create-wrapper">
+                {/* Lewa kolumna */}
+                <div className="left-column">
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => navigate('/events')}
+                    >
+                        ← Back to Events
+                    </button>
+                </div>
 
-                {error && <div className="error-message">{error}</div>}
-                {successMessage && <p className="success-message">{successMessage}</p>}
+                {/* Środkowa kolumna */}
+                <div className="center-column">
+                    <div className="events-create-container">
+                        <h2>Edit Event</h2>
 
-                <form onSubmit={handleSubmit} className="event-form">
-                    <div className="form-group">
-                        <label htmlFor="eventName">Event's Name</label>
-                        <input
-                            type="text"
-                            id="eventName"
-                            value={eventData.eventName}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter event's name"
-                        />
+                        {error && <div className="error-message">{error}</div>}
+                        {successMessage && <p className="success-message">{successMessage}</p>}
+
+                        {!isAdminOrManager ? (
+                            <div className="error-message">
+                                You don't have permission to edit events.
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="event-form">
+                                <div className="form-group">
+                                    <label htmlFor="eventName">Event's Name</label>
+                                    <input
+                                        type="text"
+                                        id="eventName"
+                                        value={eventData.eventName}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Enter event's name"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="eventDescription">Description</label>
+                                    <textarea
+                                        id="eventDescription"
+                                        value={eventData.eventDescription}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Enter event description"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="startDateTime">Start Date</label>
+                                    <input
+                                        type="datetime-local"
+                                        id="startDateTime"
+                                        value={eventData.startDateTime}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="endDateTime">End Date</label>
+                                    <input
+                                        type="datetime-local"
+                                        id="endDateTime"
+                                        value={eventData.endDateTime}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="location">Location</label>
+                                    <input
+                                        type="text"
+                                        id="location"
+                                        value={eventData.location}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Enter event location"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="eventType">Type</label>
+                                    <select
+                                        id="eventType"
+                                        value={eventData.eventType}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="">Choose type</option>
+                                        <option value="party">Party</option>
+                                        <option value="meeting">Meeting</option>
+                                        <option value="workshop">Workshop</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="availableSeats">Number of Participants</label>
+                                    <input
+                                        type="number"
+                                        id="availableSeats"
+                                        value={eventData.availableSeats}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="Enter number of available participants"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="imageUrl">Image URL</label>
+                                    <input
+                                        type="text"
+                                        id="imageUrl"
+                                        value={eventData.imageUrl}
+                                        onChange={handleChange}
+                                        placeholder="Enter image URL (optional)"
+                                    />
+                                </div>
+
+                                <button type="submit" className="btn btn-primary">Update Event</button>
+                            </form>
+                        )}
                     </div>
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="eventDescription">Description</label>
-                        <textarea
-                            id="eventDescription"
-                            value={eventData.eventDescription}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter event description"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="startDateTime">Start Date</label>
-                        <input
-                            type="datetime-local"
-                            id="startDateTime"
-                            value={eventData.startDateTime}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="endDateTime">End Date</label>
-                        <input
-                            type="datetime-local"
-                            id="endDateTime"
-                            value={eventData.endDateTime}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="location">Location</label>
-                        <input
-                            type="text"
-                            id="location"
-                            value={eventData.location}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter event location"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="eventType">Type</label>
-                        <select
-                            id="eventType"
-                            value={eventData.eventType}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">Choose type</option>
-                            <option value="party">Party</option>
-                            <option value="meeting">Meeting</option>
-                            <option value="workshop">Workshop</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="availableSeats">Number of Participants</label>
-                        <input
-                            type="number"
-                            id="availableSeats"
-                            value={eventData.availableSeats}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter number of available participants"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="imageUrl">Image URL</label>
-                        <input
-                            type="text"
-                            id="imageUrl"
-                            value={eventData.imageUrl}
-                            onChange={handleChange}
-                            placeholder="Enter image URL (optional)"
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary">Update Event</button>
-                </form>
+                {/* Prawa kolumna */}
+                <div className="right-column"></div>
             </div>
         </Template>
     );

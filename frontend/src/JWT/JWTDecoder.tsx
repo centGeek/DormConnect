@@ -1,3 +1,6 @@
+/**
+ * @deprecated This function is deprecated. Use UserContext instead.
+ */
 export function parseJwt(token: string) {
     try {
         const base64Url = token.split('.')[1]; // Payload znajduje się w drugiej części (indeks 1)

@@ -10,6 +10,8 @@ import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.model.EventEntity;
 import pl.lodz.dormConnect.events.repository.EventRepository;
 
+import java.time.LocalDateTime;
+
 @Service
 public class EventOrganizerService {
 
@@ -24,7 +26,7 @@ public class EventOrganizerService {
 
     @Transactional(readOnly = true)
     public Page<EventDTO> getAllCreatedEvent(Long organizerId, Pageable pageable) {
-        Page<EventEntity> page = eventRepository.findByOrganizerId(organizerId, pageable);
+        Page<EventEntity> page = eventRepository.findByOrganizerIdAndStartDateTimeAfter(organizerId, pageable, LocalDateTime.now());
         return page.map(eventMapper::toEventDTO);
     }
 

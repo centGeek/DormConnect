@@ -1,10 +1,14 @@
 import Template from '../Template/Template';
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder.tsx';
-// import './EventsCreate.css';
+import './EventsCreate.css';
+import {UserContext} from "../Context/UserContext.tsx";
 
 function EventsCreate() {
+    const userContext = useContext(UserContext);
+    const isAdmin = userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER');
+    const organizerId = userContext?.user?.id;
+
     const [eventName, setEventName] = useState('');
     const [eventDescription, setEventDescription] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -29,9 +33,6 @@ function EventsCreate() {
             setError('No token found');
             return;
         }
-
-        const user = parseJwt(token);
-        const organizerId = user?.id;
 
         if (!organizerId) {
             setError('Invalid user token');
@@ -81,6 +82,8 @@ function EventsCreate() {
             setSuccessMessage('Event created successfully!');
             setError(null);
 
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setTimeout(() => {
                 navigate('/events');
             }, 1000);
@@ -96,6 +99,9 @@ function EventsCreate() {
             setImageUrl('');
         } catch (error: any) {
             setError(error.message || 'Error creating event');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             setSuccessMessage(null);
         }
     };
@@ -105,103 +111,122 @@ function EventsCreate() {
             buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
             footerContent={<p></p>}
         >
-            <div className="events-create-container">
-                <h2>Create Event</h2>
+            <div className="events-create-wrapper">
+                {/* Lewa kolumna */}
+                <div className="left-column">
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => navigate('/events')}
+                    >
+                        ← Back to Events
+                    </button>
+                </div>
 
-                {error && (
-                    <div className="error-message">
-                        {error.split('\n').map((err, idx) => (
-                            <p key={idx}>{err}</p>
-                        ))}
-                    </div>
-                )}
-                {successMessage && <p className="success-message">{successMessage}</p>}
+                {/* Środkowa kolumna */}
+                <div className="center-column">
+                    <div className="events-create-container">
+                        <h2>Create Event</h2>
 
-                <form onSubmit={handleSubmit} className="event-form">
-                    <div className="form-group">
-                        <label htmlFor="eventName">Event's Name</label>
-                        <input
-                            type="text"
-                            id="eventName"
-                            value={eventName}
-                            onChange={(e) => setEventName(e.target.value)}
-                            required
-                        />
+                        {error && (
+                            <div className="error-message">
+                                {error.split('\n').map((err, idx) => (
+                                    <p key={idx}>{err}</p>
+                                ))}
+                            </div>
+                        )}
+                        {successMessage && <p className="success-message">{successMessage}</p>}
+
+                        <form onSubmit={handleSubmit} className="event-form">
+                            <div className="form-group">
+                                <label htmlFor="eventName">Event's Name</label>
+                                <input
+                                    type="text"
+                                    id="eventName"
+                                    value={eventName}
+                                    onChange={(e) => setEventName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="eventDescription">Description</label>
+                                <textarea
+                                    id="eventDescription"
+                                    value={eventDescription}
+                                    onChange={(e) => setEventDescription(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="startDate">Start Date</label>
+                                <input
+                                    type="datetime-local"
+                                    id="startDate"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="endDate">End Date</label>
+                                <input
+                                    type="datetime-local"
+                                    id="endDate"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="location">Location</label>
+                                <input
+                                    type="text"
+                                    id="location"
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="eventType">Type</label>
+                                <select
+                                    id="eventType"
+                                    value={eventType}
+                                    onChange={(e) => setEventType(e.target.value)}
+                                    required
+                                >
+                                    <option value="">Choose type</option>
+                                    <option value="party">Party</option>
+                                    <option value="meeting">Meeting</option>
+                                    <option value="workshop">Workshop</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="availableSeats">Number of Participants</label>
+                                <input
+                                    type="number"
+                                    id="availableSeats"
+                                    value={availableSeats}
+                                    onChange={(e) => setAvailableSeats(Number(e.target.value))}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="imageUrl">Image URL</label>
+                                <input
+                                    type="text"
+                                    id="imageUrl"
+                                    value={imageUrl}
+                                    onChange={(e) => setImageUrl(e.target.value)}
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Create Event</button>
+                        </form>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="eventDescription">Description</label>
-                        <textarea
-                            id="eventDescription"
-                            value={eventDescription}
-                            onChange={(e) => setEventDescription(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="startDate">Start Date</label>
-                        <input
-                            type="datetime-local"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="endDate">End Date</label>
-                        <input
-                            type="datetime-local"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="location">Location</label>
-                        <input
-                            type="text"
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="eventType">Type</label>
-                        <select
-                            id="eventType"
-                            value={eventType}
-                            onChange={(e) => setEventType(e.target.value)}
-                            required
-                        >
-                            <option value="">Choose type</option>
-                            <option value="party">Party</option>
-                            <option value="meeting">Meeting</option>
-                            <option value="workshop">Workshop</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="availableSeats">Number of Participants</label>
-                        <input
-                            type="number"
-                            id="availableSeats"
-                            value={availableSeats}
-                            onChange={(e) => setAvailableSeats(Number(e.target.value))}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="imageUrl">Image URL</label>
-                        <input
-                            type="text"
-                            id="imageUrl"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-primary">Create Event</button>
-                </form>
+                </div>
+
+                {/* Prawa kolumna */}
+                <div className="right-column"></div>
             </div>
         </Template>
     );
