@@ -135,7 +135,7 @@ function CommonRoomSchedule() {
             fetchAssignments();
             fetchCommonRoom();
         }
-    }, [fetchAssignments, fetchCommonRoom, id]);
+    }, [id]);
 
     useEffect(() => {
         const handleScroll = () => {

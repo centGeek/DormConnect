@@ -61,8 +61,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
     return (
         <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
             {/* Nagłówek */}
-            <header className="bg-gray-200 text-white py-2 shadow-md border-green-700 rounded-t-lg">
-                <div className="container mx-auto flex items-center justify-start px-4 space-x-4">
+            <header className="bg-gray-200 text-white py-2 shadow-md border-gray-700 rounded-t-lg">
+                <div className="container mx-auto flex items-center justify-center px-4 space-x-4">
                     {/* Logo */}
                     <a href="/home" className="flex items-center">
                         <img
@@ -72,15 +72,17 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         />
                     </a>
                     {/* Przyciski nawigacyjne */}
-                    {buttons?.map((button: Button, index: number) => (
-                        <a
-                            key={index}
-                            href={button.link}
-                            className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition"
-                        >
-                            {button.text}
-                        </a>
-                    ))}
+                    <div className="flex justify-center items-center space-x-4">
+                        {buttons?.map((button: Button, index: number) => (
+                            <a
+                                key={index}
+                                href={button.link}
+                                className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition"
+                            >
+                                {button.text}
+                            </a>
+                        ))}
+                    </div>
                     {/* Temperatura zostanie dodana dynamicznie */}
                     <button
                         className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
