@@ -130,8 +130,11 @@ const Events = () => {
     return (
         <Template
             buttons={[
-                { text: 'Home', link: '/home' },
-                { text: 'Chat', link: '/chat' }
+                { text: 'Chat', link: '/chat' },
+                { text: 'Events', link: '/events' },
+                { text: 'Common Rooms', link: '/common-rooms' },
+                { text: 'Rooms', link: '/rooms' },
+                { text: 'Problems', link: '/problems' },
             ]}
         >
             <div className="p-6">

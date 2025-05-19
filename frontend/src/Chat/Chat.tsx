@@ -41,8 +41,7 @@ function ChatPage() {
                 { text: 'Events', link: '/events' },
                 { text: 'Common Rooms', link: '/common-rooms' },
                 { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-                { text: 'Events', link: '/events' }]}
+                { text: 'Problems', link: '/problems' }]}
         >
             <div className="chat-container flex flex-col flex-grow w-full h-full max-w-screen-lg mx-auto px-4 py-6 bg-gray-100 rounded-lg shadow-md">
                 <h1 className="text-center text-4xl font-extrabold text-gray-800 mb-4">Welcome to Our Chat</h1>
