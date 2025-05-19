@@ -43,7 +43,7 @@ const Events = () => {
         .find(row => row.startsWith('token='))?.split('=')[1];
 
     const userId = userContext?.user?.id;
-    const isAdmin = userContext?.user?.roles.includes('ADMIN');
+    const isAdmin = userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role));
 
     const handleAddEvent = () => {
         navigate('/events/create');

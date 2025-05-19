@@ -28,7 +28,7 @@ public class EventApprovalController {
     }
 
     @PutMapping("/{eventId}/approve")
-    public ResponseEntity<String> approveEvent(@PathVariable Long eventId) {
+    public ResponseEntity<String> approveEvent(@PathVariable("eventId") Long eventId) {
         try {
             eventApprovalService.approveEvent(eventId);
             return ResponseEntity.ok("Event approved.");
@@ -38,7 +38,7 @@ public class EventApprovalController {
     }
 
     @DeleteMapping("/{eventId}/reject")
-    public ResponseEntity<String> rejectEvent(@PathVariable Long eventId) {
+    public ResponseEntity<String> rejectEvent(@PathVariable("eventId") Long eventId) {
         try {
             eventApprovalService.rejectEvent(eventId);
             return ResponseEntity.ok("Event rejected.");

@@ -1,6 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login/Login.tsx';
+import RegistrationStudent from './Registration/Registration-student.tsx';
+import RegistrationManager from './Registration/Registration-manager.tsx';
 import Chat from './Chat/Chat.tsx';
 import Home from './Home/Home.tsx';
 import EventsCreate from './Events/EventsCreate.tsx';
@@ -29,6 +31,8 @@ function App() {
             <TemperatureProvider>
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/register/student" element={<RegistrationStudent/>} />
+                    <Route path="/register/manager" element={<RegistrationManager/>} />
                     {userContext?.token ? (
                         <>
                             <Route path="/home" element={<Home />} />
@@ -44,7 +48,7 @@ function App() {
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
-                        {userContext?.user?.roles.includes('ADMIN') && (
+                        {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
                                 <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                             )}
                         </>

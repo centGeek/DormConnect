@@ -19,8 +19,7 @@ function EventsEdit() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { eventId } = useParams();
     const navigate = useNavigate();
-
-    const isAdminOrManager = user?.roles.includes('ADMIN') || user?.roles.includes('MANAGER');
+    const [isCreator, setIsCreator] = useState(false);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -55,13 +54,15 @@ function EventsEdit() {
                     availableSeats: data.maxParticipants.toString(),
                     imageUrl: data.imageUrl || '',
                 });
+
+                setIsCreator(user?.id === data.organizerId);
             } catch (error: any) {
                 setError(error.message || 'Error fetching event data');
             }
         };
 
         fetchEvent();
-    }, [eventId]);
+    }, [eventId, user?.id]);
 
     const formatDateTimeLocal = (dateTimeString: string) => {
         if (!dateTimeString) return '';
@@ -82,7 +83,7 @@ function EventsEdit() {
             return;
         }
 
-        if (!isAdminOrManager) {
+        if (!isCreator) {
             setError('You do not have permission to edit events.');
             return;
         }
@@ -160,7 +161,7 @@ function EventsEdit() {
                     {error && <div className="bg-red-100 text-red-600 p-3 rounded-lg mb-4">{error}</div>}
                     {successMessage && <p className="bg-green-100 text-green-600 p-3 rounded-lg mb-4">{successMessage}</p>}
 
-                    {!isAdminOrManager ? (
+                    {!isCreator ? (
                         <div className="bg-red-100 text-red-600 p-3 rounded-lg">
                             You don't have permission to edit events.
                         </div>
@@ -174,6 +175,7 @@ function EventsEdit() {
                                     value={eventData.eventName}
                                     onChange={handleChange}
                                     required
+                                    placeholder="Enter event's name"
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                                 />
                             </div>
