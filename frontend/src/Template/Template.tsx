@@ -72,7 +72,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         />
                     </a>
                     {/* Przyciski nawigacyjne */}
-                    <div className="flex justify-center items-center space-x-4">
+                    <div className="flex justify-center justify-items-center items-center space-x-4">
                         {buttons?.map((button: Button, index: number) => (
                             <a
                                 key={index}
