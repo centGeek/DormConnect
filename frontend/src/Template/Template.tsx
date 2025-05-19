@@ -60,10 +60,9 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
     return (
         <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
-            {/* Nagłówek */}
+
             <header className="bg-gray-200 text-white py-2 shadow-md border-gray-700 rounded-t-lg">
-                <div className="container mx-auto flex items-center justify-center px-4 space-x-4">
-                    {/* Logo */}
+                <div className="container mx-auto flex items-center justify-between px-4">
                     <a href="/home" className="flex items-center">
                         <img
                             src={LogoPL}
@@ -71,8 +70,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                             className="h-auto max-h-16 w-auto object-contain"
                         />
                     </a>
-                    {/* Przyciski nawigacyjne */}
-                    <div className="flex justify-center justify-items-center items-center space-x-4">
+
+                    <div className="flex justify-center items-center space-x-4">
                         {buttons?.map((button: Button, index: number) => (
                             <a
                                 key={index}
@@ -83,22 +82,26 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                             </a>
                         ))}
                     </div>
-                    {/* Temperatura zostanie dodana dynamicznie */}
-                    <button
-                        className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
-                        onClick={handleLogout}
-                    >
-                        Log out
-                    </button>
+
+
+                    <div className="flex items-center space-x-4">
+                        <span className="header-temperature text-black font-bold"></span>
+                        <button
+                            className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
+                            onClick={handleLogout}
+                        >
+                            Log out
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            {/* Główna zawartość */}
+
             <main className="flex-grow container mx-auto px-4 py-8">
                 {children}
             </main>
 
-            {/* Stopka */}
+
             <footer className="bg-gray-800 text-white py-4 rounded-b-lg">
                 <div className="container mx-auto text-center">
                     {footerContent || <p>Dorm Connect 2025®</p>}
