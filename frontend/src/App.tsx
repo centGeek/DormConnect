@@ -44,7 +44,7 @@ function App() {
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
-                        {userContext?.user?.roles.includes('ADMIN') && (
+                        {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
                                 <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                             )}
                         </>
