@@ -3,6 +3,7 @@ package pl.lodz.dormConnect.events.mapper;
 import org.springframework.stereotype.Component;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
+import pl.lodz.dormConnect.events.model.ApprovalStatus;
 import pl.lodz.dormConnect.events.model.EventEntity;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class EventMapper {
                 eventEntity.getMaxParticipants(),
                 eventEntity.getImageUrl(),
                 eventEntity.getOrganizerId(),
-                eventEntity.getIsApproved(),
+                eventEntity.getApprovalStatus(),
                 eventEntity.getParticipantId()
         );
     }
@@ -55,7 +56,7 @@ public class EventMapper {
                 eventDTO.maxParticipants(),
                 eventDTO.imageUrl(),
                 eventDTO.organizerId(),
-                eventDTO.isApproved(),
+                eventDTO.approvalStatus(),
                 eventDTO.participantId()
         );
     }
@@ -73,7 +74,7 @@ public class EventMapper {
                 eventCreateDTO.maxParticipants(),
                 eventCreateDTO.imageUrl(),
                 eventCreateDTO.organizerId(),
-                false,
+                ApprovalStatus.WAITING,
                 eventCreateDTO.participantId()
         );
     }
