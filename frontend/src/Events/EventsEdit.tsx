@@ -20,8 +20,7 @@ function EventsEdit() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { eventId } = useParams();
     const navigate = useNavigate();
-
-    const isAdminOrManager = user?.roles.includes('ADMIN') || user?.roles.includes('MANAGER');
+    const [isCreator, setIsCreator] = useState(false);
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -56,13 +55,15 @@ function EventsEdit() {
                     availableSeats: data.maxParticipants.toString(),
                     imageUrl: data.imageUrl || '',
                 });
+
+                setIsCreator(user?.id === data.organizerId);
             } catch (error: any) {
                 setError(error.message || 'Error fetching event data');
             }
         };
 
         fetchEvent();
-    }, [eventId]);
+    }, [eventId, user?.id]);
 
     const formatDateTimeLocal = (dateTimeString: string) => {
         if (!dateTimeString) return '';
@@ -83,7 +84,7 @@ function EventsEdit() {
             return;
         }
 
-        if (!isAdminOrManager) {
+        if (!isCreator) {
             setError('You do not have permission to edit events.');
             return;
         }
@@ -166,7 +167,7 @@ function EventsEdit() {
                         {error && <div className="error-message">{error}</div>}
                         {successMessage && <p className="success-message">{successMessage}</p>}
 
-                        {!isAdminOrManager ? (
+                        {!isCreator ? (
                             <div className="error-message">
                                 You don't have permission to edit events.
                             </div>

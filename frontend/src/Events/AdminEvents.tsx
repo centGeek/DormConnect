@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
 import './AdminEvents.css';
 import Pagination from './Pagination.tsx';
+import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {
     eventId: number;
@@ -34,6 +35,8 @@ function AdminEvents() {
     const [sortOption, setSortOption] = useState<'startDateTime' | 'eventName'>('startDateTime');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
+    const { user } = useContext(UserContext);
+
     useEffect(() => {
         const tokenFromCookie = document.cookie
             .split('; ')
@@ -44,16 +47,13 @@ function AdminEvents() {
             return;
         }
 
-        const user = parseJwt(tokenFromCookie);
-        const roles = user?.roles || [];
-
-        if (!roles.includes('ADMIN') && !roles.includes('MANAGER')) {
+        if (!user?.roles?.includes('ADMIN') && !user?.roles?.includes('MANAGER')) {
             navigate('/');
             return;
         }
 
         setToken(tokenFromCookie);
-    }, [navigate]);
+    }, [navigate, user]);
 
     const fetchEvents = useCallback(async () => {
         if (!token) return;

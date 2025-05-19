@@ -31,7 +31,7 @@ public class EventParticipantController {
 
     @PutMapping("/{eventId}")
     public ResponseEntity<EventDTO> joinEvent(
-            @PathVariable Long eventId,
+            @PathVariable("eventId") Long eventId,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
@@ -47,7 +47,7 @@ public class EventParticipantController {
 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<EventDTO> leaveEvent(
-            @PathVariable Long eventId,
+            @PathVariable("eventId") Long eventId,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
