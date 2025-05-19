@@ -46,7 +46,7 @@ function Temperature({ className = '' }: TemperatureProps) {
   }
 
   return (
-    <span className={`temperature-display ${className}`}>
+    <span className={`temperature-display ${className} border-gray-300 bg-white font-gray-500`}>
       {temperature}°C
     </span>
   );

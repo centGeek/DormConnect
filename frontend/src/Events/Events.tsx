@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
-import './Events.css';
 import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {
@@ -136,51 +135,65 @@ const Events = () => {
             ]}
             footerContent={<p></p>}
         >
-            <div className="events-container">
-                {successMessage && <div className="success-message">{successMessage}</div>}
+            <div className="p-6">
+                {successMessage && <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4 justify-center">{successMessage}</div>}
 
-                <h2>Wydarzenia</h2>
+                <h2 className="text-4xl font-bold text-gray-800 mb-6 text-center">Events</h2>
 
-                <div className="buttons-container">
-                    <div className="button-row">
-                        <button className="add-event-button" onClick={handleAddEvent}>
-                            Dodaj wydarzenie
+                <div className="flex flex-wrap gap-4 mb-6 justify-center">
+                    <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition"
+                        onClick={handleAddEvent}
+                    >
+                        Dodaj wydarzenie
+                    </button>
+                    {isAdmin && (
+                        <button
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition"
+                            onClick={handleAdminNavigation}
+                        >
+                            Admin Panel
                         </button>
-                        {isAdmin && (
-                            <button className="admin-button" onClick={handleAdminNavigation}>
-                                Admin Panel
-                            </button>
-                        )}
-                    </div>
+                    )}
                 </div>
 
-                <div className="tabs">
+                <div className="flex gap-4 mb-6 justify-center">
                     <button
-                        className={activeTab === 'organized' ? 'active-tab' : ''}
+                        className={`px-4 py-2 rounded-lg shadow transition ${
+                            activeTab === 'organized' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                        }`}
                         onClick={() => handleTabChange('organized')}
                     >
                         Organizowane
                     </button>
                     <button
-                        className={activeTab === 'participating' ? 'active-tab' : ''}
+                        className={`px-4 py-2 rounded-lg shadow transition ${
+                            activeTab === 'participating' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                        }`}
                         onClick={() => handleTabChange('participating')}
                     >
                         Moje
                     </button>
                     <button
-                        className={activeTab === 'all' ? 'active-tab' : ''}
+                        className={`px-4 py-2 rounded-lg shadow transition ${
+                            activeTab === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                        }`}
                         onClick={() => handleTabChange('all')}
                     >
                         Wszystkie
                     </button>
                 </div>
 
-                {loading && <p>Ładowanie wydarzeń...</p>}
-                {error && <p className="error-message">{error}</p>}
+                {loading && <p className="text-gray-500">Ładowanie wydarzeń...</p>}
+                {error && <p className="text-red-500">{error}</p>}
 
                 {!loading && getEventsToDisplay().length > 0 && (
-                    <div className="sort-container">
-                        <select className="sort-select" onChange={handleSortChange} value={sortType}>
+                    <div className="mb-6">
+                        <select
+                            className="border border-gray-300 rounded-lg px-4 py-2"
+                            onChange={handleSortChange}
+                            value={sortType}
+                        >
                             <option value="startDateTime,asc">Data (rosnąco)</option>
                             <option value="startDateTime,desc">Data (malejąco)</option>
                             <option value="eventName,asc">Nazwa (A-Z)</option>
@@ -190,11 +203,9 @@ const Events = () => {
                 )}
 
                 {getEventsToDisplay().length === 0 && !loading ? (
-                    <div className="no-events-wrapper">
-                        <p className="no-events-message">Brak wydarzeń do wyświetlenia.</p>
-                    </div>
+                    <p className="text-gray-500 text-center">Brak wydarzeń do wyświetlenia.</p>
                 ) : (
-                    <div className="events-grid">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {getEventsToDisplay().map(event => (
                             <EventCard
                                 key={event.eventId}

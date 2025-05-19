@@ -1,4 +1,4 @@
-import { useTemperature } from '../context/TemperatureContext.tsx';
+import { useTemperature } from '../Context/TemperatureContext.tsx';
 import { Link } from 'react-router-dom';
 import './HeaderButtonWithTemperature.css'; // optional styling
 
