@@ -23,6 +23,7 @@ interface CommonRoom {
     timesAWeekYouCanUseIt: number;
 }
 
+// @ts-ignore
 function CommonRoomSchedule() {
     const { id } = useParams<{ id: string }>();
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
@@ -152,6 +153,7 @@ function CommonRoomSchedule() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
 
     return (
         <Template
