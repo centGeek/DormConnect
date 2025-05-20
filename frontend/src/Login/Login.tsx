@@ -72,12 +72,12 @@ function Login() {
                 Register as Student
               </Link>
             </p>
-            <p>
+            {false && <p>
               Looking to manage dorms?{' '}
               <Link to="/register/manager" className="font-semibold text-gray-700 hover:underline">
                 Register as Manager
               </Link>
-            </p>
+            </p>}
           </div>
         </form>
       </div>

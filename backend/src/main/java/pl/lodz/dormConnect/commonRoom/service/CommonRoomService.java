@@ -81,4 +81,11 @@ public class CommonRoomService {
                 .map(Enum::name)
                 .toList();
     }
+
+    public List<Integer> getFloors() {
+        return repository.findAll().stream()
+                .map(CommonRoomEntity::getFloor)
+                .distinct()
+                .toList();
+    }
 }

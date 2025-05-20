@@ -19,6 +19,7 @@ import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
 import { TemperatureProvider } from './Context/TemperatureContext.tsx';
+import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
@@ -44,6 +45,7 @@ function App() {
                             <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                             <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                             <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
+                            <Route path="/dormitory" element={<CreateDormitory />} />
                             <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>

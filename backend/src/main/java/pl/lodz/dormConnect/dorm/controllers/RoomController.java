@@ -97,6 +97,12 @@ public class RoomController {
         }
     }
 
+    @GetMapping("/floors")
+    public ResponseEntity<List<Integer>> getFloors() {
+        List<Integer> floors = roomService.getFloors();
+        return ResponseEntity.ok(floors);
+    }
+
 //    @GetMapping("/assign/myAssigns")
 //    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
 //        try {

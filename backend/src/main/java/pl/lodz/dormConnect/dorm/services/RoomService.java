@@ -132,4 +132,11 @@ public class RoomService {
                         assignment.getToDate()))
                 .toList();
     }
+
+    public List<Integer> getFloors() {
+        return roomRepository.findAll().stream()
+                .map(RoomEntity::getFloor)
+                .distinct()
+                .toList();
+    }
 }

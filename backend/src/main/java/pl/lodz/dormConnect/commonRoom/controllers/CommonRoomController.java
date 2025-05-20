@@ -68,6 +68,11 @@ class CommonRoomController {
         List<String> commonRoomTypes = service.getCommonRoomTypes();
         return ResponseEntity.ok(commonRoomTypes);
     }
+    @GetMapping("/floors")
+    public ResponseEntity<List<Integer>> getFloors() {
+        List<Integer> floors = service.getFloors();
+        return ResponseEntity.ok(floors);
+    }
 
 
 }
