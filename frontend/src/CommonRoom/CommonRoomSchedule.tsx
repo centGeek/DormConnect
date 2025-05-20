@@ -169,7 +169,7 @@ function CommonRoomSchedule() {
                     </div>
                 )}
             </header>
-            <div className="flex gap-5 overflow-x-auto max-w-6xl mx-auto p-4">
+            <div className="flex gap-5 overflow-x-auto max-w-6xl mx-auto p-4 max-h-fit">
                 {loading ? (
                     <p className="text-center text-gray-500">Ładowanie...</p>
                 ) : assignments.length === 0 ? (
@@ -178,7 +178,7 @@ function CommonRoomSchedule() {
                     Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
                         new Date(assignment.startDate).toLocaleDateString()
                     )).map(([date, group]) => (
-                        <div key={date} className="flex flex-col border border-gray-500 bg-gray-300 p-4 rounded-lg shadow-md min-w-[200px]">
+                        <div key={date} className="flex flex-col border border-gray-500 bg-gray-300 p-4 rounded-lg shadow-md min-w-[200px] max-h-fit">
                             <h3 className="text-lg font-bold text-gray-700 mb-3 text-center">{date}</h3>
                             <div className="flex flex-col gap-3">
                                 {group.map((assignment: assignmentProps) => (
