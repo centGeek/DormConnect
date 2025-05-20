@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import CommonRoomTypes from "../../ReusableComponents/CommonRoomTypes.tsx";
-import CommonRoomIcon from "../../ReusableComponents/CommonRoomIcon.tsx";
+import getRoomIcon from "../../ReusableComponents/CommonRoomIcon.tsx";
+import getRoomStatusTranslation from "../../ReusableComponents/CommonRoomTypes.tsx";
+import PopupForm from "./PopUpForm.tsx";
 
 interface CommonRoomProps {
     id: number;
-    type: string;
+    commonRoomType: string;
     floor: number;
     capacity: number;
     timesAWeekYouCanUseIt: number;
@@ -12,12 +14,13 @@ interface CommonRoomProps {
 }
 
 interface CommonRoomCanvaProps {
-    floor: number; // Zmienna przekazywana jako props
+    floor: number;
 }
 
 function CommonRoomCanva({ floor }: CommonRoomCanvaProps) {
     const [commonRooms, setCommonRooms] = useState<CommonRoomProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
     const fetchCommonRooms = async () => {
         try {
@@ -42,35 +45,50 @@ function CommonRoomCanva({ floor }: CommonRoomCanvaProps) {
         }
     };
 
+    const handleAddSpecialRoom = () => {
+        setIsPopupOpen(true);
+    };
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
     useEffect(() => {
         if (floor !== -1) {
-            fetchCommonRooms(); // Wywołanie fetch przy zmianie floor
+            fetchCommonRooms();
         }
     }, [floor]);
 
     return (
-        <div className="common-room-canva-container flex flex-wrap justify-center gap-6 p-6 bg-gray-200 rounded-lg shadow-lg">
+        <div className="common-room-canva-container flex flex-wrap justify-center gap-3 p-3 bg-gray-200 rounded-lg shadow-lg">
             {loading ? (
-                <p className="text-gray-500">Ładowanie...</p>
-            ) : commonRooms.length === 0 ? (
-                <p className="text-gray-500">Nie znaleziono żadnych pokoi</p>
+                <p className="text-gray-500 text-xs">Ładowanie...</p>
             ) : (
-                commonRooms.map((commonRoom) => (
+                <>
+                    {commonRooms.map((commonRoom) => (
+                        <div
+                            key={commonRoom.id}
+                            className="common-room-card bg-white border border-gray-500 rounded-lg p-2 w-30 text-left shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 cursor-pointer flex items-center gap-2"
+                        >
+                            <img
+                                src={`/src/assets/common_room_icons/${getRoomIcon(commonRoom.commonRoomType)}.png`}
+                                alt={getRoomStatusTranslation(commonRoom.commonRoomType)}
+                                className="h-6 w-6"
+                            />
+                            <p className="text-xs font-bold text-gray-700">
+                                {CommonRoomTypes(commonRoom.commonRoomType)}
+                            </p>
+                        </div>
+                    ))}
                     <div
-                        key={commonRoom.id}
-                        className="common-room-card bg-white border border-gray-500 rounded-lg p-4 w-72 text-center shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 cursor-pointer"
+                        onClick={handleAddSpecialRoom}
+                        className="add-special-room bg-white border border-gray-500 rounded-lg p-2 w-30 text-left shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 cursor-pointer flex items-center gap-2 justify-center"
                     >
-                        <h2 className="text-lg font-bold text-gray-700 mb-2">
-                            {CommonRoomTypes(commonRoom.type)}
-                        </h2>
-                        <p className="text-gray-600">Pojemność: {commonRoom.capacity}</p>
-                        {commonRoom.isArchived && (
-                            <p className="text-red-500 font-bold">Zarchiwizowany</p>
-                        )}
+                        +
                     </div>
-                ))
-            )
-            }
+                </>
+            )}
+            {isPopupOpen && <PopupForm onClose={handleClosePopup} />}
         </div>
     );
 }
