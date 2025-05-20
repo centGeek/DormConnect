@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Template from '../Template/Template.tsx';
+import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
 
-const CreateDormitory: React.FC = () => {
+function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
     const [loadingFloors, setLoadingFloors] = useState<boolean>(true);
+    const [activeFloor, setActiveFloor] = useState<number>(-1);
 
     const addFloor = () => {
         try {
@@ -20,8 +22,7 @@ const CreateDormitory: React.FC = () => {
     };
 
     const handleFloorClick = (floor: number) => {
-        console.log(`Clicked on floor: ${floor}`);
-        // Możesz dodać tutaj dodatkową logikę, np. nawigację lub otwarcie modala
+        setActiveFloor(floor);
     };
 
     const getFloors = async () => {
@@ -82,6 +83,18 @@ const CreateDormitory: React.FC = () => {
                                     {floor}
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                    {/*Widok pokojów*/}
+                    <div>
+                        {/*Widok pokojów mieszkalnych*/}
+                        <div>
+
+                        </div>
+                        {/*Widok pokojów wspólnych*/}
+                        <div>
+                            <h3>Pokoje wspólne</h3>
+                            <CommonRoomCanva floor={activeFloor}/>
                         </div>
                     </div>
                 </div>
