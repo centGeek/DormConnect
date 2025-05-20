@@ -1,6 +1,7 @@
 package pl.lodz.dormConnect.commonRoom.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomGetDTO;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
@@ -16,6 +17,7 @@ public class CommonRoomService {
     private final CommonRoomRepository repository;
     private final CommonRoomAssignmentScheduler scheduler;
     private final CommonRoomMapper mapper;
+
 
     public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, CommonRoomMapper mapper) {
         this.repository = repository;
@@ -39,9 +41,9 @@ public class CommonRoomService {
         }
 
 
+
         CommonRoomEntity savedRoom = repository.save(mapper.toCommonRoomEntity(commonRoomCreateDTO));
 
-        // Wywołanie metody tworzącej przypisania
         scheduler.createAssignmentsForNextWeek(savedRoom);
 
         return savedRoom;
@@ -51,9 +53,10 @@ public class CommonRoomService {
         return mapper.toCommonRoomGetDTOs(repository.findAll());
     }
 
+    @Transactional
     public boolean deleteCommonRoom(Long id) {
         if (repository.existsById(id)) {
-            scheduler.deleteAllActiveAssigmentsForRoom(repository.findById(id).get());
+            scheduler.deleteAllAssigmentsForRoom(repository.findById(id).get());
             repository.deleteById(id);
             return true;
         }
@@ -73,4 +76,9 @@ public class CommonRoomService {
         return mapper.toCommonRoomGetDTO(repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found")));
     }
 
+    public List<String> getCommonRoomTypes() {
+        return List.of(CommonRoomEntity.CommonRoomType.values()).stream()
+                .map(Enum::name)
+                .toList();
+    }
 }

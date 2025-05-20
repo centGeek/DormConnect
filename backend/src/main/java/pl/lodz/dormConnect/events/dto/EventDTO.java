@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import pl.lodz.dormConnect.events.model.ApprovalStatus;
 import pl.lodz.dormConnect.events.validation.ValidEventDates;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,7 @@ public record EventDTO(
 
         @NotNull(message = "Organizer ID must be provided.")
         Long organizerId,
-        Boolean isApproved,
+
+        ApprovalStatus approvalStatus,
         List<Long> participantId
 ) {}

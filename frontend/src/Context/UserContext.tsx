@@ -1,4 +1,4 @@
-import React, {createContext, useState, ReactNode} from 'react';
+import React, {createContext, useState, ReactNode, useEffect} from 'react';
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import axios, { AxiosResponse } from 'axios';
@@ -56,6 +56,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             navigate('/home');
         } catch (error) {
             console.error('Login failed:', error instanceof Error ? error.message : error);
+            throw new Error('Nieprawidłowy email lub hasło'); // Rzucamy wyjątek
         }
     };
 
@@ -79,6 +80,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.error('Logout failed:', error instanceof Error ? error.message : error);
         }
     };
+    useEffect(() => {
+        const newToken = Cookies.get('token')
+        if (typeof newToken != 'undefined') {
+            const decodedToken: DecodedToken = jwtDecode(newToken);
+            setUser({
+                id: decodedToken.id,
+                roles: decodedToken.roles,
+                sub: decodedToken.sub,
+            });
+            console.log('User logged in:', decodedToken);
+        }
+    }, [token]);
 
     return (
         <UserContext.Provider value={{ user, token, handleLogin, handleLogout }}>

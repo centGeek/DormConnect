@@ -7,14 +7,11 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPageChange }) => {
-    // Ograniczamy liczbę przycisków do trzech stron
     const maxPagesToShow = 3;
 
-    // Obliczamy początkową stronę
     let startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = startPage + maxPagesToShow - 1;
 
-    // Jeśli nie mamy wystarczająco stron z lewej strony, to przesuwamy startPage
     if (endPage >= totalPages) {
         endPage = totalPages - 1;
         startPage = Math.max(0, endPage - maxPagesToShow + 1);
@@ -26,17 +23,17 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
     }
 
     return (
-        <div className="pagination">
+        <div className="flex justify-center items-center gap-2 bg-gray-100 p-3 mt-5">
             <button
-                className="page-button"
-                onClick={() => onPageChange(0)} // Pierwsza strona
+                className="px-3 py-1 text-sm border border-gray-300 bg-white rounded hover:bg-gray-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={() => onPageChange(0)}
                 disabled={currentPage === 0}
             >
                 &lt;&lt;
             </button>
             <button
-                className="page-button"
-                onClick={() => onPageChange(currentPage - 1)} // Poprzednia strona
+                className="px-3 py-1 text-sm border border-gray-300 bg-white rounded hover:bg-gray-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 0}
             >
                 &lt;
@@ -45,7 +42,9 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
             {pageNumbers.map(page => (
                 <button
                     key={page}
-                    className={`page-button ${currentPage === page ? 'active' : ''}`}
+                    className={`px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-200 ${
+                        currentPage === page ? 'bg-green-500 text-white' : 'bg-white'
+                    }`}
                     onClick={() => onPageChange(page)}
                 >
                     {page + 1}
@@ -53,15 +52,15 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
             ))}
 
             <button
-                className="page-button"
-                onClick={() => onPageChange(currentPage + 1)} // Następna strona
+                className="px-3 py-1 text-sm border border-gray-300 bg-white rounded hover:bg-gray-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages - 1}
             >
                 &gt;
             </button>
             <button
-                className="page-button"
-                onClick={() => onPageChange(totalPages - 1)} // Ostatnia strona
+                className="px-3 py-1 text-sm border border-gray-300 bg-white rounded hover:bg-gray-200 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                onClick={() => onPageChange(totalPages - 1)}
                 disabled={currentPage === totalPages - 1}
             >
                 &gt;&gt;

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
 import Template from '../Template/Template.tsx';
-import './AdminEvents.css';
+import Pagination from './Pagination.tsx';
+import { UserContext } from '../Context/UserContext.tsx';
 
 interface Event {
     eventId: number;
@@ -15,7 +16,7 @@ interface Event {
     maxParticipants: number;
     participantId: number[];
     imageUrl?: string;
-    isApproved: boolean; // Dodane
+    approvalStatus: 'WAITING' | 'APPROVED' | 'DECLINED';
 }
 
 function AdminEvents() {
@@ -24,12 +25,16 @@ function AdminEvents() {
     const navigate = useNavigate();
 
     const [token, setToken] = useState<string | null>(null);
-    const [userRoles, setUserRoles] = useState<string[]>([]);
     const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [page, setPage] = useState<number>(0);
-    const [totalPages, setTotalPages] = useState<number>(1);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [activeTab, setActiveTab] = useState<'all' | 'approved' | 'declined' | 'waiting'>('waiting');
+    const [sortOption, setSortOption] = useState<'startDateTime' | 'eventName'>('startDateTime');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         const tokenFromCookie = document.cookie
@@ -41,202 +46,240 @@ function AdminEvents() {
             return;
         }
 
-        const user = parseJwt(tokenFromCookie);
-        const roles = user?.roles || [];
-
-        if (!roles.includes('ADMIN') && !roles.includes('MANAGER')) {
+        if (!user?.roles?.includes('ADMIN') && !user?.roles?.includes('MANAGER')) {
             navigate('/');
             return;
         }
 
         setToken(tokenFromCookie);
-        setUserRoles(roles);
-    }, [navigate]);
+    }, [navigate, user]);
 
-    useEffect(() => {
+    const fetchEvents = useCallback(async () => {
         if (!token) return;
 
-        const fetchEvents = async () => {
-            try {
-                setLoading(true);
-
-                const response = await fetch(`/api/event/administrate?page=${page}&size=4&sort=startDateTime,asc`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    credentials: 'include',
-                });
-
-                if (!response.ok) {
-                    throw new Error('Nie udało się pobrać wydarzeń.');
-                }
-
-                const data = await response.json();
-                setEvents(data.content || []);
-                setTotalPages(data.totalPages || 1);
-            } catch (err: any) {
-                setError(err.message || 'Wystąpił błąd podczas pobierania wydarzeń.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEvents();
-    }, [token, page]);
-
-    const handleApprove = async (eventId: number) => {
         try {
-            const response = await fetch(`/api/event/administrate/${eventId}/approve`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+            setLoading(true);
+            let url = `/api/event/administrate`;
+            if (activeTab !== 'all') url += `/${activeTab}`;
+            url += `?page=${page}&size=6&sort=${sortOption},${sortOrder}`;
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${token}` },
                 credentials: 'include',
             });
 
-            if (!response.ok) {
-                throw new Error('Nie udało się zatwierdzić wydarzenia.');
-            }
+            if (!response.ok) throw new Error('Błąd podczas pobierania wydarzeń.');
 
-            setEvents(prevEvents => prevEvents.filter(event => event.eventId !== eventId));
-        } catch (error) {
-            console.error('Błąd podczas zatwierdzania:', error);
+            const data = await response.json();
+            setEvents(data.content || []);
+            setTotalPages(data.totalPages || 1);
+        } catch (err: any) {
+            setError(err.message || 'Wystąpił błąd.');
+        } finally {
+            setLoading(false);
         }
+    }, [token, activeTab, page, sortOption, sortOrder]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
+
+    const handleApprove = async (eventId: number) => {
+        if (!token) return;
+        await fetch(`/api/event/administrate/${eventId}/approve`, {
+            method: 'PUT',
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include',
+        });
+        fetchEvents();
     };
 
     const handleReject = async (eventId: number) => {
-        try {
-            const response = await fetch(`/api/event/administrate/${eventId}/reject`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się odrzucić wydarzenia.');
-            }
-
-            setEvents(prevEvents => prevEvents.filter(event => event.eventId !== eventId));
-        } catch (error) {
-            console.error('Błąd podczas odrzucania:', error);
-        }
+        if (!token) return;
+        await fetch(`/api/event/administrate/${eventId}/reject`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include',
+        });
+        fetchEvents();
     };
 
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 0 && newPage < totalPages) {
-            setPage(newPage);
-        }
+    const handleTabChange = (tab: typeof activeTab) => {
+        setActiveTab(tab);
+        setPage(0);
     };
+
+    const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const [field, order] = e.target.value.split(',');
+        setSortOption(field as 'startDateTime' | 'eventName');
+        setSortOrder(order as 'asc' | 'desc');
+        setPage(0);
+    };
+
+    const formatDate = (date: string) =>
+        new Date(date).toLocaleString('pl-PL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
 
     return (
-        <Template
-            buttons={[{ text: 'Chat', link: '/chat' }, { text: 'Events', link: '/events' }]}
-            footerContent={<p></p>}
-        >
-            <div className="admin-events-container">
-                {successMessage && <div className="success-message">{successMessage}</div>}
-
-                <button className="btn btn-primary add-event-button" onClick={() => navigate('/events')}>
-                    Back
-                </button>
-
-                <h2>Oczekujące wydarzenia</h2>
-
-                {loading && <p>Ładowanie wydarzeń...</p>}
-                {error && <p className="error-message">{error}</p>}
-
-                <div className="events-list">
-                    {events.length === 0 && !loading ? (
-                        <p>Brak wydarzeń do zatwierdzenia.</p>
-                    ) : (
-                        events.map((event) => (
-                            <div key={event.eventId} className="event-card">
-                                {event.imageUrl && (
-                                    <img src={event.imageUrl} alt={event.eventName} className="event-image" />
-                                )}
-                                <h3>{event.eventName}</h3>
-                                <p>{event.description}</p>
-                                <p>
-                                    <strong>Data:</strong> {new Date(event.startDateTime).toLocaleString()} - {new Date(event.endDateTime).toLocaleString()}
-                                </p>
-                                <p><strong>Lokalizacja:</strong> {event.location}</p>
-                                <p><strong>Typ:</strong> {event.eventType}</p>
-                                <p><strong>Dostępne miejsca:</strong> {event.maxParticipants - event.participantId.length}</p>
-                                <p>
-                                    <strong>Status:</strong>{' '}
-                                    <span style={{ color: event.isApproved ? 'green' : 'red', fontWeight: 'bold' }}>
-                                        {event.isApproved ? 'Zatwierdzone' : 'Oczekujące'}
-                                    </span>
-                                </p>
-
-                                <div className="admin-buttons">
-                                    <button className="btn approve-button" onClick={() => handleApprove(event.eventId)}>Zatwierdź</button>
-                                    <button className="btn reject-button" onClick={() => handleReject(event.eventId)}>Odrzuć</button>
-                                </div>
-                            </div>
-                        ))
-                    )}
+        <Template buttons={[]}>
+            <div className="relative p-5 max-w-7xl mx-auto">
+                <div className="absolute top-5 left-5 z-10">
+                    <button
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                        onClick={() => navigate('/events')}
+                    >
+                        Wróć
+                    </button>
                 </div>
 
-                <div className="pagination">
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(0)}
-                        disabled={page === 0}
-                    >
-                        &lt;&lt;
-                    </button>
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page === 0}
-                    >
-                        &lt;
-                    </button>
+                <div className="mt-20">
+                    {successMessage && (
+                        <div className="bg-gray-100 text-gray-700 p-3 rounded-lg mb-5 font-bold">
+                            {successMessage}
+                        </div>
+                    )}
 
-                    {(() => {
-                        const maxPagesToShow = 3;
-                        let startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
-                        let endPage = startPage + maxPagesToShow - 1;
+                    <div className="flex justify-center gap-3 mb-5">
+                        <button
+                            className={`px-4 py-2 rounded-lg font-semibold ${
+                                activeTab === 'waiting'
+                                    ? 'bg-gray-500 text-white'
+                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
+                            }`}
+                            onClick={() => handleTabChange('waiting')}
+                        >
+                            Oczekujące
+                        </button>
+                        <button
+                            className={`px-4 py-2 rounded-lg font-semibold ${
+                                activeTab === 'approved'
+                                    ? 'bg-gray-500 text-white'
+                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
+                            }`}
+                            onClick={() => handleTabChange('approved')}
+                        >
+                            Zatwierdzone
+                        </button>
+                        <button
+                            className={`px-4 py-2 rounded-lg font-semibold ${
+                                activeTab === 'declined'
+                                    ? 'bg-gray-500 text-white'
+                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
+                            }`}
+                            onClick={() => handleTabChange('declined')}
+                        >
+                            Odrzucone
+                        </button>
+                        <button
+                            className={`px-4 py-2 rounded-lg font-semibold ${
+                                activeTab === 'all'
+                                    ? 'bg-gray-500 text-white'
+                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
+                            }`}
+                            onClick={() => handleTabChange('all')}
+                        >
+                            Wszystkie
+                        </button>
+                    </div>
 
-                        if (endPage >= totalPages) {
-                            endPage = totalPages - 1;
-                            startPage = Math.max(0, endPage - maxPagesToShow + 1);
-                        }
-
-                        const pageNumbers = [];
-                        for (let i = startPage; i <= endPage; i++) {
-                            pageNumbers.push(i);
-                        }
-
-                        return pageNumbers.map(p => (
-                            <button
-                                key={p}
-                                className={`page-button ${page === p ? 'active' : ''}`}
-                                onClick={() => handlePageChange(p)}
+                    {!loading && events.length > 0 && (
+                        <div className="text-center mb-5">
+                            <select
+                                value={`${sortOption},${sortOrder}`}
+                                onChange={handleSortChange}
+                                className="p-2 border border-gray-300 rounded-lg"
                             >
-                                {p + 1}
-                            </button>
-                        ));
-                    })()}
+                                <option value="startDateTime,asc">Data (rosnąco)</option>
+                                <option value="startDateTime,desc">Data (malejąco)</option>
+                                <option value="eventName,asc">Nazwa (A-Z)</option>
+                                <option value="eventName,desc">Nazwa (Z-A)</option>
+                            </select>
+                        </div>
+                    )}
 
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page === totalPages - 1}
-                    >
-                        &gt;
-                    </button>
-                    <button
-                        className="page-button"
-                        onClick={() => handlePageChange(totalPages - 1)}
-                        disabled={page === totalPages - 1}
-                    >
-                        &gt;&gt;
-                    </button>
+                    {loading ? (
+                        <p>Ładowanie...</p>
+                    ) : error ? (
+                        <p className="bg-red-100 text-red-600 p-3 rounded-lg">{error}</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {events.map(event => (
+                                <div
+                                    key={event.eventId}
+                                    className="bg-white p-5 rounded-lg shadow-md flex flex-col gap-3 hover:translate-y-[-5px] transition"
+                                >
+                                    {event.imageUrl && (
+                                        <img
+                                            src={event.imageUrl}
+                                            alt={event.eventName}
+                                            className="w-full h-44 object-contain bg-gray-100 rounded-lg"
+                                        />
+                                    )}
+                                    <h3 className="font-bold text-lg">{event.eventName}</h3>
+                                    <p>
+                                        <strong>Opis:</strong> {event.description}
+                                    </p>
+                                    <p>
+                                        <strong>Data:</strong> {formatDate(event.startDateTime)} -{' '}
+                                        {formatDate(event.endDateTime)}
+                                    </p>
+                                    <p>
+                                        <strong>Miejsce:</strong> {event.location}
+                                    </p>
+                                    <p>
+                                        <strong>Typ:</strong> {event.eventType}
+                                    </p>
+                                    <p>
+                                        <strong>Miejsca:</strong>{' '}
+                                        {event.maxParticipants - event.participantId.length}
+                                    </p>
+                                    <p>
+                                        <strong>Status:</strong>{' '}
+                                        <span
+                                            className={`font-bold ${
+                                                event.approvalStatus === 'APPROVED'
+                                                    ? 'text-gray-500'
+                                                    : event.approvalStatus === 'DECLINED'
+                                                        ? 'text-gray-700'
+                                                        : 'text-gray-400'
+                                            }`}
+                                        >
+                                            {event.approvalStatus}
+                                        </span>
+                                    </p>
+
+                                    <div className="flex gap-3 mt-auto">
+                                        <button
+                                            className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition"
+                                            onClick={() => handleApprove(event.eventId)}
+                                        >
+                                            Zatwierdź
+                                        </button>
+                                        <button
+                                            className="flex-1 bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition"
+                                            onClick={() => handleReject(event.eventId)}
+                                        >
+                                            Odrzuć
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {!loading && events.length > 0 && totalPages > 1 && (
+                        <Pagination
+                            totalPages={totalPages}
+                            currentPage={page}
+                            onPageChange={setPage}
+                        />
+                    )}
                 </div>
             </div>
         </Template>

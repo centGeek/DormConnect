@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Template from '../Template/Template';
 import { parseJwt } from '../JWT/JWTDecoder.tsx';
-import './DormFormPage.css';
+// import './DormFormPage.css';
 
 function DormFormPage() {
     const [startDate, setStartDate] = useState('');

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.events.dto.EventDTO;
+import pl.lodz.dormConnect.events.model.ApprovalStatus;
 import pl.lodz.dormConnect.events.service.EventApprovalService;
 
 @Controller
@@ -27,7 +28,7 @@ public class EventApprovalController {
     }
 
     @PutMapping("/{eventId}/approve")
-    public ResponseEntity<String> approveEvent(@PathVariable Long eventId) {
+    public ResponseEntity<String> approveEvent(@PathVariable("eventId") Long eventId) {
         try {
             eventApprovalService.approveEvent(eventId);
             return ResponseEntity.ok("Event approved.");
@@ -37,7 +38,7 @@ public class EventApprovalController {
     }
 
     @DeleteMapping("/{eventId}/reject")
-    public ResponseEntity<String> rejectEvent(@PathVariable Long eventId) {
+    public ResponseEntity<String> rejectEvent(@PathVariable("eventId") Long eventId) {
         try {
             eventApprovalService.rejectEvent(eventId);
             return ResponseEntity.ok("Event rejected.");
@@ -56,5 +57,39 @@ public class EventApprovalController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/waiting")
+    public ResponseEntity<Page<EventDTO>> getAllWaitingEvents(@PageableDefault Pageable pageable) {
+        try {
+            Page<EventDTO> waitingEvents = eventApprovalService.getEventsByApprovalStatus(ApprovalStatus.WAITING, pageable);
+            return ResponseEntity.ok(waitingEvents);
+        } catch (Exception e) {
+            logger.error("Error retrieving waiting events: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<Page<EventDTO>> getAllApprovedEvents(@PageableDefault Pageable pageable) {
+        try {
+            Page<EventDTO> approvedEvents = eventApprovalService.getEventsByApprovalStatus(ApprovalStatus.APPROVED, pageable);
+            return ResponseEntity.ok(approvedEvents);
+        } catch (Exception e) {
+            logger.error("Error retrieving approved events: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/declined")
+    public ResponseEntity<Page<EventDTO>> getAllDeclinedEvents(@PageableDefault Pageable pageable) {
+        try {
+            Page<EventDTO> declinedEvents = eventApprovalService.getEventsByApprovalStatus(ApprovalStatus.DECLINED, pageable);
+            return ResponseEntity.ok(declinedEvents);
+        } catch (Exception e) {
+            logger.error("Error retrieving declined events: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

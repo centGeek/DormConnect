@@ -57,21 +57,21 @@ public class EventController {
 
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventDTO> getEventById(@PathVariable Long eventId) {
+    public ResponseEntity<EventDTO> getEventById(@PathVariable("eventId") Long eventId) {
         return eventService.getEventById(eventId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long eventId, @Valid @RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable("eventId") Long eventId, @Valid @RequestBody EventDTO eventDTO) {
         return eventService.updateEvent(eventId, eventDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) {
+    public ResponseEntity<Void> deleteEvent(@PathVariable("eventId") Long eventId) {
         try {
             eventService.deleteEvent(eventId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

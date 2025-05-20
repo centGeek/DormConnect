@@ -51,7 +51,7 @@ class CommonRoomController {
     }
 
     @GetMapping("/show/{floor}")
-    public List<CommonRoomEntity> showCommonRooms(@PathVariable Long floor) {
+    public List<CommonRoomEntity> showCommonRoomsByFloor(@PathVariable Long floor) {
         return service.getRoomByFloor(floor.intValue());
     }
     @GetMapping("/get/{id}")
@@ -62,6 +62,11 @@ class CommonRoomController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    @GetMapping("/get/enum")
+    public ResponseEntity<List<String>> getCommonRoomTypes() {
+        List<String> commonRoomTypes = service.getCommonRoomTypes();
+        return ResponseEntity.ok(commonRoomTypes);
     }
 
 

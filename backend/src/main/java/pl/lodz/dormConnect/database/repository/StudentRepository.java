@@ -3,6 +3,8 @@ package pl.lodz.dormConnect.database.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import pl.lodz.dormConnect.database.entity.RoleEntity;
+import pl.lodz.dormConnect.database.repository.jpa.RoleJpaRepository;
 import pl.lodz.dormConnect.database.repository.jpa.StudentJpaRepository;
 import pl.lodz.dormConnect.database.repository.jpa.UserRepository;
 import pl.lodz.dormConnect.domain.Student;
@@ -27,7 +29,8 @@ public class StudentRepository {
         StudentEntity studentEntity = StudentMapper.mapToEntity(student);
         encodePassword(studentEntity, student);
         conditionsToNotCreateStudent(student);
-
+        studentEntity.getUser().setRole(new RoleEntity(1L, "STUDENT"));
+        studentEntity.getUser().setActive(true);
         studentJpaRepository.saveAndFlush(studentEntity);
     }
 

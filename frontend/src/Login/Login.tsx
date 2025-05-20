@@ -1,72 +1,88 @@
 import React, { useState } from 'react';
-import './Login.css';
-import axios, { AxiosResponse } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../Context/UserContext.tsx";
+import { Link } from 'react-router-dom';
+import { Mail, Lock } from 'lucide-react';
 
 function Login() {
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string>('');
-    const navigate = useNavigate();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const userContext = React.useContext(UserContext);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const response: AxiosResponse = await axios.post(
-                'http://localhost:8091/api/auth/login',
-                { email, password },
-                {
-                    withCredentials: true, // Upewnij się, że ciasteczka będą wysyłane
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            console.log('Login successful', response.data);
-            // Poczekaj na zapisanie ciasteczka, a potem przekieruj
-            navigate('/home');  // Jeśli logowanie zakończyło się sukcesem
-        } catch (error) {
-            console.error('Login failed', error instanceof Error ? error.message : error);
-            setError('Invalid email or password');
-        }
-    };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await userContext?.handleLogin(email, password);
+    } catch (error) {
+      console.error('Login failed:', error instanceof Error ? error.message : error);
+      setError('Invalid email or password');
+    }
+  };
 
-    return (
-        <>
-            <h1>Welcome in DormConnect</h1>
-        <div className="login-container">
-            <div className="login-box">
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        {error && <p className="text-danger">{error}</p>}
-                    </div>
-                    <button type="submit" className="btn btn-primary">Login</button>
-                </form>
-            </div>
-        </div>
-        </>
-    );
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="bg-white shadow-xl rounded-3xl p-10 w-full max-w-md border border-gray-300">
+        <h1
+          className="text-3xl font-extrabold text-center text-gray-800 mb-2"
+            style={{ fontFamily: "'Poppins', sans-serif" }}>
+        DormConnect
+        </h1>
+
+        <h2 className="text-lg font-medium text-center text-gray-600 mb-6">Login</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
+            <label htmlFor="email" className="sr-only">Email</label>
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="email"
+              id="email"
+              placeholder="Email"
+              className="pl-11 w-full py-2.5 pr-4 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="relative">
+            <label htmlFor="password" className="sr-only">Password</label>
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className="pl-11 w-full py-2.5 pr-4 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-red-600 text-sm mt-2 text-center">{error}</p>}
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2.5 rounded-lg font-semibold bg-gray-700 text-white hover:bg-gray-800 transition"
+          >
+            Sign in
+          </button>
+
+          <div className="text-center text-sm text-gray-600 space-y-1 pt-2">
+            <p>
+              Don&apos;t have an account?{' '}
+              <Link to="/register/student" className="font-semibold text-gray-700 hover:underline">
+                Register as Student
+              </Link>
+            </p>
+            <p>
+              Looking to manage dorms?{' '}
+              <Link to="/register/manager" className="font-semibold text-gray-700 hover:underline">
+                Register as Manager
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default Login;

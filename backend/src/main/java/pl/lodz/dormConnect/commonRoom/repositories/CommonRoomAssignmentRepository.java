@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.entity.CommonRoomAssignmentEntity;
 
@@ -15,7 +16,7 @@ public interface CommonRoomAssignmentRepository extends JpaRepository<CommonRoom
     Optional<CommonRoomAssignmentEntity> findById(Long id);
 
 
-    @Query("SELECT c FROM CommonRoomAssignmentEntity c JOIN c.commonRoom cr WHERE cr.id = :id AND c.archived = false")
+    @Query("SELECT c FROM CommonRoomAssignmentEntity c JOIN c.commonRoom cr WHERE cr.id = :id")
     List<CommonRoomAssignmentEntity> getAssignmentsByCommonRoomId(@Param("id") Long id);
 
     void deleteById(Long id);
@@ -23,7 +24,13 @@ public interface CommonRoomAssignmentRepository extends JpaRepository<CommonRoom
     @Query("SELECT c FROM CommonRoomAssignmentEntity c WHERE c.archived = false")
     List<CommonRoomAssignmentEntity> findAllNotArchivedAssigments();
 
+    @Transactional
     void removeCommonRoomAssigmentsByCommonRoom(CommonRoomEntity commonRoom);
 
-    void removeCommonRoomAssigmentsByCommonRoomAndArchived(CommonRoomEntity commonRoom, boolean archived);
+    @Transactional
+    void removeAllByArchived(boolean archived);
+
+    List<CommonRoomAssignmentEntity> getByArchived(boolean archived);
+
+    List<CommonRoomAssignmentEntity> getByCommonRoomAndArchived(CommonRoomEntity commonRoom, boolean archived);
 }
