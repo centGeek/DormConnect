@@ -156,10 +156,7 @@ function CommonRoomSchedule() {
 
 
     return (
-        <Template
-            buttons={[{ text: "Powrót", link: "/common-rooms" }]}
-            footerContent={<p></p>}
-        >
+        <Template buttons={[{text: 'Back', link: '/common-rooms'}]}>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
                 {commonRoom && (
                     <div className="text-center text-gray-700">

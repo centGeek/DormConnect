@@ -56,6 +56,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             navigate('/home');
         } catch (error) {
             console.error('Login failed:', error instanceof Error ? error.message : error);
+            throw new Error('Nieprawidłowy email lub hasło'); // Rzucamy wyjątek
         }
     };
 

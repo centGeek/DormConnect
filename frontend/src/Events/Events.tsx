@@ -130,10 +130,12 @@ const Events = () => {
     return (
         <Template
             buttons={[
-                { text: 'Home', link: '/home' },
-                { text: 'Chat', link: '/chat' }
+                { text: 'Chat', link: '/chat' },
+                { text: 'Events', link: '/events' },
+                { text: 'Common Rooms', link: '/common-rooms' },
+                { text: 'Rooms', link: '/rooms' },
+                { text: 'Problems', link: '/problems' },
             ]}
-            footerContent={<p></p>}
         >
             <div className="p-6">
                 {successMessage && <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4 justify-center">{successMessage}</div>}
@@ -142,14 +144,14 @@ const Events = () => {
 
                 <div className="flex flex-wrap gap-4 mb-6 justify-center">
                     <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition"
+                        className="bg-gray-500 text-white border  px-4 py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
                         onClick={handleAddEvent}
                     >
                         Dodaj wydarzenie
                     </button>
                     {isAdmin && (
                         <button
-                            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition"
+                            className="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
                             onClick={handleAdminNavigation}
                         >
                             Admin Panel
@@ -157,7 +159,7 @@ const Events = () => {
                     )}
                 </div>
 
-                <div className="flex gap-4 mb-6 justify-center">
+                <div className="flex gap-4 mb-6 justify-center  bg-gray-100">
                     <button
                         className={`px-4 py-2 rounded-lg shadow transition ${
                             activeTab === 'organized' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
@@ -188,7 +190,7 @@ const Events = () => {
                 {error && <p className="text-red-500">{error}</p>}
 
                 {!loading && getEventsToDisplay().length > 0 && (
-                    <div className="mb-6">
+                    <div className="mb-6 ">
                         <select
                             className="border border-gray-300 rounded-lg px-4 py-2"
                             onChange={handleSortChange}
@@ -205,7 +207,7 @@ const Events = () => {
                 {getEventsToDisplay().length === 0 && !loading ? (
                     <p className="text-gray-500 text-center">Brak wydarzeń do wyświetlenia.</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bo">
                         {getEventsToDisplay().map(event => (
                             <EventCard
                                 key={event.eventId}
