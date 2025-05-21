@@ -20,6 +20,32 @@ function CreateDormitory() {
         setIsPopupOpen(false);
         setRefresh_rooms_value(refresh_rooms_value+1)
     };
+    const handleFloorAdd = async  () => {
+        try {
+            const response = await fetch('/api/floors/add', {method: 'POST', credentials: "include"});
+            if(!response.ok) {
+                throw new Error("Failed to add floor");
+            }
+            setRefresh_floors_value(refresh_floors_value+1);
+        }
+        catch (error) {
+            console.error('Error adding floor:', error instanceof Error ? error.message : error);
+        }
+    };
+
+    const handleFloorDelete = async (floor: number) => {
+        try {
+            const response = await fetch(`/api/floors/delete/${floor}`, {method: 'DELETE', credentials: "include"});
+            if(!response.ok) {
+                throw new Error("Failed to delete floor");
+            }
+            setRefresh_floors_value(refresh_floors_value+1);
+        }
+        catch (error) {
+            console.error('Error deleting floor:', error instanceof Error ? error.message : error);
+        }
+    }
+
 
     useEffect(() => {
         const getFloors = async () => {
@@ -62,7 +88,7 @@ function CreateDormitory() {
                     <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
-                            onClick={() => fetch('/api/floors/add', { method: 'POST', credentials: "include" })}
+                            onClick={() => handleFloorAdd()}
                             className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
                         >
                             +
@@ -71,14 +97,19 @@ function CreateDormitory() {
                             {floors.map((floor, index) => (
                                 <div
                                     key={index}
-                                    onClick={() => setActiveFloor(floor)}
-                                    className={`w-32 h-32 rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer transition ${
+                                    className={`relative w-32 h-32 rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer transition ${
                                         activeFloor === floor
                                             ? 'bg-gray-500 text-white shadow-lg'
                                             : 'bg-white shadow-md hover:bg-gray-300'
                                     }`}
                                 >
-                                    {floor}
+                                    <span onClick={() => setActiveFloor(floor)}>{floor}</span>
+                                    <button
+                                        onClick={() => handleFloorDelete(floor)}
+                                        className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600 transition"
+                                    >
+                                        ✕
+                                    </button>
                                 </div>
                             ))}
                         </div>
