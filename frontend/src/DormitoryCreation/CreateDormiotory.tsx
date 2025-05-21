@@ -1,59 +1,50 @@
 import { useEffect, useState } from 'react';
 import Template from '../Template/Template.tsx';
 import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
+import PopUpCommonRoomCreate from './components/PopUpCommonRoomCreate.tsx';
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
     const [loadingFloors, setLoadingFloors] = useState<boolean>(true);
     const [activeFloor, setActiveFloor] = useState<number>(-1);
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false); // Dodano stan
 
-    const addFloor = () => {
-        try {
-            fetch('/api/floors/add', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: "include"
-            });
-        } catch (error) {
-            console.error('Error adding floor:', error);
-        }
+    const handleCommonRoomAdd = (data: boolean) => {
+        setIsPopupOpen(data); // Otwórz popup
     };
 
-    const handleFloorClick = (floor: number) => {
-        setActiveFloor(floor);
-    };
-
-    const getFloors = async () => {
-        try {
-            setLoadingFloors(true);
-
-            const response = await fetch('/api/floors/get', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: "include"
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch floors");
-            }
-
-            const data = (await response.json()) as number[];
-            setFloors(data);
-        } catch (error: unknown) {
-            console.error(
-                'Error fetching floors:',
-                error instanceof Error ? error.message : error
-            );
-        } finally {
-            setLoadingFloors(false);
-        }
+    const handleClosePopup = () => {
+        setIsPopupOpen(false); // Zamknij popup
     };
 
     useEffect(() => {
+        const getFloors = async () => {
+            try {
+                setLoadingFloors(true);
+                const response = await fetch('/api/floors/get', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch floors");
+                }
+
+                const data = (await response.json()) as number[];
+                setFloors(data);
+            } catch (error: unknown) {
+                console.error(
+                    'Error fetching floors:',
+                    error instanceof Error ? error.message : error
+                );
+            } finally {
+                setLoadingFloors(false);
+            }
+        };
+
         getFloors();
     }, []);
 
@@ -64,11 +55,10 @@ function CreateDormitory() {
             </div>
             {!loadingFloors && (
                 <div className="flex h-fit justify-start">
-                    {/* Panel z lewej strony */}
                     <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
-                            onClick={addFloor}
+                            onClick={() => fetch('/api/floors/add', { method: 'GET', credentials: "include" })}
                             className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
                         >
                             +
@@ -77,7 +67,7 @@ function CreateDormitory() {
                             {floors.map((floor, index) => (
                                 <div
                                     key={index}
-                                    onClick={() => handleFloorClick(floor)}
+                                    onClick={() => setActiveFloor(floor)}
                                     className="w-32 h-32 bg-white shadow-md rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer hover:bg-gray-300 transition"
                                 >
                                     {floor}
@@ -85,22 +75,19 @@ function CreateDormitory() {
                             ))}
                         </div>
                     </div>
-                    {/*Widok pokojów*/}
                     <div>
-                        {/*Widok pokojów mieszkalnych*/}
-                        <div>
-
-                        </div>
-                        {/*Widok pokojów wspólnych*/}
                         <div>
                             <h3>Pokoje wspólne</h3>
-                            <CommonRoomCanva floor={activeFloor}/>
+                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd} />
                         </div>
                     </div>
                 </div>
             )}
+            {isPopupOpen && (
+                <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} />
+            )}
         </Template>
     );
-};
+}
 
 export default CreateDormitory;

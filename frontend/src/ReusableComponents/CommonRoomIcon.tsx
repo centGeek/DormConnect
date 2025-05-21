@@ -1,5 +1,5 @@
 const CommonRoomTypes: Record<string, string> = {
-    STUDY_ROOM: "graduation_hat",
+    STUDY_ROOM: "graduation-hat",
     GYM: "weights",
     LAUNDRY: "washing",
     BILLARD_ROOM: "pool-ball",

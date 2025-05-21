@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import CommonRoomTypes from "../../ReusableComponents/CommonRoomTypes.tsx";
 import getRoomIcon from "../../ReusableComponents/CommonRoomIcon.tsx";
 import getRoomStatusTranslation from "../../ReusableComponents/CommonRoomTypes.tsx";
-import PopupForm from "./PopUpForm.tsx";
+import PopUpCommonRoomCreate from "./PopUpCommonRoomCreate.tsx";
 
 interface CommonRoomProps {
     id: number;
@@ -15,12 +15,12 @@ interface CommonRoomProps {
 
 interface CommonRoomCanvaProps {
     floor: number;
+    onCommonRoomAdd: (data: boolean) => void; // Dodano nowy props
 }
 
-function CommonRoomCanva({ floor }: CommonRoomCanvaProps) {
+function CommonRoomCanva({ floor, onCommonRoomAdd }: CommonRoomCanvaProps) {
     const [commonRooms, setCommonRooms] = useState<CommonRoomProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
     const fetchCommonRooms = async () => {
         try {
@@ -46,11 +46,7 @@ function CommonRoomCanva({ floor }: CommonRoomCanvaProps) {
     };
 
     const handleAddSpecialRoom = () => {
-        setIsPopupOpen(true);
-    };
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
+        onCommonRoomAdd(true); // Wywołanie akcji rodzica
     };
 
     useEffect(() => {
@@ -88,7 +84,6 @@ function CommonRoomCanva({ floor }: CommonRoomCanvaProps) {
                     </div>
                 </>
             )}
-            {isPopupOpen && <PopupForm onClose={handleClosePopup} />}
         </div>
     );
 }
