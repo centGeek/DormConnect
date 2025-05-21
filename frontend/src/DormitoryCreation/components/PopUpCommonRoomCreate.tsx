@@ -10,7 +10,7 @@ function PopUpCommonRoomCreate({ onClose, floor }: PopupFormProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const formElement = event.currentTarget; // Użycie currentTarget zamiast target
+        const formElement = event.currentTarget;
         const formData = new FormData(formElement);
 
         const newCommonRoom = {

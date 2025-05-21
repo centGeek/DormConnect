@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import CommonRoomTypes from "../../ReusableComponents/CommonRoomTypes.tsx";
 import getRoomIcon from "../../ReusableComponents/CommonRoomIcon.tsx";
 import getRoomStatusTranslation from "../../ReusableComponents/CommonRoomTypes.tsx";
-import PopUpCommonRoomCreate from "./PopUpCommonRoomCreate.tsx";
 
 interface CommonRoomProps {
     id: number;
@@ -15,10 +14,11 @@ interface CommonRoomProps {
 
 interface CommonRoomCanvaProps {
     floor: number;
-    onCommonRoomAdd: (data: boolean) => void; // Dodano nowy props
+    onCommonRoomAdd: (data: boolean) => void;
+    refresh: number;
 }
 
-function CommonRoomCanva({ floor, onCommonRoomAdd }: CommonRoomCanvaProps) {
+function CommonRoomCanva({ floor, onCommonRoomAdd, refresh }: CommonRoomCanvaProps) {
     const [commonRooms, setCommonRooms] = useState<CommonRoomProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -46,14 +46,13 @@ function CommonRoomCanva({ floor, onCommonRoomAdd }: CommonRoomCanvaProps) {
     };
 
     const handleAddSpecialRoom = () => {
-        onCommonRoomAdd(true); // Wywołanie akcji rodzica
+        onCommonRoomAdd(true);
     };
 
+
     useEffect(() => {
-        if (floor !== -1) {
-            fetchCommonRooms();
-        }
-    }, [floor]);
+        fetchCommonRooms();
+    }, [floor, refresh]);
 
     return (
         <div className="common-room-canva-container flex flex-wrap justify-center gap-3 p-3 bg-gray-200 rounded-lg shadow-lg">
