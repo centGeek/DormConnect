@@ -7,7 +7,7 @@ import pl.lodz.dormConnect.dorm.DTO.GroupRoomsRequest;
 import pl.lodz.dormConnect.dorm.DTO.GroupedRoomsDTO;
 import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.GroupedRoomsService;
-import pl.lodz.GroupedRoomsEntity;
+import pl.lodz.entity.GroupedRoomsEntity;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.repository.EventRepository;
-import pl.lodz.EventEntity;
+import pl.lodz.entity.EventEntity;
 
 import java.util.List;
 import java.util.Optional;

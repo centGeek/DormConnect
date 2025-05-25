@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.dorm.DTO.DormFormCreateDTO;
 import pl.lodz.dormConnect.dorm.DTO.DormFormDTO;
 import pl.lodz.dormConnect.dorm.services.DormFormService;
-import pl.lodz.DormFormEntity;
-import pl.lodz.JwtService;
+import pl.lodz.entity.DormFormEntity;
+import pl.lodz.commons.JwtService;
 
 
 import java.util.List;

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventParticipantService;
-import pl.lodz.JwtService;
+import pl.lodz.commons.JwtService;
 
 
 

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.UserEntity;
-import pl.lodz.UserRepository;
-import pl.lodz.JwtService;
+import pl.lodz.entity.UserEntity;
+import pl.lodz.repository.jpa.UserRepository;
+import pl.lodz.commons.JwtService;
 
 
 import java.util.Optional;
@@ -29,7 +29,6 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-
     private final UserRepository userRepository;
 
     public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserRepository userRepository) {

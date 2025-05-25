@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.database.repository.mapper;
 
 import pl.lodz.dormConnect.domain.Manager;
-import pl.lodz.ManagerEntity;
+import pl.lodz.entity.ManagerEntity;
 
 public class ManagerMapper {
     public static ManagerEntity mapToEntity(Manager manager) {

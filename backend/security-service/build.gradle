@@ -31,9 +31,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.2.1")
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.springframework.ai:spring-ai-starter-model-openai:1.0.0-M7'
-    implementation 'org.springframework.ai:spring-ai-core:1.0.0-M6'
-    implementation 'org.springframework.ai:spring-ai-bom:1.0.0-M7'
     implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'org.slf4j:slf4j-api:2.0.17'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'

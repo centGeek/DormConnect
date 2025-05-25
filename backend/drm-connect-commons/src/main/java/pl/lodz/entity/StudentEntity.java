@@ -1,19 +1,22 @@
-package pl.lodz;
+package pl.lodz.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "manager")
-public class ManagerEntity {
+@Table(name = "student")
+@AllArgsConstructor
+public class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "manager_id")
+    @Column(name = "student_id")
     private Long id;
 
     @Column(name = "name")
@@ -26,7 +29,7 @@ public class ManagerEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public ManagerEntity(String name, String surname, UserEntity user) {
+    public StudentEntity(String name, String surname, UserEntity user) {
         this.name = name;
         this.surname = surname;
         this.user = user;

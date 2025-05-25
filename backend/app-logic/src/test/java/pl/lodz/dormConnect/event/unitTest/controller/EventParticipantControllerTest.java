@@ -23,7 +23,7 @@ import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.service.EventParticipantService;
 
-import pl.lodz.JwtService;
+import pl.lodz.commons.JwtService;
 
 
 import java.time.LocalDateTime;

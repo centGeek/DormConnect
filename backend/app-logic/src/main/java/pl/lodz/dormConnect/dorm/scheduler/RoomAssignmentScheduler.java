@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import pl.lodz.dormConnect.dorm.repositories.DormFormRepository;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
 import pl.lodz.dormConnect.dorm.repositories.RoomRepository;
-import pl.lodz.DormFormEntity;
-import pl.lodz.RoomAssignEntity;
-import pl.lodz.RoomEntity;
+import pl.lodz.entity.DormFormEntity;
+import pl.lodz.entity.RoomAssignEntity;
+import pl.lodz.entity.RoomEntity;
 
 import java.time.LocalDate;
 import java.util.List;

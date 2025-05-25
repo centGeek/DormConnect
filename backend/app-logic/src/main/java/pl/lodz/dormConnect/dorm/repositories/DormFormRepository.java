@@ -2,7 +2,7 @@ package pl.lodz.dormConnect.dorm.repositories;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lodz.DormFormEntity;
+import pl.lodz.entity.DormFormEntity;
 
 import java.util.Collection;
 import java.util.List;

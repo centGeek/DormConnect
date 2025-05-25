@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.lodz.dormConnect.dorm.DTO.GroupRoomsRequest;
 import pl.lodz.dormConnect.dorm.repositories.GroupedRoomsRepository;
 import pl.lodz.dormConnect.dorm.repositories.RoomRepository;
-import pl.lodz.GroupedRoomsEntity;
-import pl.lodz.RoomEntity;
+import pl.lodz.entity.GroupedRoomsEntity;
+import pl.lodz.entity.RoomEntity;
 
 import java.util.List;
 import java.util.Optional;

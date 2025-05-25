@@ -2,8 +2,8 @@ package pl.lodz.dormConnect.dorm;
 
 
 
-import pl.lodz.RoomAssignEntity;
-import pl.lodz.RoomEntity;
+import pl.lodz.entity.RoomAssignEntity;
+import pl.lodz.entity.RoomEntity;
 
 import java.time.LocalDate;
 import java.time.Month;

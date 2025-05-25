@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import pl.lodz.JwtAuthenticationFilter;
-import pl.lodz.JwtService;
+import pl.lodz.commons.JwtService;
 
 @Configuration
 @EnableWebSecurity

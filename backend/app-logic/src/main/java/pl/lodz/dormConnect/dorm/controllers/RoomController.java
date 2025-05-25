@@ -14,8 +14,8 @@ import pl.lodz.dormConnect.dorm.DTO.RoomInGroupDTO;
 import pl.lodz.dormConnect.dorm.DTO.RoomUpdateDTO;
 import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.RoomService;
-import pl.lodz.RoomEntity;
-import pl.lodz.JwtService;
+import pl.lodz.entity.RoomEntity;
+import pl.lodz.commons.JwtService;
 
 import java.util.List;
 

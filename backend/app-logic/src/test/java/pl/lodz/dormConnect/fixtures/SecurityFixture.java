@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.fixtures;
 
-import pl.lodz.RoleEntity;
-import pl.lodz.UserEntity;
+import pl.lodz.entity.RoleEntity;
+import pl.lodz.entity.UserEntity;
 
 public class SecurityFixture {
     public static RoleEntity adminRole(){

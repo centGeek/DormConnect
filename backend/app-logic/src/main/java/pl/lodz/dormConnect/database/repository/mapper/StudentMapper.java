@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.database.repository.mapper;
 
 import pl.lodz.dormConnect.domain.Student;
-import pl.lodz.StudentEntity;
+import pl.lodz.entity.StudentEntity;
 
 public class StudentMapper {
     public static StudentEntity mapToEntity(Student student) {

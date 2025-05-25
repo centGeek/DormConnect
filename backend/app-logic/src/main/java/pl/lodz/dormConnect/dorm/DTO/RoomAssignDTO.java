@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.dorm.DTO;
 
 
-import pl.lodz.RoomEntity;
+import pl.lodz.entity.RoomEntity;
 
 import java.time.LocalDate;
 

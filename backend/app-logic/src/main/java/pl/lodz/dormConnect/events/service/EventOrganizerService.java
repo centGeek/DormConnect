@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.mapper.EventMapper;
 import pl.lodz.dormConnect.events.repository.EventRepository;
-import pl.lodz.EventEntity;
+import pl.lodz.entity.EventEntity;
 
 @Service
 public class EventOrganizerService {

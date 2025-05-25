@@ -3,7 +3,7 @@ package pl.lodz.dormConnect.events.mapper;
 import org.springframework.stereotype.Component;
 import pl.lodz.dormConnect.events.dto.EventCreateDTO;
 import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.EventEntity;
+import pl.lodz.entity.EventEntity;
 
 import java.util.List;
 

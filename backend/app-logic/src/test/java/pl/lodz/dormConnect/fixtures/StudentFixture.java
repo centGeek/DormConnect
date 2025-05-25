@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.fixtures;
 
 import pl.lodz.dormConnect.domain.Student;
-import pl.lodz.StudentEntity;
+import pl.lodz.entity.StudentEntity;
 
 public class StudentFixture {
     public static StudentEntity anyStudentEntity(){

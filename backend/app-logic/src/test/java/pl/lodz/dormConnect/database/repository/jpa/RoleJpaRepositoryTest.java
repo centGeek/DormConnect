@@ -8,7 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
 import pl.lodz.dormConnect.fixtures.SecurityFixture;
-import pl.lodz.RoleEntity;
+import pl.lodz.entity.RoleEntity;
+import pl.lodz.repository.jpa.RoleJpaRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

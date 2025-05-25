@@ -1,4 +1,4 @@
-package pl.lodz;
+package pl.lodz.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

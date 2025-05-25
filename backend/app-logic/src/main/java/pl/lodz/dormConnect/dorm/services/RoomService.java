@@ -8,8 +8,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
 import pl.lodz.dormConnect.dorm.repositories.RoomRepository;
-import pl.lodz.RoomAssignEntity;
-import pl.lodz.RoomEntity;
+import pl.lodz.entity.RoomAssignEntity;
+import pl.lodz.entity.RoomEntity;
 
 import java.time.LocalDate;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package pl.lodz;
+package pl.lodz.commons;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

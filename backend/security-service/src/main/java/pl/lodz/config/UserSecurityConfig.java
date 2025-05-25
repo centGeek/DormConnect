@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.lodz.RoleEntity;
-import pl.lodz.UserEntity;
-import pl.lodz.UserRepository;
+import pl.lodz.entity.RoleEntity;
+import pl.lodz.entity.UserEntity;
+import pl.lodz.repository.jpa.UserRepository;
 
 import java.util.List;
 import java.util.Optional;

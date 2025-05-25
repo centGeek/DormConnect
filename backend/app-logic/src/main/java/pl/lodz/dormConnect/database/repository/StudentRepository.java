@@ -3,13 +3,13 @@ package pl.lodz.dormConnect.database.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
-import pl.lodz.dormConnect.database.repository.jpa.StudentJpaRepository;
 import pl.lodz.dormConnect.domain.Student;
 import pl.lodz.dormConnect.database.repository.mapper.StudentMapper;
 import pl.lodz.dormConnect.domain.exception.UserAlreadyExistsException;
-import pl.lodz.StudentEntity;
-import pl.lodz.UserEntity;
-import pl.lodz.UserRepository;
+import pl.lodz.entity.StudentEntity;
+import pl.lodz.entity.UserEntity;
+import pl.lodz.repository.jpa.UserRepository;
+import pl.lodz.repository.jpa.StudentJpaRepository;
 
 import java.util.List;
 import java.util.Optional;

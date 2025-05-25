@@ -13,7 +13,7 @@ import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.lodz.JwtService;
+import pl.lodz.commons.JwtService;
 
 
 

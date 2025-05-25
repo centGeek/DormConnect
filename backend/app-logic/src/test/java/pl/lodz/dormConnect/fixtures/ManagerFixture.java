@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.fixtures;
 
 import pl.lodz.dormConnect.domain.Manager;
-import pl.lodz.ManagerEntity;
+import pl.lodz.entity.ManagerEntity;
 
 public class ManagerFixture {
 

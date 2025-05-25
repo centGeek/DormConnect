@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormConnect.events.dto.EventDTO;
 import pl.lodz.dormConnect.events.service.EventOrganizerService;
-import pl.lodz.JwtService;
+import pl.lodz.commons.JwtService;
 
 
 @Controller

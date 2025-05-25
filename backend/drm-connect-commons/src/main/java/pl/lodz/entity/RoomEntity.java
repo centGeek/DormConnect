@@ -1,4 +1,4 @@
-package pl.lodz;
+package pl.lodz.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
