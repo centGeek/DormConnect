@@ -21,7 +21,7 @@ function ChatPage() {
             setIsLoading(true);
 
             try {
-                const response = await axios.get('http://localhost:8091/chat/get-message', { params: { message: input } });
+                const response = await axios.get('http://localhost:8081/chat/get-message', { params: { message: input } });
                 const llmMessage: Message = { text: response.data.reply, sender: 'llm' };
                 setMessages(prev => [...prev, llmMessage]);
             } catch (error) {

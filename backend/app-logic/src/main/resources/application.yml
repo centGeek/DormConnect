@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: dormConnect
+  datasource:
+    url: jdbc:postgresql://localhost:5434/dormConnect
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/centGeek/DormConnect.git
+          default-label: main
+          clone-on-start: true
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  ai:
+    openai:
+      api-key: <api-key>
+      chat:
+        options:
+          model: gpt-4
+          temperature: 0.5
+          max-tokens: 800
+          top-p: 1
+          frequency-penalty: 0
+      embedding:
+        options:
+          model: text-embedding-3-large
+server:
+  port: 8081

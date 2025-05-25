@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: security-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/dormConnect
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  ai:
+    openai:
+      api-key: <api-key>
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+server:
+  port: 8091
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/centGeek/DormConnect.git
+          default-label: main
+          clone-on-start: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
