@@ -81,4 +81,20 @@ public class FloorsService {
     public FloorEntity getFloorByNumber(Integer floorNumber) {
         return floorsRepository.findByFloorNumber(floorNumber);
     }
+    public boolean removeCommonRoomFromFloor(Long commonRoomId, Integer floorNumber) {
+        FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
+        if (floor != null && floor.getCommonRooms().remove(commonRoomId)) {
+            floorsRepository.save(floor);
+            return true;
+        }
+        return false;
+    }
+    public boolean removeRoomFromFloor(Long roomId, Integer floorNumber) {
+        FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
+        if (floor != null && floor.getRooms().remove(roomId)) {
+            floorsRepository.save(floor);
+            return true;
+        }
+        return false;
+    }
 }

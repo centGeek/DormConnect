@@ -8,6 +8,7 @@ import PopUpRemoveFloor from "./components/FloorPupUps/PopUpRemoveFloor.tsx";
 import PopUpRemoveAllRooms from "./components/FloorPupUps/PopUpRemoveAllRooms.tsx";
 import RoomCanva from "./components/RoomCanva.tsx";
 import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
+import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -18,16 +19,23 @@ function CreateDormitory() {
     const [refresh_rooms_value, setRefresh_rooms_value] = useState<number>(0);
     const [refresh_floors_value, setRefresh_floors_value] = useState<number>(0);
     const [commonRoomId, setCommonRoomId] = useState<number | null>(null);
+    const [roomId, setRoomId] = useState<number | null>(null);
+    const [roomNumber, setRoomNumber] = useState<string | null>(null);
     const [isPopUpRemoveDialogOpen, setIsPopUpRemoveDialogOpen] = useState<boolean>(false);
     const [isPopUpRemoveFloorsOpen, setIsPopUpRemoveFloorsOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomsOpen, setIsPopUpRemoveRoomsOpen] = useState<boolean>(false);
     const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
+    const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
 
     const handleCommonRoomEdit = (id: number) => {
         setCommonRoomId(id);
         setIsPopupCREditOpen(true);
     };
-
+    const handleRoomEdit = (id: number, roomNumber: string) => {
+        setRoomId(id);
+        setRoomNumber(roomNumber);
+        setIsPopUpRemoveRoomOpen(true);
+    }
     const handleCommonRoomAdd = (data: boolean) => {
         setIsPopupCRCreateOpen(data);
     };
@@ -46,6 +54,7 @@ function CreateDormitory() {
         setIsPopUpRemoveFloorsOpen(false);
         setIsPopUpRemoveRoomsOpen(false);
         setIsPopUpRoomCreateOpen(false);
+        setIsPopUpRemoveRoomOpen(false);
         setRefresh_rooms_value(refresh_rooms_value+1)
         setRefresh_floors_value(refresh_rooms_value+1)
     };
@@ -53,34 +62,34 @@ function CreateDormitory() {
         setIsPopUpRemoveDialogOpen(false);
         setIsPopUpRemoveRoomsOpen(true);
     };
+    const getFloors = async () => {
+        try {
+            setLoadingFloors(true);
+            const response = await fetch('/api/floors/get', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch floors");
+            }
+
+            const data = (await response.json()) as number[];
+            setFloors(data);
+        } catch (error: unknown) {
+            console.error(
+                'Error fetching floors:',
+                error instanceof Error ? error.message : error
+            );
+        } finally {
+            setLoadingFloors(false);
+        }
+    };
 
     useEffect(() => {
-        const getFloors = async () => {
-            try {
-                setLoadingFloors(true);
-                const response = await fetch('/api/floors/get', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: "include"
-                });
-
-                if (!response.ok) {
-                    throw new Error("Failed to fetch floors");
-                }
-
-                const data = (await response.json()) as number[];
-                setFloors(data);
-            } catch (error: unknown) {
-                console.error(
-                    'Error fetching floors:',
-                    error instanceof Error ? error.message : error
-                );
-            } finally {
-                setLoadingFloors(false);
-            }
-        };
 
         getFloors();
     }, [refresh_floors_value]);
@@ -133,7 +142,7 @@ function CreateDormitory() {
                                 <RoomCanva
                                     floor={activeFloor}
                                     onRoomAdd={ handleRoomAdd}
-                                    onRoomEdit={(id) => console.log("Edytuj pokój:", id)}
+                                    onRoomEdit={handleRoomEdit}
                                     refresh={refresh_rooms_value}
                                 />
                             </div>
@@ -167,6 +176,9 @@ function CreateDormitory() {
             )}
             {isPopUpRoomCreateOpen && (
                 <PopUpRoomCreate onClose={handleClosePopup} floor={activeFloor}/>
+            )}
+            {isPopUpRemoveRoomOpen && (
+                <PopUpRoomDelete onClose={handleClosePopup} roomNumber={roomNumber ?? ''} roomId={roomId ?? -1}/>
             )}
         </Template>
     );

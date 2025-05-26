@@ -61,6 +61,7 @@ public class CommonRoomService {
     public boolean deleteCommonRoom(Long id) {
         if (repository.existsById(id)) {
             scheduler.deleteAllAssigmentsForRoom(repository.findById(id).get());
+            floorService.removeRoomFromFloor(id, repository.findCommonRoomById(id).getFloor());
             repository.deleteById(id);
             return true;
         }

@@ -11,6 +11,7 @@ import pl.lodz.dormConnect.dorm.entities.RoomAssignEntity;
 import pl.lodz.dormConnect.dorm.entities.RoomEntity;
 import pl.lodz.dormConnect.dorm.repositories.RoomAssignmentRepository;
 import pl.lodz.dormConnect.dorm.repositories.RoomRepository;
+import pl.lodz.dormConnect.floors.entity.FloorEntity;
 import pl.lodz.dormConnect.floors.service.FloorsService;
 
 import java.time.LocalDate;
@@ -147,4 +148,5 @@ public class RoomService {
     public List<RoomEntity> getRoomsByFloor(int floor) {
         return roomRepository.findByFloor(floor);
     }
+
 }

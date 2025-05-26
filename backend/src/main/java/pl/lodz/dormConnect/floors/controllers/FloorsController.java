@@ -57,18 +57,5 @@ public class FloorsController {
         }
     }
 
-    @DeleteMapping("/delete/{floor_id")
-    public ResponseEntity<Boolean> deleteFloor(@PathVariable Long floor_id) {
-        try {
-            boolean deleted = floorsService.deleteFloor(floor_id);
-            if (deleted) {
-                return ResponseEntity.ok(true);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
-        }
-    }
 
 }
