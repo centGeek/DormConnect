@@ -15,10 +15,11 @@ interface CommonRoomProps {
 interface CommonRoomCanvaProps {
     floor: number;
     onCommonRoomAdd: (data: boolean) => void;
+    onCommonRoomEdit: (id:number) => void;
     refresh: number;
 }
 
-function CommonRoomCanva({ floor, onCommonRoomAdd, refresh }: CommonRoomCanvaProps) {
+function CommonRoomCanva({ floor, onCommonRoomAdd, onCommonRoomEdit, refresh }: CommonRoomCanvaProps) {
     const [commonRooms, setCommonRooms] = useState<CommonRoomProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -64,6 +65,7 @@ function CommonRoomCanva({ floor, onCommonRoomAdd, refresh }: CommonRoomCanvaPro
                         <div
                             key={commonRoom.id}
                             className="common-room-card bg-white border border-gray-500 rounded-lg p-2 w-30 text-left shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 cursor-pointer flex items-center gap-2"
+                            onClick={() => onCommonRoomEdit(commonRoom.id)}
                         >
                             <img
                                 src={`/src/assets/common_room_icons/${getRoomIcon(commonRoom.commonRoomType)}.png`}

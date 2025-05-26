@@ -2,22 +2,31 @@ import { useEffect, useState } from 'react';
 import Template from '../Template/Template.tsx';
 import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
 import PopUpCommonRoomCreate from './components/PopUpCommonRoomCreate.tsx';
+import PopUpCommonRoomEdit from "./components/PopUpCommonRoomEdit.tsx";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
     const [loadingFloors, setLoadingFloors] = useState<boolean>(true);
     const [activeFloor, setActiveFloor] = useState<number>(-1);
-    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false); // Dodano stan
+    const [isPopupCRCreateOpen, setisPopupCRCreateOpen] = useState<boolean>(false);
+    const [isPopupCREditOpen, setisPopupCREditOpen] = useState<boolean>(false);
     const [refresh_rooms_value, setRefresh_rooms_value] = useState<number>(0);
     const [refresh_floors_value, setRefresh_floors_value] = useState<number>(0);
+    const [commonRoomId, setCommonRoomId] = useState<number | null>(null);
+
+
+    const handleCommonRoomEdit = (id: number) => {
+        setCommonRoomId(id);
+        setisPopupCREditOpen(true);
+    };
 
     const handleCommonRoomAdd = (data: boolean) => {
-        setIsPopupOpen(data);
-
+        setisPopupCRCreateOpen(data);
     };
 
     const handleClosePopup = () => {
-        setIsPopupOpen(false);
+        setisPopupCRCreateOpen(false);
+        setisPopupCREditOpen(false);
         setRefresh_rooms_value(refresh_rooms_value+1)
     };
     const handleFloorAdd = async  () => {
@@ -117,13 +126,16 @@ function CreateDormitory() {
                     <div>
                         <div>
                             <h3>Pokoje wspólne</h3>
-                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd} refresh={refresh_rooms_value}/>
+                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd}  onCommonRoomEdit={handleCommonRoomEdit} refresh={refresh_rooms_value}/>
                         </div>
                     </div>
                 </div>
             )}
-            {isPopupOpen && (
+            {isPopupCRCreateOpen && (
                 <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} />
+            )}
+            {isPopupCREditOpen && commonRoomId !== null && (
+                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId} />
             )}
         </Template>
     );
