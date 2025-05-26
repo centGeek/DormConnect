@@ -21,7 +21,7 @@ function RoomCanva({ floor, onRoomAdd, onRoomEdit, refresh }: RoomCanvaProps) {
     const fetchRooms = async () => {
         try {
             setLoading(true);
-            const response: Response = await fetch(`/api/dorm/room`, {
+            const response: Response = await fetch(`/api/dorm/room/floor/${floor}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

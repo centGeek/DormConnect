@@ -144,4 +144,7 @@ public class RoomService {
                 .distinct()
                 .toList();
     }
+    public List<RoomEntity> getRoomsByFloor(int floor) {
+        return roomRepository.findByFloor(floor);
+    }
 }

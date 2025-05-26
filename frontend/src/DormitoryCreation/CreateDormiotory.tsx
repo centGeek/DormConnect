@@ -36,7 +36,8 @@ function CreateDormitory() {
     };
     const handleRemoveFloor = () => {
         setIsPopUpRemoveDialogOpen(false);
-        setIsPopUpRemoveFloorsOpen(true);
+        // setIsPopUpRemoveFloorsOpen(true);
+        alert("Na razie ta funkcjonalność jest niedostępna")
     }
     const handleClosePopup = () => {
         setIsPopupCRCreateOpen(false);

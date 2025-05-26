@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
+import axios from 'axios';
 
 interface PopupFormProps {
     floor: number;
@@ -8,37 +8,29 @@ interface PopupFormProps {
 
 function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
     const [number, setNumber] = useState('');
-    const [capacity, setCapacity] = useState(1);
+    const [capacity, setCapacity] = useState(2);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const newRoom = {
-            number,
+            number: `${floor}-${number}`,
             capacity,
             floor,
         };
 
         try {
-            const response = await fetch('/api/rooms/add', {
-                method: 'POST',
+            await axios.post('/api/dorm/room/create', newRoom, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
-                body: JSON.stringify(newRoom),
-                credentials: 'include',
+                withCredentials: true,
             });
-
-            if (!response.ok) {
-                throw new Error('Nie udało się utworzyć pokoju');
-            }
 
             alert('Pokój został pomyślnie dodany!');
             onClose();
         } catch (error) {
             console.error('Błąd podczas tworzenia pokoju:', error);
-            alert('Wystąpił błąd podczas dodawania pokoju.');
         }
     };
 
