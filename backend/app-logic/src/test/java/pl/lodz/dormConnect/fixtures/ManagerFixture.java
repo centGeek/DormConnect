@@ -9,6 +9,6 @@ public class ManagerFixture {
         return new ManagerEntity("Bolesław", "Chrobry", SecurityFixture.anyUser());
     }
     public static Manager anyManager(){
-        return new Manager(1L, "Bolesław", "Chrobry", SecurityFixture.anyUser());
+        return new Manager(1L, "Bolesław", "Chrobry", SecurityFixture.managerUser());
     }
 }

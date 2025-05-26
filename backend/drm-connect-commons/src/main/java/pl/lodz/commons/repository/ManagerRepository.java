@@ -26,7 +26,7 @@ public class ManagerRepository {
         ManagerEntity managerEntity = ManagerMapper.mapToEntity(manager);
         encodePassword(managerEntity, manager);
         conditionsToNotCreateManager(manager);
-        managerEntity.getUser().setRole(new RoleEntity(1L, "STUDENT"));
+        managerEntity.getUser().setRole(new RoleEntity(1L, "MANAGER"));
         managerEntity.getUser().setActive(true);
         managerJpaRepository.saveAndFlush(managerEntity);
     }

@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import pl.lodz.commons.model.ProblemStatus;
 import pl.lodz.dormConnect.config.PersistenceContainersTestConfiguration;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.exception.DormProblemNotFoundException;
 import pl.lodz.dormConnect.dormProblem.mapper.DormProblemMapper;
 import pl.lodz.commons.entity.DormProblemEntity;
-import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 
 import java.time.LocalDate;
 

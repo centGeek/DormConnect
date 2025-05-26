@@ -1,9 +1,9 @@
 package pl.lodz.dormConnect.dormProblem.mapper;
 
 import org.junit.jupiter.api.Test;
+import pl.lodz.commons.model.ProblemStatus;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.commons.entity.DormProblemEntity;
-import pl.lodz.dormConnect.dormProblem.model.ProblemStatus;
 
 import java.time.LocalDate;
 

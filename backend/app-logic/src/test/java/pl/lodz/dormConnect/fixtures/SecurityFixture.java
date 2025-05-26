@@ -32,4 +32,10 @@ public class SecurityFixture {
                 "maciej_zielak", "greenman@edu.p.lodz.pl", "$2a$12$TwQsp1IusXTDl7LwZqL0qeu49Ypr6vRdEzRq2vAsgb.zvOtrnzm5G",
                 true, studentRole());
     }
+
+    public static UserEntity managerUser(){
+        return new UserEntity(
+                "maciej_zielak", "managerxD@edu.p.lodz.pl", "$2a$12$TwQsp1IusXTDl7LwZqL0qeu49Ypr6vRdEzRq2vAsgb.zvOtrnzm5G",
+                true, managerRole());
+    }
 }
