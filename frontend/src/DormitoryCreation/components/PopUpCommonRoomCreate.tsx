@@ -47,8 +47,8 @@ function PopUpCommonRoomCreate({ onClose, floor }: PopupFormProps) {
     };
 
     return (
-        <div className="fixed inset-0 border flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <div className="fixed inset-0 border border-gray-500 flex items-center justify-center z-50">
+            <div className="bg-white p-6 border border-gray-500 rounded-lg shadow-lg w-96">
                 <h1 className="text-xl font-bold mb-4 text-gray-700">Dodaj pokój wspólny</h1>
                 <form onSubmit={handleSubmit}>
                     <label className="block mb-2 text-gray-600">Wybierz typ pokoju</label>

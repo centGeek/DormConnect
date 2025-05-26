@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FloorsRepository extends JpaRepository<FloorEntity, Long> {
+    FloorEntity findByFloorNumber(int floorNumber);
 }

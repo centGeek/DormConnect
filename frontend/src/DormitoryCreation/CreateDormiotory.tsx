@@ -3,31 +3,47 @@ import Template from '../Template/Template.tsx';
 import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
 import PopUpCommonRoomCreate from './components/PopUpCommonRoomCreate.tsx';
 import PopUpCommonRoomEdit from "./components/PopUpCommonRoomEdit.tsx";
+import PopUpRemoveChoice from "./components/PopUpRemoveChoice.tsx";
+import PopUpRemoveFloor from "./components/PopUpRemoveFloor.tsx";
+import PopUpRemoveAllRooms from "./components/PopUpRemoveAllRooms.tsx";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
     const [loadingFloors, setLoadingFloors] = useState<boolean>(true);
     const [activeFloor, setActiveFloor] = useState<number>(-1);
-    const [isPopupCRCreateOpen, setisPopupCRCreateOpen] = useState<boolean>(false);
-    const [isPopupCREditOpen, setisPopupCREditOpen] = useState<boolean>(false);
+    const [isPopupCRCreateOpen, setIsPopupCRCreateOpen] = useState<boolean>(false);
+    const [isPopupCREditOpen, setIsPopupCREditOpen] = useState<boolean>(false);
     const [refresh_rooms_value, setRefresh_rooms_value] = useState<number>(0);
     const [refresh_floors_value, setRefresh_floors_value] = useState<number>(0);
     const [commonRoomId, setCommonRoomId] = useState<number | null>(null);
-
+    const [isPopUpRemoveDialogOpen, setIsPopUpRemoveDialogOpen] = useState<boolean>(false);
+    const [isPopUpRemoveFloorsOpen, setIsPopUpRemoveFloorsOpen] = useState<boolean>(false);
+    const [isPopUpRemoveRoomsOpen, setIsPopUpRemoveRoomsOpen] = useState<boolean>(false);
 
     const handleCommonRoomEdit = (id: number) => {
         setCommonRoomId(id);
-        setisPopupCREditOpen(true);
+        setIsPopupCREditOpen(true);
     };
 
     const handleCommonRoomAdd = (data: boolean) => {
-        setisPopupCRCreateOpen(data);
+        setIsPopupCRCreateOpen(data);
     };
-
+    const handleRemoveFloor = () => {
+        setIsPopUpRemoveDialogOpen(false);
+        setIsPopUpRemoveFloorsOpen(true);
+    }
     const handleClosePopup = () => {
-        setisPopupCRCreateOpen(false);
-        setisPopupCREditOpen(false);
+        setIsPopupCRCreateOpen(false);
+        setIsPopupCREditOpen(false);
+        setIsPopUpRemoveDialogOpen(false);
+        setIsPopUpRemoveFloorsOpen(false);
+        setIsPopUpRemoveRoomsOpen(false);
         setRefresh_rooms_value(refresh_rooms_value+1)
+        setRefresh_floors_value(refresh_rooms_value+1)
+    };
+    const handleRemoveRooms = () => {
+        setIsPopUpRemoveDialogOpen(false);
+        setIsPopUpRemoveRoomsOpen(true);
     };
     const handleFloorAdd = async  () => {
         try {
@@ -89,8 +105,14 @@ function CreateDormitory() {
 
     return (
         <Template buttons={[{ text: 'Home', link: '/home' }, { text: 'Rooms', link: '/rooms' }]}>
-            <div className="min-h-fit">
+            <div className="relative min-h-fit">
                 <h1 className="text-4xl font-bold text-gray-600 mb-6 text-center">Kreator akademika</h1>
+                {!(activeFloor===-1)&&(<button
+                    onClick={() => setIsPopUpRemoveDialogOpen(true)}
+                    className="absolute top-4 right-4 bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow hover:bg-red-600 transition"
+                >
+                    ×
+                </button>)}
             </div>
             {!loadingFloors && (
                 <div className="flex h-fit justify-start">
@@ -123,12 +145,13 @@ function CreateDormitory() {
                             ))}
                         </div>
                     </div>
-                    <div>
+                    {!(activeFloor===-1)&&(<div>
                         <div>
                             <h3>Pokoje wspólne</h3>
-                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd}  onCommonRoomEdit={handleCommonRoomEdit} refresh={refresh_rooms_value}/>
+                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd}
+                                             onCommonRoomEdit={handleCommonRoomEdit} refresh={refresh_rooms_value}/>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
             )}
             {isPopupCRCreateOpen && (
@@ -136,6 +159,15 @@ function CreateDormitory() {
             )}
             {isPopupCREditOpen && commonRoomId !== null && (
                 <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId} />
+            )}
+            {isPopUpRemoveDialogOpen && (
+                <PopUpRemoveChoice onClose={handleClosePopup} onRemoveFloor={handleRemoveFloor} onRemoveRooms={handleRemoveRooms}/>
+            )}
+            {isPopUpRemoveFloorsOpen && (
+                <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor}/>
+            )}
+            {isPopUpRemoveRoomsOpen && (
+                <PopUpRemoveAllRooms onClose={handleClosePopup} floor={activeFloor}/>
             )}
         </Template>
     );

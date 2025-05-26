@@ -29,6 +29,24 @@ public class FloorsController {
     public ResponseEntity<FloorEntity> addFloor() {
         return ResponseEntity.status(HttpStatus.CREATED).body(floorsService.addFloor());
     }
+    @DeleteMapping("/delete-rooms/{floorNumber}")
+    public ResponseEntity<Void> deleteAllRooms(@PathVariable Integer floorNumber) {
+        try {
+            floorsService.deleteAllRooms(floorNumber);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @DeleteMapping("/delete-floor/{floorNumber}")
+    public ResponseEntity<Void> deleteFloor(@PathVariable Integer floorNumber) {
+        try {
+            floorsService.deleteFloor(floorNumber);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     @DeleteMapping("/delete/{floor_id")
     public ResponseEntity<Boolean> deleteFloor(@PathVariable Long floor_id) {
