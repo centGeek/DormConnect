@@ -1,4 +1,5 @@
 import React from 'react';
+import CommonRoomTypes from "../../../ReusableComponents/CommonRoomTypes.tsx";
 
 interface PopupFormProps {
     onClose: () => void;
@@ -66,7 +67,7 @@ function PopUpCommonRoomEdit({ onClose, common_room_id }: PopupFormProps) {
                 <h1 className="text-xl font-bold mb-4 text-gray-700">Szczegóły pokoju wspólnego</h1>
                 {commonRoom ? (
                     <ul className="mb-4 text-gray-600">
-                        <li><strong>Typ:</strong> {commonRoom.type}</li>
+                        <li><strong>Typ:</strong> {CommonRoomTypes(commonRoom.type)}</li>
                         <li><strong>Piętro:</strong> {commonRoom.floor}</li>
                         <li><strong>Pojemność:</strong> {commonRoom.capacity}</li>
                         <li><strong>Ile razy w tygodniu można użyć:</strong> {commonRoom.timesAWeekYouCanUseIt}</li>

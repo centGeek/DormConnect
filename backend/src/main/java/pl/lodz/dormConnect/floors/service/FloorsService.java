@@ -1,5 +1,8 @@
 package pl.lodz.dormConnect.floors.service;
 
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.service.CommonRoomService;
@@ -13,20 +16,24 @@ import java.util.List;
 @Service
 public class FloorsService {
     private final FloorsRepository floorsRepository;
-    private final CommonRoomService commonRoomService;
-    private final RoomService roomService;
+    private RoomService roomService;
+    private CommonRoomService commonRoomService;
 
-    public FloorsService(FloorsRepository floorsRepository, CommonRoomService commonRoomService, RoomService roomService) {
+    public FloorsService(FloorsRepository floorsRepository) {
         this.floorsRepository = floorsRepository;
+    }
+
+    @Autowired
+    public void setCommonRoomService(CommonRoomService commonRoomService, RoomService roomService) {
         this.commonRoomService = commonRoomService;
         this.roomService = roomService;
     }
 
     public List<Integer> getFloors(){
-        return floorsRepository.findAll().stream()
-                .map(floorEntity -> floorEntity.getFloorNumber())
-                .toList();
-    }
+            return floorsRepository.findAll().stream()
+                    .map(FloorEntity::getFloorNumber)
+                    .sorted((a, b) -> b.compareTo(a)).toList().reversed();
+        }
 
     public FloorEntity addFloor(){
         int floorNumber = getFloors().stream().max(Integer::compare).orElse(-1) + 1;
@@ -56,5 +63,22 @@ public class FloorsService {
             deleteAllRooms(floorNumber);
             floorsRepository.delete(floor);
         }
+    }
+    public void addCommonRoomToFloor(Long commonRoomId, Integer floorNumber) {
+        FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
+        if (floor != null) {
+            floor.getCommonRooms().add(commonRoomId);
+            floorsRepository.save(floor);
+        }
+    }
+    public void addRoomToFloor(Long roomId, Integer floorNumber) {
+        FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
+        if (floor != null) {
+            floor.getRooms().add(roomId);
+            floorsRepository.save(floor);
+        }
+    }
+    public FloorEntity getFloorByNumber(Integer floorNumber) {
+        return floorsRepository.findByFloorNumber(floorNumber);
     }
 }

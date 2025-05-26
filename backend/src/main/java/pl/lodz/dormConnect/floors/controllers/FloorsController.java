@@ -47,6 +47,15 @@ public class FloorsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    @PostMapping("/add-common-room/{commonRoomId}/{floorNumber}")
+    public ResponseEntity<Void> addCommonRoomToFloor(@PathVariable Long commonRoomId, @PathVariable Integer floorNumber) {
+        try {
+            floorsService.addCommonRoomToFloor(commonRoomId, floorNumber);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     @DeleteMapping("/delete/{floor_id")
     public ResponseEntity<Boolean> deleteFloor(@PathVariable Long floor_id) {

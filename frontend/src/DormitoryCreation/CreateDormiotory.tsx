@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import Template from '../Template/Template.tsx';
 import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
-import PopUpCommonRoomCreate from './components/PopUpCommonRoomCreate.tsx';
-import PopUpCommonRoomEdit from "./components/PopUpCommonRoomEdit.tsx";
-import PopUpRemoveChoice from "./components/PopUpRemoveChoice.tsx";
-import PopUpRemoveFloor from "./components/PopUpRemoveFloor.tsx";
-import PopUpRemoveAllRooms from "./components/PopUpRemoveAllRooms.tsx";
+import PopUpCommonRoomCreate from './components/CommonRoomPopUps/PopUpCommonRoomCreate.tsx';
+import PopUpCommonRoomEdit from "./components/CommonRoomPopUps/PopUpCommonRoomEdit.tsx";
+import PopUpRemoveChoice from "./components/FloorPupUps/PopUpRemoveChoice.tsx";
+import PopUpRemoveFloor from "./components/FloorPupUps/PopUpRemoveFloor.tsx";
+import PopUpRemoveAllRooms from "./components/FloorPupUps/PopUpRemoveAllRooms.tsx";
+import RoomCanva from "./components/RoomCanva.tsx";
+import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -19,6 +21,7 @@ function CreateDormitory() {
     const [isPopUpRemoveDialogOpen, setIsPopUpRemoveDialogOpen] = useState<boolean>(false);
     const [isPopUpRemoveFloorsOpen, setIsPopUpRemoveFloorsOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomsOpen, setIsPopUpRemoveRoomsOpen] = useState<boolean>(false);
+    const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
 
     const handleCommonRoomEdit = (id: number) => {
         setCommonRoomId(id);
@@ -27,6 +30,9 @@ function CreateDormitory() {
 
     const handleCommonRoomAdd = (data: boolean) => {
         setIsPopupCRCreateOpen(data);
+    };
+    const handleRoomAdd = (data: boolean) => {
+        setIsPopUpRoomCreateOpen(data);
     };
     const handleRemoveFloor = () => {
         setIsPopUpRemoveDialogOpen(false);
@@ -38,6 +44,7 @@ function CreateDormitory() {
         setIsPopUpRemoveDialogOpen(false);
         setIsPopUpRemoveFloorsOpen(false);
         setIsPopUpRemoveRoomsOpen(false);
+        setIsPopUpRoomCreateOpen(false);
         setRefresh_rooms_value(refresh_rooms_value+1)
         setRefresh_floors_value(refresh_rooms_value+1)
     };
@@ -45,32 +52,6 @@ function CreateDormitory() {
         setIsPopUpRemoveDialogOpen(false);
         setIsPopUpRemoveRoomsOpen(true);
     };
-    const handleFloorAdd = async  () => {
-        try {
-            const response = await fetch('/api/floors/add', {method: 'POST', credentials: "include"});
-            if(!response.ok) {
-                throw new Error("Failed to add floor");
-            }
-            setRefresh_floors_value(refresh_floors_value+1);
-        }
-        catch (error) {
-            console.error('Error adding floor:', error instanceof Error ? error.message : error);
-        }
-    };
-
-    const handleFloorDelete = async (floor: number) => {
-        try {
-            const response = await fetch(`/api/floors/delete/${floor}`, {method: 'DELETE', credentials: "include"});
-            if(!response.ok) {
-                throw new Error("Failed to delete floor");
-            }
-            setRefresh_floors_value(refresh_floors_value+1);
-        }
-        catch (error) {
-            console.error('Error deleting floor:', error instanceof Error ? error.message : error);
-        }
-    }
-
 
     useEffect(() => {
         const getFloors = async () => {
@@ -119,7 +100,10 @@ function CreateDormitory() {
                     <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
-                            onClick={() => handleFloorAdd()}
+                            onClick={() => {
+                                fetch('/api/floors/add', { method: 'POST', credentials: "include" });
+                                setRefresh_floors_value(refresh_floors_value + 1);
+                            }}
                             className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
                         >
                             +
@@ -128,30 +112,41 @@ function CreateDormitory() {
                             {floors.map((floor, index) => (
                                 <div
                                     key={index}
-                                    className={`relative w-32 h-32 rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer transition ${
+                                    onClick={() => setActiveFloor(floor)}
+                                    className={`w-32 h-32 rounded-lg flex items-center justify-center text-xl font-bold cursor-pointer transition ${
                                         activeFloor === floor
                                             ? 'bg-gray-500 text-white shadow-lg'
                                             : 'bg-white shadow-md hover:bg-gray-300'
                                     }`}
                                 >
-                                    <span onClick={() => setActiveFloor(floor)}>{floor}</span>
-                                    <button
-                                        onClick={() => handleFloorDelete(floor)}
-                                        className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600 transition"
-                                    >
-                                        ✕
-                                    </button>
+                                    {floor}
                                 </div>
                             ))}
                         </div>
                     </div>
-                    {!(activeFloor===-1)&&(<div>
+
+                    {!(activeFloor === -1) && (
                         <div>
-                            <h3>Pokoje wspólne</h3>
-                            <CommonRoomCanva floor={activeFloor} onCommonRoomAdd={handleCommonRoomAdd}
-                                             onCommonRoomEdit={handleCommonRoomEdit} refresh={refresh_rooms_value}/>
+                            <div>
+                                <h3>Pokoje</h3>
+                                <RoomCanva
+                                    floor={activeFloor}
+                                    onRoomAdd={ handleRoomAdd}
+                                    onRoomEdit={(id) => console.log("Edytuj pokój:", id)}
+                                    refresh={refresh_rooms_value}
+                                />
+                            </div>
+                            <div>
+                                <h3>Pokoje wspólne</h3>
+                                <CommonRoomCanva
+                                    floor={activeFloor}
+                                    onCommonRoomAdd={handleCommonRoomAdd}
+                                    onCommonRoomEdit={handleCommonRoomEdit}
+                                    refresh={refresh_rooms_value}
+                                />
+                            </div>
                         </div>
-                    </div>)}
+                    )}
                 </div>
             )}
             {isPopupCRCreateOpen && (
@@ -168,6 +163,9 @@ function CreateDormitory() {
             )}
             {isPopUpRemoveRoomsOpen && (
                 <PopUpRemoveAllRooms onClose={handleClosePopup} floor={activeFloor}/>
+            )}
+            {isPopUpRoomCreateOpen && (
+                <PopUpRoomCreate onClose={handleClosePopup} floor={activeFloor}/>
             )}
         </Template>
     );

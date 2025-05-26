@@ -35,7 +35,6 @@ function PopUpCommonRoomCreate({ onClose, floor }: PopupFormProps) {
             if (!response.ok) {
                 throw new Error('Failed to create common room');
             }
-
             alert('Pokój wspólny został dodany!');
             onClose();
         } catch (error) {

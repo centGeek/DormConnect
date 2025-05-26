@@ -1,5 +1,6 @@
 package pl.lodz.dormConnect.commonRoom.service;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
@@ -8,6 +9,7 @@ import pl.lodz.dormConnect.commonRoom.entity.CommonRoomEntity;
 import pl.lodz.dormConnect.commonRoom.repositories.CommonRoomRepository;
 import pl.lodz.dormConnect.commonRoom.scheduler.CommonRoomAssignmentScheduler;
 import pl.lodz.dormConnect.commonRoom.mapper.CommonRoomMapper;
+import pl.lodz.dormConnect.floors.service.FloorsService;
 
 import java.util.List;
 
@@ -17,12 +19,14 @@ public class CommonRoomService {
     private final CommonRoomRepository repository;
     private final CommonRoomAssignmentScheduler scheduler;
     private final CommonRoomMapper mapper;
+    private final FloorsService floorService;
 
 
-    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, CommonRoomMapper mapper) {
+    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, CommonRoomMapper mapper, @Lazy FloorsService floorService) {
         this.repository = repository;
         this.scheduler = scheduler;
         this.mapper = mapper;
+        this.floorService = floorService;
     }
 
     public CommonRoomEntity addCommonRoom(CommonRoomCreateDTO commonRoomCreateDTO) {
@@ -43,7 +47,7 @@ public class CommonRoomService {
 
 
         CommonRoomEntity savedRoom = repository.save(mapper.toCommonRoomEntity(commonRoomCreateDTO));
-
+        floorService.addCommonRoomToFloor(savedRoom.getId(), savedRoom.getFloor());
         scheduler.createAssignmentsForNextWeek(savedRoom);
 
         return savedRoom;
