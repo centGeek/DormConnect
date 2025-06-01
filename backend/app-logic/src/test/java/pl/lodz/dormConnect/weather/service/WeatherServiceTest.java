@@ -1,12 +1,13 @@
 package pl.lodz.dormConnect.weather.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import pl.lodz.dormConnect.config.TestApplication;
 import pl.lodz.dormConnect.weather.dto.CurrentWeather;
 import pl.lodz.dormConnect.weather.dto.WeatherResponse;
 
@@ -14,13 +15,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.isNull;
-import static org.mockito.Mockito.any;
-@ExtendWith(MockitoExtension.class)
+import static org.mockito.Mockito.*;
+@SpringBootTest
+@Import(TestApplication.class)
 class WeatherServiceTest {
 
     @Test

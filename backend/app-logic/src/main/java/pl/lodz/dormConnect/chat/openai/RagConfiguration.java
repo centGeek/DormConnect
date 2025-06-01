@@ -41,7 +41,8 @@ public class RagConfiguration {
         if (vectorStoreFile.exists()) {
             log.info("Vector Store File Exists, loading...");
             simpleVectorStore.load(vectorStoreFile);
-        } else {
+        }
+//        else {
 //            log.info("Vector Store File Does Not Exist, loading documents...");
 //            String fullText;
 //            try (InputStream inputStream = faq.getInputStream()) {
@@ -53,7 +54,7 @@ public class RagConfiguration {
 //                    .toList();
 //            simpleVectorStore.add(documents);
 //            simpleVectorStore.save(vectorStoreFile);
-        }
+//        }
         return simpleVectorStore;
     }
 
@@ -85,7 +86,7 @@ public class RagConfiguration {
     }
 
     private File getVectorStoreFile() {
-        Path path = Paths.get("src", "main", "resources", "data");
+        Path path = Paths.get("app-logic","src", "main", "resources", "data");
         String absolutePath = path.toFile().getAbsolutePath() + "/" + vectorStoreName;
         return new File(absolutePath);
     }

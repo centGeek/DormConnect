@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/api/chat")
 public class DocsController {
     private final ChatClient chatClient;
 
@@ -23,7 +23,7 @@ public class DocsController {
     }
 
     @GetMapping("/get-message")
-    public Map<String, String> chatResponse(@RequestParam(value = "message", defaultValue = "Jaką frekwencję muszę mieć, aby zdać przedmiot") String message) {
+    public Map<String, String> chatResponse(@RequestParam(value = "message", defaultValue = "Czym jest urlop krótkoterminowy?") String message) {
         String modifiedMessage = message + ". Podaj też dokładny artykuł - zacytuj go, na podstawie którego odpowiadasz";
         String content = chatClient.prompt()
                 .user(modifiedMessage)

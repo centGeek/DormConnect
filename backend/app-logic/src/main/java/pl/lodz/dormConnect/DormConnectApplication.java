@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 })
 @EnableScheduling
 @EntityScan(basePackages = {"pl.lodz.commons.entity"})
-@EnableJpaRepositories(basePackages = "pl.lodz.commons.repository.jpa")
+@EnableJpaRepositories(basePackages = "pl.lodz.commons.repository")
 @EnableDiscoveryClient
 public class DormConnectApplication {
 

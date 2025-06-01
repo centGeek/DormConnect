@@ -23,12 +23,11 @@ public class StudentRepository {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
-
     public void register(Student student){
         StudentEntity studentEntity = StudentMapper.mapToEntity(student);
         encodePassword(studentEntity, student);
         conditionsToNotCreateStudent(student);
-        studentEntity.getUser().setRole(new RoleEntity(1L, "STUDENT"));
+        studentEntity.getUser().setRole(new RoleEntity(3L, "STUDENT"));
         studentEntity.getUser().setActive(true);
         studentJpaRepository.saveAndFlush(studentEntity);
     }

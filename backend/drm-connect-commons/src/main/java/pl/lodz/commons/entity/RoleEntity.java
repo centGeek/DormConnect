@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @Entity
 @Table(name = "role")
-@AllArgsConstructor
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +18,12 @@ public class RoleEntity {
     private Long id;
     @Column(name = "role_name")
     private String roleName;
+
+    public RoleEntity(Long id, String roleName) {
+        this.id = id;
+        this.roleName = roleName;
+    }
+
 
     public RoleEntity(String roleName) {
         this.roleName = roleName;
