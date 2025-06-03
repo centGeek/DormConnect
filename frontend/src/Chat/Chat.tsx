@@ -13,26 +13,27 @@ function ChatPage() {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSend = async () => {
-        if (input.trim()) {
-            const userMessage: Message = { text: input, sender: 'user' };
-            setMessages(prev => [...prev, userMessage]);
-            setInput('');
-            setIsLoading(true);
+   const handleSend = async () => {
+  const messageToSend = input.trim();
+  if (messageToSend) {
+    const userMessage: Message = { text: messageToSend, sender: 'user' };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
 
-            try {
-                const response = await axios.get('http://localhost:8091/chat/get-message', { params: { message: input } });
-                const llmMessage: Message = { text: response.data.reply, sender: 'llm' };
-                setMessages(prev => [...prev, llmMessage]);
-            } catch (error) {
-                console.error('Error fetching response from backend:', error);
-                const errorMessage: Message = { text: 'Error during communication', sender: 'llm' };
-                setMessages(prev => [...prev, errorMessage]);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
+    try {
+      const response = await axios.get('/api/chat/get-message', { params: { message: messageToSend } });
+      const llmMessage: Message = { text: response.data.reply, sender: 'llm' };
+      setMessages(prev => [...prev, llmMessage]);
+    } catch (error) {
+      console.error('Error fetching response from backend:', error);
+      const errorMessage: Message = { text: 'Error during communication', sender: 'llm' };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+};
 
     return (
         <Template

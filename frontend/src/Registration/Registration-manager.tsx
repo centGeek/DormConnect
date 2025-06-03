@@ -36,7 +36,7 @@ function RegistrationManager() {
                 }
             };
             
-            const response = await fetch('/api/manager/register', {
+            const response = await fetch('/register/manager', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(manager)
