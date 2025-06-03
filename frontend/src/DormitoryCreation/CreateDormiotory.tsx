@@ -95,7 +95,13 @@ function CreateDormitory() {
     }, [refresh_floors_value]);
 
     return (
-        <Template buttons={[{ text: 'Home', link: '/home' }, { text: 'Rooms', link: '/rooms' }]}>
+        <Template buttons={[
+            { text: 'Chat', link: '/chat' },
+            { text: 'Events', link: '/events' },
+            { text: 'Common Rooms', link: '/common-rooms' },
+            { text: 'Rooms', link: '/rooms' },
+            { text: 'Problems', link: '/problems' },
+        ]}>
             <div className="relative min-h-fit">
                 <h1 className="text-4xl font-bold text-gray-600 mb-6 text-center">Kreator akademika</h1>
                 {!(activeFloor===-1)&&(<button
@@ -107,7 +113,7 @@ function CreateDormitory() {
             </div>
             {!loadingFloors && (
                 <div className="flex h-fit justify-start">
-                    <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center">
+                    <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center rounded-xl m-2">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
                             onClick={() => {
