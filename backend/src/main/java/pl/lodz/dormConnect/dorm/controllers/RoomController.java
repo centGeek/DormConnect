@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 import pl.lodz.dormConnect.security.service.JwtService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -109,4 +111,23 @@ public class RoomController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping("/assign/{assignmentId}/shorten")
+    public ResponseEntity<?> shortenAssignment(
+            @PathVariable Long assignmentId,
+            @RequestParam("newEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate newEndDate,
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        try {
+            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+            roomService.shortenAssignmentEndDate(assignmentId, userId, newEndDate);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error shortening assignment: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
+        }
+    }
+
 }

@@ -162,4 +162,36 @@ public class RoomService {
         return true;
     }
 
+
+    @Transactional
+    public void shortenAssignmentEndDate(Long assignmentId, Long userId, LocalDate newEndDate) {
+        RoomAssignEntity assignment = roomAssignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+
+        if (!assignment.getResidentId().equals(userId)) {
+            throw new IllegalArgumentException("You are not the owner of this assignment.");
+        }
+
+        LocalDate currentEnd = assignment.getToDate();
+        if (currentEnd == null || currentEnd.isAfter(LocalDate.now()) == false) {
+            throw new IllegalArgumentException("Assignment has already ended.");
+        }
+
+        if (newEndDate.isAfter(currentEnd)) {
+            throw new IllegalArgumentException("New end date must be before current end date.");
+        }
+
+        if (newEndDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("New end date must be today or in the future.");
+        }
+
+        if (newEndDate.isAfter(LocalDate.now().plusWeeks(10))) {
+            throw new IllegalArgumentException("New end date is too far in the future (max 10 weeks).");
+        }
+
+        assignment.setToDate(newEndDate);
+        roomAssignmentRepository.save(assignment);
+    }
+
+
 }

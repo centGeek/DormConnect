@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Template from "../../Template/Template.tsx";
 import './MyAssignments.css';
+import { useNavigate } from "react-router-dom";
 
 const MyAssignments: React.FC = () => {
     interface AssignmentsDTO {
@@ -14,9 +15,12 @@ const MyAssignments: React.FC = () => {
         endDate: string | null;
     }
 
+    const navigate = useNavigate();
     const [assignments, setAssignments] = useState<AssignmentsDTO[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [view, setView] = useState<'current' | 'historical'>('current');
+    const [endingAssignmentId, setEndingAssignmentId] = useState<number | null>(null);
+    const [newEndDate, setNewEndDate] = useState<string>('');
 
     useEffect(() => {
         const fetchAssignments = async () => {
@@ -26,8 +30,7 @@ const MyAssignments: React.FC = () => {
                     .find(row => row.startsWith('token='))?.split('=')[1];
 
                 if (!token) {
-                    console.error('Token not found in cookie');
-                    setError('Token not found in cookie.');
+                    navigate("/login");
                     return;
                 }
 
@@ -47,16 +50,42 @@ const MyAssignments: React.FC = () => {
         fetchAssignments();
     }, []);
 
-    const now = new Date().toISOString();
+    const now = new Date();
+    const nowIso = now.toISOString();
+
+    const isCurrentlyOngoing = (a: AssignmentsDTO) => {
+        const start = new Date(a.startDate);
+        const end = a.endDate ? new Date(a.endDate) : null;
+        return start <= now && (!end || end >= now);
+    };
+
     const filteredAssignments = assignments
         .filter(a => {
             if (view === 'current') {
-                return !a.endDate || a.endDate >= now;
+                return !a.endDate || a.endDate >= nowIso;
             } else {
-                return a.endDate && a.endDate < now;
+                return a.endDate && a.endDate < nowIso;
             }
         })
         .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+    const submitEndEarlier = async (id: number) => {
+        try {
+            const token = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('token='))?.split('=')[1];
+
+            await axios.put(`/api/dorm/assign/`+id+`/shorten?newEndDate=${newEndDate}`, null,{
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            window.location.reload();
+
+        } catch (e) {
+            console.error("Failed to end assignment earlier", e);
+            setError("Failed to submit earlier end date.");
+        }
+    };
 
     return (
         <Template
@@ -82,24 +111,58 @@ const MyAssignments: React.FC = () => {
                 <span className={`font-medium ${view === 'historical' ? 'text-blue-600' : 'text-gray-500'}`}>Historical</span>
             </div>
 
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {filteredAssignments.length === 0 && !error && <p>No assignments found.</p>}
 
-            <div>
-                {error && <p className="text-red-500">{error}</p>}
-                {filteredAssignments.length === 0 && !error && <p>No assignments found.</p>}
+            <ul className="space-y-6">
+                {filteredAssignments.map((a) => {
+                    const currentlyOngoing = isCurrentlyOngoing(a);
+                    return (
+                        <li key={a.id} className="p-4 border rounded-lg shadow-sm bg-white">
+                            <p><strong>Room:</strong> {a.roomNumber} (Floor {a.roomFloor})</p>
+                            <p><strong>Period:</strong> {a.startDate} – {a.endDate ? a.endDate : 'ongoing'}</p>
 
-                <ul id="assignment-list">
-                    {filteredAssignments.map((a) => (
-                        <li key={a.id} className="assignment-item">
-                            <p>
-                                <strong>Room:</strong> {a.roomNumber} (Floor {a.roomFloor})
-                            </p>
-                            <p>
-                                <strong>Period:</strong> {a.startDate} – {a.endDate ? a.endDate : 'ongoing'}
-                            </p>
+                            {currentlyOngoing && (
+                                <div className="mt-3">
+                                    {endingAssignmentId === a.id ? (
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                            <input
+                                                type="date"
+                                                className="border rounded px-3 py-1"
+                                                value={newEndDate}
+                                                min={new Date().toISOString().split('T')[0]}
+                                                onChange={e => setNewEndDate(e.target.value)}
+                                            />
+                                            <button
+                                                onClick={() => submitEndEarlier(a.id)}
+                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                                            >
+                                                Confirm
+                                            </button>
+                                            <button
+                                                onClick={() => setEndingAssignmentId(null)}
+                                                className="text-gray-500 hover:text-gray-700 text-sm"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            className=" bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded"
+                                            onClick={() => {
+                                                setEndingAssignmentId(a.id);
+                                                setNewEndDate('');
+                                            }}
+                                        >
+                                            End earlier
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </li>
-                    ))}
-                </ul>
-            </div>
+                    );
+                })}
+            </ul>
         </Template>
     );
 };

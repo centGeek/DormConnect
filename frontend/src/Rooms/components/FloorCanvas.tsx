@@ -16,6 +16,10 @@ type GroupedRoomsType = {
     groupName: string | null;
 };
 
+const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))?.split('=')[1];
+
 type RoomType = {
     id: string;
     number: string;
@@ -40,7 +44,12 @@ const FloorCanvas: React.FC = () => {
 
     const fetchRooms = async () => {
         try {
-            const response = await axios.get<RoomType[]>('/api/dorm/room');
+            const response = await axios.get<RoomType[]>('/api/dorm/room',{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            });
             const grouped = groupRooms(response.data);
             setGroupedRooms(grouped);
             setSelectedRooms(new Set());
