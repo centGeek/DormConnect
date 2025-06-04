@@ -4,11 +4,14 @@ import {UserProvider} from "./Context/UserContext.tsx";
 import {StrictMode} from "react";
 import {BrowserRouter as Router} from "react-router-dom";
 import './index.css';
+import {TemperatureProvider} from "./Context/TemperatureContext.tsx";
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Router>
             <UserProvider>
-                <App/>
+                <TemperatureProvider>
+                 <App/>
+                </TemperatureProvider>
             </UserProvider>
         </Router>
     </StrictMode>
