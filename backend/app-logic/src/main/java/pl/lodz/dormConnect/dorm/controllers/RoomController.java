@@ -41,6 +41,10 @@ public class RoomController {
     public List<RoomInGroupDTO> getRooms() {
         return roomService.getAllRooms().stream().map(GroupedRoomsMapper::toRoomDto).toList();
     }
+    @GetMapping("/room/floor/{floor}")
+    public List<RoomInGroupDTO> getRoomsByFloor(@PathVariable Integer floor) {
+        return roomService.getRoomsByFloor(floor).stream().map(GroupedRoomsMapper::toRoomDto).toList();
+    }
 
 
     @PostMapping("/room/create")
@@ -97,6 +101,7 @@ public class RoomController {
         }
     }
 
+
 //    @GetMapping("/assign/myAssigns")
 //    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
 //        try {
@@ -109,3 +114,4 @@ public class RoomController {
 //        }
 //    }
 }
+
