@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import pl.lodz.commons.entity.UserEntity;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
@@ -14,4 +15,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                         select usr from UserEntity usr where usr.email =:email
             """)
     Optional<UserEntity> findByEmail(@Param("email") String email);
+
+    @Query("""
+        select u from UserEntity u where u.uuid =:uuid
+            """)
+    Optional<UserEntity> findByUuid(UUID uuid);
 }
+

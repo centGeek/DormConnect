@@ -1,15 +1,17 @@
 package pl.lodz.dormConnect.dormProblem.mapper;
 
 import org.junit.jupiter.api.Test;
+
+import pl.lodz.commons.entity.DormProblemEntity;
 import pl.lodz.commons.model.ProblemStatus;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
-import pl.lodz.commons.entity.DormProblemEntity;
+
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DormProblemEntityMapperTest {
+class DormProblemMapperTest {
 
     private final long id = 22;
     private final long studentId = 12;
