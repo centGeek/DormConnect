@@ -3,6 +3,8 @@ package pl.lodz.commons.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -10,12 +12,15 @@ import lombok.*;
 @ToString
 @Entity
 @Table(name = "user_profile")
-@AllArgsConstructor
+
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "user_name")
     private String userName;
@@ -33,7 +38,27 @@ public class UserEntity {
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 
+    public UserEntity(long id, String userName, String email, String password, boolean isActive, RoleEntity role) {
+        this.id = id;
+        this.uuid = UUID.randomUUID();
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.role = role;
+    }
+
     public UserEntity(String userName, String email, String password, boolean isActive, RoleEntity role) {
+        this.uuid = UUID.randomUUID();
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.role = role;
+    }
+
+    public UserEntity(UUID uuid, String userName, String email, String password, boolean isActive, RoleEntity role) {
+        this.uuid = uuid;
         this.userName = userName;
         this.email = email;
         this.password = password;

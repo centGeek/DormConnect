@@ -2,20 +2,24 @@ package pl.lodz.commons.repository.jpa;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 import pl.lodz.commons.entity.DormProblemEntity;
 import pl.lodz.commons.model.ProblemStatus;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+
+
+import java.util.Optional;
 import java.util.List;
 
 @Repository
 public interface DormProblemRepository extends JpaRepository<DormProblemEntity, Long> {
 
     @Transactional
-    default DormProblemEntity updateOrInsert(DormProblemEntity dormProblemEntity) {
-        return save(dormProblemEntity);
+    default DormProblemEntity updateOrInsert(DormProblemEntity DormProblemEntity) {
+        return save(DormProblemEntity);
     }
 
     @Transactional
