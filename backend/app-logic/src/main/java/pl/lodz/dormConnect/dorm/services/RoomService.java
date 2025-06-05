@@ -2,6 +2,7 @@ package pl.lodz.dormConnect.dorm.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,6 +11,7 @@ import pl.lodz.commons.entity.RoomAssignEntity;
 import pl.lodz.commons.entity.RoomEntity;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.RoomRepository;
+import pl.lodz.dormConnect.floors.service.FloorsService;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -21,14 +23,14 @@ import java.util.Optional;
 public class RoomService {
     @Autowired
     private final RoomRepository roomRepository;
-
     @Autowired
     private final RoomAssignmentRepository roomAssignmentRepository;
+    private final FloorsService floorsService;
 
-    @Autowired
-    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository) {
+    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository, @Lazy FloorsService floorsService) {
         this.roomRepository = roomRepository;
         this.roomAssignmentRepository = roomAssignmentRepository;
+        this.floorsService = floorsService;
     }
 
 
@@ -37,7 +39,9 @@ public class RoomService {
     }
 
     public RoomEntity addRoom(RoomEntity roomEntity) {
-        return roomRepository.save(roomEntity);
+        RoomEntity room = roomRepository.save(roomEntity);
+        floorsService.addRoomToFloor(room.getId(), room.getFloor());
+        return room;
     }
 
     public Optional<RoomEntity> findById(Long id) {
@@ -133,4 +137,15 @@ public class RoomService {
                         assignment.getToDate()))
                 .toList();
     }
+
+    public List<Integer> getFloors() {
+        return roomRepository.findAll().stream()
+                .map(RoomEntity::getFloor)
+                .distinct()
+                .toList();
+    }
+    public List<RoomEntity> getRoomsByFloor(int floor) {
+        return roomRepository.findByFloor(floor);
+    }
+
 }

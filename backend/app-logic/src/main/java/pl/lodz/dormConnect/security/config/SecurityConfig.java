@@ -68,6 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/problems/**").authenticated()
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
+                        .requestMatchers("/api/floors/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
