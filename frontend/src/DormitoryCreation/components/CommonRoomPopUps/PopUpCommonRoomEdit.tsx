@@ -1,5 +1,5 @@
 import React from 'react';
-import CommonRoomTypes from "../../../../../../../Projekt_temp/DormConnect/frontend/src/ReusableComponents/CommonRoomTypes.tsx";
+import CommonRoomTypes from '../../../ReusableComponents/CommonRoomTypes';
 
 interface PopupFormProps {
     onClose: () => void;

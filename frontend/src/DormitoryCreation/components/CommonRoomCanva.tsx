@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import CommonRoomTypes from "../../../../../../Projekt_temp/DormConnect/frontend/src/ReusableComponents/CommonRoomTypes.tsx";
-import getRoomIcon from "../../../../../../Projekt_temp/DormConnect/frontend/src/ReusableComponents/CommonRoomIcon.tsx";
-import getRoomStatusTranslation from "../../../../../../Projekt_temp/DormConnect/frontend/src/ReusableComponents/CommonRoomTypes.tsx";
+import { useEffect, useState } from "react"
+import getRoomStatusTranslation from "../../ReusableComponents/CommonRoomTypes";
+import CommonRoomTypes from "../../ReusableComponents/CommonRoomTypes";
+import getRoomIcon from "../../ReusableComponents/CommonRoomIcon";
 
 interface CommonRoomProps {
     id: number;
