@@ -45,4 +45,17 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignEntity
             WHERE a.residentId = :studentId
             """)
     List<RoomAssignEntity> findAllAssignmentsByStudentId(@Param("studentId") Long studentId);
+
+
+    @Query("""
+        SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END
+        FROM RoomAssignEntity a
+        JOIN RoomEntity r ON a.room.id = r.id
+        WHERE a.residentId = :studentId
+                AND (a.toDate IS NULL OR a.toDate >= :currDate)
+                AND r.number = :roomNumber
+        """)
+    boolean existsAssignmentAtDate(@Param("studentId") Long studentId,
+                                   @Param("currDate") LocalDate currDate,
+                                   @Param("roomNumber") String roomNumber);      
 }
