@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import pl.lodz.commons.entity.DormProblemEntity;
 import pl.lodz.commons.model.ProblemStatus;
+import pl.lodz.dormConnect.config.PostgresContainerConfig;
 import pl.lodz.dormConnect.config.TestApplication;
 import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
@@ -24,9 +25,8 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = TestApplication.class)
+@SpringBootTest
+@Import(PostgresContainerConfig.class)
 @ActiveProfiles("test")
 class DormProblemServiceTest {
 

@@ -1,31 +1,20 @@
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
-      - org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration
-  
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
-  
+    driver-class-name: org.postgresql.Driver
+    # URL, username i password zostaną nadpisane dynamicznie przez Testcontainers
+
   jpa:
     hibernate:
       ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: false
-  
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
   flyway:
     enabled: false
 
 eureka:
   client:
     enabled: false
-    service-url:
-      defaultZone: ""
-  instance:
-    hostname: localhost
 
 spring.cloud:
   discovery:
