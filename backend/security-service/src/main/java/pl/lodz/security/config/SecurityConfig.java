@@ -69,7 +69,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
-                        .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
