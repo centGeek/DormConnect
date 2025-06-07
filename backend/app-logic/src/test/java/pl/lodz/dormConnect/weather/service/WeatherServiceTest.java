@@ -7,7 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import pl.lodz.dormConnect.config.TestApplication;
+import pl.lodz.dormConnect.DormConnectApplicationTests;
 import pl.lodz.dormConnect.weather.dto.CurrentWeather;
 import pl.lodz.dormConnect.weather.dto.WeatherResponse;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 @SpringBootTest
-@Import(TestApplication.class)
+@Import(DormConnectApplicationTests.class)
 class WeatherServiceTest {
 
     @Test
