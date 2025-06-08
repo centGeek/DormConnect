@@ -23,6 +23,8 @@ spring:
       embedding:
         options:
           model: text-embedding-3-large
+  flyway:
+    enabled: true
 server:
   port: 8081
   cloud:
