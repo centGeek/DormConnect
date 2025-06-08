@@ -1,21 +1,15 @@
 package pl.lodz.dormConnect.dormProblem.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.config.annotation.web.configurers.SecurityContextConfigurer;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import pl.lodz.commons.entity.DormProblemEntity;
 import pl.lodz.commons.model.ProblemStatus;
-import pl.lodz.dormConnect.config.TestApplication;
-import pl.lodz.dormConnect.dormProblem.dto.CreateDormProblemDTO;
+import pl.lodz.dormConnect.config.PostgresContainerConfig;
 import pl.lodz.dormConnect.dormProblem.dto.GetDormProblemDTO;
 import pl.lodz.dormConnect.dormProblem.exception.DormProblemNotFoundException;
 import pl.lodz.dormConnect.dormProblem.mapper.DormProblemMapper;
@@ -24,9 +18,8 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = TestApplication.class)
+@SpringBootTest
+@Import(PostgresContainerConfig.class)
 @ActiveProfiles("test")
 class DormProblemServiceTest {
 
