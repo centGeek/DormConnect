@@ -25,7 +25,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = {DormConnectApplicationTests.class, PostgresContainerConfig.class})
+@SpringBootTest(classes = {PostgresContainerConfig.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
