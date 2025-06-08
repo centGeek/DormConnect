@@ -1,7 +1,6 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    # URL, username i password zostaną nadpisane dynamicznie przez Testcontainers
 
   jpa:
     hibernate:

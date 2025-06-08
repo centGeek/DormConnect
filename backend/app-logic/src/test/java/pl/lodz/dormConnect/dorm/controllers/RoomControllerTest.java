@@ -29,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
-@Transactional
-@Rollback
 class RoomControllerTest {
 
     @Autowired
