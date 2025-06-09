@@ -1,11 +1,11 @@
 package pl.lodz.dormConnect.nfc.exception;
 
-public class DeviceConnectionErrorException extends RuntimeException {
-    public DeviceConnectionErrorException(String message) {
+public class DeviceConnectionException extends RuntimeException {
+    public DeviceConnectionException(String message) {
         super(message);
     }
 
-    public DeviceConnectionErrorException(String message, Throwable cause) {
+    public DeviceConnectionException(String message, Throwable cause) {
         super(message, cause);
     }
 }

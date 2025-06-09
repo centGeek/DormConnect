@@ -10,16 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.dormConnect.nfc.dto.NfcAccessRequestDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceRegisterDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceUpdateDTO;
+import pl.lodz.dormConnect.nfc.dto.NfcProgramCardDTO;
 import pl.lodz.dormConnect.nfc.service.NfcDeviceService;
 
 @RestController
 @RequestMapping("/api/nfc")
-public class NfcController {
+public class NfcDeviceController {
 
     private final NfcDeviceService nfcDeviceService;
 
     @Autowired
-    public NfcController(NfcDeviceService nfcDeviceService) {
+    public NfcDeviceController(NfcDeviceService nfcDeviceService) {
         this.nfcDeviceService = nfcDeviceService;
     }
 
@@ -56,5 +57,6 @@ public class NfcController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
+    
 
 }

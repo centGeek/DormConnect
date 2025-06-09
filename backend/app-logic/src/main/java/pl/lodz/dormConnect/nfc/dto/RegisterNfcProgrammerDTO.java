@@ -1,7 +1,12 @@
 package pl.lodz.dormConnect.nfc.dto;
 
-public record RegisterNfcProgrammerDTO(
+import java.util.UUID;
 
+public record RegisterNfcProgrammerDTO(
+        UUID uuid,
+        int port,
+        String ipAddress,
+        String deviceStatus
 ) {
     
 }

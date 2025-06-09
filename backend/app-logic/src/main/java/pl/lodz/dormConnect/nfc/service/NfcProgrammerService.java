@@ -1,5 +1,9 @@
 package pl.lodz.dormConnect.nfc.service;
 
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -7,20 +11,35 @@ import org.springframework.web.client.RestTemplate;
 import pl.lodz.commons.entity.NfcProgrammerEntity;
 import pl.lodz.commons.repository.jpa.NfcProgrammerRepository;
 import pl.lodz.dormConnect.nfc.dto.NfcProgramCardDTO;
+import pl.lodz.dormConnect.nfc.dto.RegisterNfcProgrammerDTO;
 import pl.lodz.dormConnect.nfc.exception.DeviceConnectionException;
 import pl.lodz.dormConnect.nfc.exception.DeviceNotFoundException;
+import pl.lodz.dormConnect.nfc.mapper.NfcProgrammerMapper;
 
 @Service
 public class NfcProgrammerService {
     private final NfcProgrammerRepository nfcProgrammerRepository;
-    private final RestTemplate restTemplate;
+   
+    @Autowired
+    private RestTemplate restTemplate;
 
     public NfcProgrammerService(
-        NfcProgrammerRepository  nfcProgrammerRepository,
-        RestTemplate restTemplate) {
-
+        NfcProgrammerRepository  nfcProgrammerRepository) {
         this.nfcProgrammerRepository = nfcProgrammerRepository;
-        this.restTemplate = restTemplate;
+    }
+
+
+    public RegisterNfcProgrammerDTO registerNfcProgrammer(RegisterNfcProgrammerDTO registerNfcProgrammerDTO) {
+        if (registerNfcProgrammerDTO == null) {
+            throw new IllegalArgumentException("Invalid input: registerNfcProgrammerDTO cannot be null");
+        }
+        NfcProgrammerEntity nfcProgrammerEntity = new NfcProgrammerEntity();
+        nfcProgrammerEntity.setUuid(registerNfcProgrammerDTO.uuid());
+        nfcProgrammerEntity.setIpAddress(registerNfcProgrammerDTO.ipAddress());
+        nfcProgrammerEntity.setPort(registerNfcProgrammerDTO.port());
+        nfcProgrammerEntity.setDeviceStatus("ACTIVE");
+        NfcProgrammerEntity savedEntity = nfcProgrammerRepository.save(nfcProgrammerEntity);
+        return NfcProgrammerMapper.toRegisterNfcProgrammerDTO(savedEntity);
     }
 
 

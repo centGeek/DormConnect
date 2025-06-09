@@ -62,8 +62,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login",
-                                "api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
-                        .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
+                                "/api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
+                        .requestMatchers("/api/event/**", "api/event/participant/**").authenticated()
                         .requestMatchers("/api/dorm-problem/**").authenticated()
                         .requestMatchers("/problems/**").authenticated()
                         .requestMatchers("/api/dorm/**").permitAll()
