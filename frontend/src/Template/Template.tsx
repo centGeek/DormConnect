@@ -51,12 +51,12 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
         if (userContext?.user?.roles.includes("ADMIN")) {
         setDropdownButtonProps([
             { name: 'Panel administratora', url: '/admin-panel' },
-            { name: 'Ustawienia konta', url: '/user-management' },
+            { name: 'Ustawienia konta', url: '/account-settings' },
             { name: 'Wyloguj', url: '/logout' }
         ]);
     } else if (userContext?.user?.roles.includes("STUDENT")) {
         setDropdownButtonProps([
-            { name: 'Ustawienia konta', url: '/user-management' },
+            { name: 'Ustawienia konta', url: '/account-settings' },
             { name: 'Wyloguj', url: '/logout' }
         ]);
     }

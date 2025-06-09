@@ -20,7 +20,9 @@ import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 import AccountSettingsPanel from './AccountSettingsPanel/AccountSettingsPanel.tsx';
-import AdminPanel from './AdminPanel/AdminPanel.tsx';
+import AdminPanel from './AdminPanel/pages/AdminPanel.tsx';
+import UserManagementPanel from './AdminPanel/pages/UserManagementPanel.tsx';
+import NfcManagementPanel from './AdminPanel/pages/NfcManagementPanel.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -56,6 +58,8 @@ function App() {
                         )}
                         <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         <Route path="/admin-panel" element={<AdminPanel/>}/>
+                        <Route path="/users/manage" element={<UserManagementPanel/>}/>
+                        <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" replace />} />

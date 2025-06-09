@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
+                        .requestMatchers(("/api/users/**")).permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/*").permitAll()
