@@ -74,5 +74,15 @@ class CommonRoomController {
         return ResponseEntity.ok(floors);
     }
 
+    @PostMapping("/reset-assignments/{commonRoomId}")
+    public ResponseEntity<?> resetAssignmentsForNextWeek(@PathVariable Long commonRoomId) {
+        try {
+            return service.resetAssignmentsForNextWeek(commonRoomId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Common room not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting assignments: " + e.getMessage());
+        }
+    }
 
 }
