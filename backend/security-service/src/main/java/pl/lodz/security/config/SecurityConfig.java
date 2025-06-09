@@ -64,8 +64,8 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login",
                                 "/api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
                         .requestMatchers("/api/event/**", "api/event/participant/**").authenticated()
-                        .requestMatchers("/api/dorm-problem/**").authenticated()
-                        .requestMatchers("/problems/**").authenticated()
+                        .requestMatchers("/api/dorm-problem/**").permitAll()
+                        .requestMatchers("/problems/**").permitAll()
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()

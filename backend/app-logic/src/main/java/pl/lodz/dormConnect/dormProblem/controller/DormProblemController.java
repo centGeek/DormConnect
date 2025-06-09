@@ -41,7 +41,9 @@ public class DormProblemController {
     @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GetDormProblemDTO> getDormProblem(@PathVariable Long id) {
+        System.out.println("Fetching dorm problem with id: " + id);
         GetDormProblemDTO getDormProblemDTO = dormProblemService.getDormProblemById(id);
+        System.out.println("getDormProblemDTO = " + getDormProblemDTO);
         return ResponseEntity.status(HttpStatus.OK).body(getDormProblemDTO);
     }
 

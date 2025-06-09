@@ -23,6 +23,7 @@ public class NfcProgrammerController {
         this.nfcProgrammerService = nfcProgrammerService;
     }
 
+    // nfc device regisrers here by sending post request
     @PostMapping("/register")
     public ResponseEntity<RegisterNfcProgrammerDTO> registerNfcProgrammerDTO(
             @RequestBody RegisterNfcProgrammerDTO registerNfcProgrammerDTO) {
@@ -39,6 +40,7 @@ public class NfcProgrammerController {
         }
     }
 
+    // backend sends post request to nfc device to program the card
     @PostMapping("/program-card")
     public ResponseEntity<NfcProgramCardDTO> programCard(
             @RequestBody NfcProgramCardDTO nfcProgramCardDTO) {
