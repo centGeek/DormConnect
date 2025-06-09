@@ -1,8 +1,10 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import LogoPL from '../assets/logo_v1.1.png';
 import { useContext } from 'react';
 import { UserContext } from "../Context/UserContext.tsx";
 import { useTemperature } from "../Context/TemperatureContext.tsx";
+import { set } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 interface TemplateProps {
     children: ReactNode;
@@ -14,10 +16,18 @@ interface Button {
     link: string;
 }
 
+interface DropdownButtonProps {
+    name: string;
+    url: string;
+}
+
 function Template({ children, footerContent, buttons }: TemplateProps) {
     const userContext = useContext(UserContext);
     const { temperature, loading, error } = useTemperature();
-
+    const navigate = useNavigate();
+    const [dropdownButtonProps, setDropdownButtonProps] = useState<DropdownButtonProps[]>([])
+    const [isOpen, setIsOpen] = useState(false);
+    
     const handleLogout = async () => {
         try {
             await userContext?.handleLogout();
@@ -26,7 +36,31 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
         }
     };
 
+    const handleDropdownEvent = (url: string) => {
+        if (url === '/logout') {
+            handleLogout();
+        } else {
+            navigate(url);
+        }
+        setIsOpen(false); 
+    }
+
     useEffect(() => {
+
+    const handleDropdownButtonProps = () => {
+        if (userContext?.user?.roles.includes("ADMIN")) {
+        setDropdownButtonProps([
+            { name: 'Panel administratora', url: '/admin-panel' },
+            { name: 'Ustawienia konta', url: '/user-management' },
+            { name: 'Wyloguj', url: '/logout' }
+        ]);
+    } else if (userContext?.user?.roles.includes("STUDENT")) {
+        setDropdownButtonProps([
+            { name: 'Ustawienia konta', url: '/user-management' },
+            { name: 'Wyloguj', url: '/logout' }
+        ]);
+    }
+    } 
         const updateHeaderTemperature = () => {
             const tempText = loading
                 ? 'Ładowanie...'
@@ -54,6 +88,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
         };
 
         updateHeaderTemperature();
+        handleDropdownButtonProps();
         const intervalId = setInterval(updateHeaderTemperature, 30000);
         return () => clearInterval(intervalId);
     }, [temperature, loading, error]);
@@ -83,16 +118,59 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         ))}
                     </div>
 
+    <div className="relative">
+      {/* Dropdown Button */}
+      <button
+        id="dropdownDefaultButton"
+        onClick={() => setIsOpen(!isOpen)}
+        className="text-white w-65 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button"
+      >
+        {userContext?.user?.username}
+        <svg
+          className="w-2.5 h-2.5 ms-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
 
-                    <div className="flex items-center space-x-4">
-                        <span className="header-temperature text-black font-bold"></span>
-                        <button
-                            className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
-                            onClick={handleLogout}
-                        >
-                            Log out
-                        </button>
-                    </div>
+      {}
+      {isOpen && (
+        <div
+          id="dropdown"
+          className="z-10 absolute  bg-white divide-y divide-gray-100 rounded-lg shadow w-65 dark:bg-gray-700"
+        >
+          <ul
+            className="py-2 text-sm text-gray-700 dark:text-gray-200"
+            aria-labelledby="dropdownDefaultButton"
+          >
+            {dropdownButtonProps.map(key => (
+            <li>
+              <a
+                onClick={() => {
+                    handleDropdownEvent(key.url);
+                }}
+                className="hover:cursor-default block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                {key.name}
+              </a>
+            </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+    </div>
                 </div>
             </header>
 

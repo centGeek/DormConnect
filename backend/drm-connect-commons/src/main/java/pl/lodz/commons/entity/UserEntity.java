@@ -20,7 +20,7 @@ public class UserEntity {
     private Long id;
 
     @Column(name = "uuid")
-    private UUID uuid;
+    private String uuid;
 
     @Column(name = "user_name")
     private String userName;
@@ -40,7 +40,7 @@ public class UserEntity {
 
     public UserEntity(long id, String userName, String email, String password, boolean isActive, RoleEntity role) {
         this.id = id;
-        this.uuid = UUID.randomUUID();
+        this.uuid = UUID.randomUUID().toString();
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -49,7 +49,7 @@ public class UserEntity {
     }
 
     public UserEntity(String userName, String email, String password, boolean isActive, RoleEntity role) {
-        this.uuid = UUID.randomUUID();
+        this.uuid = UUID.randomUUID().toString();
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -57,7 +57,7 @@ public class UserEntity {
         this.role = role;
     }
 
-    public UserEntity(UUID uuid, String userName, String email, String password, boolean isActive, RoleEntity role) {
+    public UserEntity(String uuid, String userName, String email, String password, boolean isActive, RoleEntity role) {
         this.uuid = uuid;
         this.userName = userName;
         this.email = email;

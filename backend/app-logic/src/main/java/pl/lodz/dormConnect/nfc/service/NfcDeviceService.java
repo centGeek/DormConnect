@@ -44,7 +44,7 @@ public class NfcDeviceService {
 
     public boolean checkAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
 
-        UserEntity currentUser = userRepository.findByUuid(UUID.fromString(nfcAccessRequestDTO.user_uuid())).orElse(null);
+        UserEntity currentUser = userRepository.findByUuid(nfcAccessRequestDTO.user_uuid()).orElse(null);
         if (currentUser == null) {
             throw new RuntimeException("Validation failed");
         }

@@ -44,8 +44,12 @@ public class AuthController {
         );
 
         User user = (User) authentication.getPrincipal();
-        Optional<UserEntity> byEmail = userRepository.findByEmail(user.getUsername());
-        String token = jwtService.generateToken(byEmail.get().getId(), user.getUsername(), user.getAuthorities()
+        Optional<UserEntity> userByEmail = userRepository.findByEmail(user.getUsername());
+        String token = jwtService.generateToken(
+            userByEmail.get().getId(), 
+            user.getUsername(), // its actually email - user principal is email
+            userByEmail.get().getUserName(),
+            user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList())

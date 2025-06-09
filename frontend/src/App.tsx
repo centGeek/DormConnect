@@ -19,6 +19,8 @@ import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
+import AccountSettingsPanel from './AccountSettingsPanel/AccountSettingsPanel.tsx';
+import AdminPanel from './AdminPanel/AdminPanel.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -52,6 +54,8 @@ function App() {
                         {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
                         )}
+                        <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
+                        <Route path="/admin-panel" element={<AdminPanel/>}/>
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" replace />} />
