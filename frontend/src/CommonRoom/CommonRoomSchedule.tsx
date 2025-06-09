@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Template from "../Template/Template";
+import { UserContext } from "../Context/UserContext";
 // @ts-expect-error
 import { groupBy } from "lodash";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
@@ -29,6 +30,7 @@ function CommonRoomSchedule() {
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
+    const userContext = useContext(UserContext);
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
@@ -129,6 +131,23 @@ function CommonRoomSchedule() {
             handleAssign(assignment.id);
         }
     };
+    const handleResetAssignments = async (commonRoomId: number) =>{
+        try {
+            const response = await fetch(`/api/common-room/reset-assignments/${commonRoomId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: "include",
+            });
+            if (!response.ok) throw new Error("Failed to reset assignments");
+            await fetchAssignments();
+        } catch (error) {
+            console.error("Error resetting assignments:", error);
+            alert("Cannot reset assignments.");
+        }
+    }
 
     useEffect(() => {
         if (id) {
@@ -166,6 +185,10 @@ function CommonRoomSchedule() {
                             <span className="text-gray-600">Pojemność:</span> {commonRoom.capacity}&nbsp;&nbsp;&nbsp;
                             <span className="text-gray-600">Limit zapisów:</span> {commonRoom.timesAWeekYouCanUseIt}
                         </p>
+                        {((userContext?.user?.roles.includes("ADMIN") || (userContext?.user?.roles.includes("MANAGER"))) &&
+                            <button onClick={() => handleResetAssignments(commonRoom?.id || 0)} className=" mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 transition">
+                                Resetuj rezerwacje
+                            </button>)}
                     </div>
                 )}
             </header>

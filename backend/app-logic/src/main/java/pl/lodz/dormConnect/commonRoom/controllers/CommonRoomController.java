@@ -74,7 +74,7 @@ class CommonRoomController {
         return ResponseEntity.ok(floors);
     }
 
-    @PostMapping("/reset-assignments/{commonRoomId}")
+    @PutMapping("/reset-assignments/{commonRoomId}")
     public ResponseEntity<?> resetAssignmentsForNextWeek(@PathVariable Long commonRoomId) {
         try {
             return service.resetAssignmentsForNextWeek(commonRoomId);
