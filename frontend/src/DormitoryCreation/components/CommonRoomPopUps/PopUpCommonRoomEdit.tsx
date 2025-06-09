@@ -1,5 +1,6 @@
 import React from 'react';
 import CommonRoomTypes from '../../../ReusableComponents/CommonRoomTypes';
+import Cookies from "js-cookie";
 
 interface PopupFormProps {
     onClose: () => void;
@@ -24,6 +25,7 @@ function PopUpCommonRoomEdit({ onClose, common_room_id }: PopupFormProps) {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: "include",
             });
@@ -43,6 +45,7 @@ function PopUpCommonRoomEdit({ onClose, common_room_id }: PopupFormProps) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: "include",
             });

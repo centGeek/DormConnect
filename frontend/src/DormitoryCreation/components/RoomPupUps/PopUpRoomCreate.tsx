@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 interface PopupFormProps {
     floor: number;
@@ -23,6 +24,7 @@ function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
             await axios.post('/api/dorm/room/create', newRoom, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 withCredentials: true,
             });

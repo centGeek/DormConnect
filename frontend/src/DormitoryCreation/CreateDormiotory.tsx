@@ -9,6 +9,7 @@ import PopUpRemoveAllRooms from "./components/FloorPupUps/PopUpRemoveAllRooms.ts
 import RoomCanva from "./components/RoomCanva.tsx";
 import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
+import Cookies from "js-cookie";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -69,6 +70,7 @@ function CreateDormitory() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: "include"
             });

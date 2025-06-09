@@ -44,13 +44,15 @@ function App() {
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
-                        <Route path="/dormitory" element={<CreateDormitory />} />
                         <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
                         {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
+                        )}
+                        {userContext?.user?.roles.includes('ADMIN') && (
+                            <Route path="/dormitory" element={<CreateDormitory />} />
                         )}
                     </>
                 ) : (

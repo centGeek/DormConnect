@@ -17,6 +17,9 @@ function CommonRoomShow() {
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRooms, setCommonRooms] = useState<CommonRoom[]>([]);
     const navigate = useNavigate();
+    const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))?.split('=')[1];
 
     const fetchCommonRooms = async () => {
         try {
@@ -26,6 +29,7 @@ function CommonRoomShow() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 credentials: "include"
             });

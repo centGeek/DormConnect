@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 interface RoomProps {
     id: number;
@@ -25,6 +26,7 @@ function RoomCanva({ floor, onRoomAdd, onRoomEdit, refresh }: RoomCanvaProps) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: "include"
             });

@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 
 interface PopUpRoomDeleteProps {
     onClose: () => void;
@@ -12,6 +13,7 @@ function PopUpRoomDelete({ onClose, roomNumber, roomId }: PopUpRoomDeleteProps) 
         //         method: "DELETE",
         //         headers: {
         //             "Content-Type": "application/json",
+        //             'Authorization': `Bearer ${Cookies.get('token')}`,
         //         },
         //         credentials: "include",
         //     });
