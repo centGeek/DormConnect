@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Template from "../Template/Template";
+import { UserContext } from "../Context/UserContext";
 // @ts-expect-error
 import { groupBy } from "lodash";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
+import ErrorPopUp  from "./ErrorPopUp.tsx";
 
 interface assignmentProps {
     id: number;
@@ -29,6 +31,8 @@ function CommonRoomSchedule() {
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
+    const userContext = useContext(UserContext);
+    const [isPopUpErrorOpen, setIsPopUpErrorOpen] = useState<boolean>(false);
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
@@ -62,6 +66,7 @@ function CommonRoomSchedule() {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 credentials: "include"
             });
@@ -90,13 +95,12 @@ function CommonRoomSchedule() {
             });
             if (!response.ok) {
                 const errorMessage = await response.text();
-                alert(errorMessage);
-                return;
+                setIsPopUpErrorOpen(true);
             }
             await fetchAssignments();
         } catch (error) {
             console.error("Error assigning to assignment:", error);
-            alert("Cannot join the assignment.");
+            setIsPopUpErrorOpen(true);
         }
     };
 
@@ -114,21 +118,43 @@ function CommonRoomSchedule() {
             await fetchAssignments();
         } catch (error) {
             console.error("Error unassigning from assignment:", error);
-            alert("Cannot leave the assignment.");
         }
     };
 
     const handleClick = (assignment: assignmentProps) => {
-        if (assignment.isArchived) {
-            alert("You cannot join past assignments.");
-            return;
-        }
+        // if (assignment.isArchived) {
+        //     alert("You cannot join past assignments.");
+        //     return;
+        // }
         if (assignment.isUserAssigned) {
             handleUnassign(assignment.id);
         } else if (!assignment.isFull) {
             handleAssign(assignment.id);
         }
+        else {
+            setIsPopUpErrorOpen(true);
+        }
     };
+    const handleResetAssignments = async (commonRoomId: number) =>{
+        try {
+            const response = await fetch(`/api/common-room/reset-assignments/${commonRoomId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: "include",
+            });
+            if (!response.ok) throw new Error("Failed to reset assignments");
+            await fetchAssignments();
+        } catch (error) {
+            console.error("Error resetting assignments:", error);
+            alert("Cannot reset assignments.");
+        }
+    }
+    const handleClosePopUp = () => {
+        setIsPopUpErrorOpen(false);
+    }
 
     useEffect(() => {
         if (id) {
@@ -155,8 +181,9 @@ function CommonRoomSchedule() {
     }, []);
 
 
+    // @ts-ignore
     return (
-        <Template buttons={[{text: 'Back', link: '/common-rooms'}]}>
+        <Template buttons={[{text: 'Powrót', link: '/common-rooms'}]}>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
                 {commonRoom && (
                     <div className="text-center text-gray-700">
@@ -166,6 +193,10 @@ function CommonRoomSchedule() {
                             <span className="text-gray-600">Pojemność:</span> {commonRoom.capacity}&nbsp;&nbsp;&nbsp;
                             <span className="text-gray-600">Limit zapisów:</span> {commonRoom.timesAWeekYouCanUseIt}
                         </p>
+                        {((userContext?.user?.roles.includes("ADMIN") || (userContext?.user?.roles.includes("MANAGER"))) &&
+                            <button onClick={() => handleResetAssignments(commonRoom?.id || 0)} className=" mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 transition">
+                                Resetuj rezerwacje
+                            </button>)}
                     </div>
                 )}
             </header>
@@ -212,6 +243,7 @@ function CommonRoomSchedule() {
                     ))
                 )}
             </div>
+            {isPopUpErrorOpen && <ErrorPopUp onClose={handleClosePopUp} />}
         </Template>
     );
 }

@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Cookies from "js-cookie";
+import PopUpWrongRoomParm from "./PopUpWrongRoomParm.tsx";
 
 interface PopupFormProps {
     floor: number;
     onClose: () => void;
+    onSucced: () => void;
 }
 
-function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
+function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
     const [number, setNumber] = useState('');
     const [capacity, setCapacity] = useState(2);
+    const [showPopYupWrongRoomParm, setShowPopupWrongRoomParm] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,14 +27,15 @@ function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
             await axios.post('/api/dorm/room/create', newRoom, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 withCredentials: true,
             });
-
-            alert('Pokój został pomyślnie dodany!');
             onClose();
+            onSucced();
         } catch (error) {
             console.error('Błąd podczas tworzenia pokoju:', error);
+            setShowPopupWrongRoomParm(true);
         }
     };
 
@@ -75,6 +80,7 @@ function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
                     </div>
                 </form>
             </div>
+            {showPopYupWrongRoomParm && <PopUpWrongRoomParm onClose={() => setShowPopupWrongRoomParm(false)} /> }
         </div>
     );
 }

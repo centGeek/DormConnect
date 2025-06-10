@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 interface PopupRemoveFloorProps {
     onClose: () => void,
     floor: number,
@@ -11,6 +13,7 @@ function PopUpRemoveFloor({onClose, floor}: PopupRemoveFloorProps) {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: 'include',
             });

@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import LogoPL from '../assets/logo_v1.1.png';
+import LogoPL from '/logo_cale.png';
 import { useContext } from 'react';
 import { UserContext } from "../Context/UserContext.tsx";
 import { useTemperature } from "../Context/TemperatureContext.tsx";
@@ -37,8 +37,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
             const tooltip =
                 !loading && !error && temperature !== null
                     ? temperature > 10
-                        ? 'Good weather for Flanki!'
-                        : 'Bad weather for Flanki'
+                        ? 'Dobra pogoda na Flanki!'
+                        : 'Zła pogoda na Flanki'
                     : '';
 
             let el = document.querySelector('.header-temperature') as HTMLElement;
@@ -63,7 +63,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
             <header className="bg-gray-200 text-white py-2 shadow-md border-gray-700 rounded-t-lg">
                 <div className="container mx-auto flex items-center justify-between px-4">
-                    <a href="/home" className="flex items-center">
+                    <a href="/home" className="flex items-center flex-1">
                         <img
                             src={LogoPL}
                             alt="Logo"
@@ -71,26 +71,25 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         />
                     </a>
 
-                    <div className="flex justify-center items-center space-x-4">
+                    <div className="flex justify-center items-center space-x-4 flex-1">
                         {buttons?.map((button: Button, index: number) => (
                             <a
                                 key={index}
                                 href={button.link}
-                                className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition"
+                                className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition whitespace-nowrap"
                             >
                                 {button.text}
                             </a>
                         ))}
                     </div>
 
-
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4 flex-1 justify-end">
                         <span className="header-temperature text-black font-bold"></span>
                         <button
                             className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
                             onClick={handleLogout}
                         >
-                            Log out
+                            Wyloguj
                         </button>
                     </div>
                 </div>
