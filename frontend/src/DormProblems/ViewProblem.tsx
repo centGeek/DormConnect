@@ -107,14 +107,13 @@ function DormProblemView() {
     }, [])
 
     return (
-<Template
-    buttons={[
-        { text: 'Home', link: '/home' },
-        { text: 'Chat', link: '/chat' },
-        { text: 'Events', link: '/events' }
-    ]}
-    footerContent={<p></p>}
->
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <button
             className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center"

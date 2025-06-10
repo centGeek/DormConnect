@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login/Login.tsx';
 import RegistrationStudent from './Registration/Registration-student.tsx';
@@ -22,10 +22,6 @@ import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
-
-    useEffect(() => {
-        console.log('User context:', userContext?.user?.roles);
-    }, [userContext]);
 
     return (
 

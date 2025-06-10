@@ -118,15 +118,14 @@ function CommonRoomSchedule() {
             await fetchAssignments();
         } catch (error) {
             console.error("Error unassigning from assignment:", error);
-            alert("Cannot leave the assignment.");
         }
     };
 
     const handleClick = (assignment: assignmentProps) => {
-        if (assignment.isArchived) {
-            alert("You cannot join past assignments.");
-            return;
-        }
+        // if (assignment.isArchived) {
+        //     alert("You cannot join past assignments.");
+        //     return;
+        // }
         if (assignment.isUserAssigned) {
             handleUnassign(assignment.id);
         } else if (!assignment.isFull) {
@@ -181,7 +180,7 @@ function CommonRoomSchedule() {
 
     // @ts-ignore
     return (
-        <Template buttons={[{text: 'Back', link: '/common-rooms'}]}>
+        <Template buttons={[{text: 'Powrót', link: '/common-rooms'}]}>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
                 {commonRoom && (
                     <div className="text-center text-gray-700">
