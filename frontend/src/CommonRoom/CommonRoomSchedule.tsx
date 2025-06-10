@@ -131,6 +131,9 @@ function CommonRoomSchedule() {
         } else if (!assignment.isFull) {
             handleAssign(assignment.id);
         }
+        else {
+            setIsPopUpErrorOpen(true);
+        }
     };
     const handleResetAssignments = async (commonRoomId: number) =>{
         try {

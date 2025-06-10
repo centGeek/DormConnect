@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react';
-import LogoPL from '../../public/logo_cale.png';
+import LogoPL from '/logo_cale.png';
 import { useContext } from 'react';
 import { UserContext } from "../Context/UserContext.tsx";
 import { useTemperature } from "../Context/TemperatureContext.tsx";
