@@ -197,6 +197,19 @@ String NfcController::nfcTagToString(uint8_t* nfcUuid)
     return finalString;
 }
 
+/**
+ * Converts a UUID string to an array of 16 uint8_t values.
+ *
+ * This function takes a UUID string (typically in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
+ * parses it by removing hyphens, and converts each pair of hexadecimal characters into a uint8_t value.
+ * The resulting 16-byte array is returned as a pointer to a static array.
+ *
+ * @param uuidString The UUID string to convert.
+ * @return Pointer to a static array of 16 uint8_t values representing the UUID.
+ *
+ * @note The returned pointer refers to a static array, so its contents will be overwritten
+ *       by subsequent calls to this function.
+ */
 uint8_t *NfcController::uuidToIntArray(String uuidString)
 {
     static uint8_t finalUUID[16];

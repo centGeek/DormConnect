@@ -6,6 +6,8 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.lodz.commons.entity.NfcDeviceEntity;
 import pl.lodz.commons.entity.UserEntity;
+import pl.lodz.commons.repository.jpa.CommonRoomAssignmentRepository;
+import pl.lodz.commons.repository.jpa.CommonRoomRepository;
 import pl.lodz.commons.repository.jpa.NfcDeviceRepository;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.UserRepository;
@@ -15,7 +17,7 @@ import pl.lodz.dormConnect.nfc.dto.NfcDeviceUpdateDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcProgramCardDTO;
 import pl.lodz.dormConnect.nfc.exception.DeviceNotFoundException;
 import pl.lodz.dormConnect.nfc.mapper.NfcDeviceMapper;
-
+import pl.lodz.dormConnect.users.exceptions.UserException;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -26,16 +28,21 @@ public class NfcDeviceService {
     private final NfcDeviceRepository nfcDeviceRepository;
     private final RoomAssignmentRepository roomAssignmentRepository;
     private final UserRepository userRepository;
+    private final CommonRoomRepository commonRoomRepository;
+    private final CommonRoomAssignmentRepository commonRoomAssignmentRepository;
 
 
     @Autowired
     public NfcDeviceService(NfcDeviceRepository nfcDeviceRepository,
                             RoomAssignmentRepository roomAssignmentRepository,
-                            UserRepository userRepository)  {
+                            UserRepository userRepository,
+                            CommonRoomAssignmentRepository commonRoomAssignmentRepository,
+                            CommonRoomRepository commonRoomRepository) { {
         this.nfcDeviceRepository = nfcDeviceRepository;
         this.roomAssignmentRepository = roomAssignmentRepository;
         this.userRepository = userRepository;
- 
+        this.commonRoomAssignmentRepository = commonRoomAssignmentRepository;
+        this.commonRoomRepository = commonRoomRepository;
     }
 
     public NfcDeviceRegisterDTO registerDevice(NfcDeviceRegisterDTO nfcDeviceDTO) {
@@ -68,6 +75,20 @@ public class NfcDeviceService {
         } else {
             throw new DeviceNotFoundException("Device with uuid: " + deviceUpdateDTO.device_uuid() + " not found");
         }
+    }
+
+    public boolean checkCommonRoomAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
+        // TODO Auto-generated method stub
+        UserEntity currentUser = userRepository.findByUuid(nfcAccessRequestDTO.user_uuid()).orElse(null);
+        if (currentUser == null) {
+            throw new UserException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
+        }
+        
+
+        CommonRoomAssignment currentAssignment = commonRoomAssignmentRepository
+                .findCurrentAssingmentByCommonRoomId(nfc)
+        
+        throw new UnsupportedOperationException("Unimplemented method 'checkCommonRoomAccess'");
     }
 
 }
