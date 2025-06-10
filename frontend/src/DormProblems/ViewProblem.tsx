@@ -8,6 +8,7 @@ import getToken from './GetToken';
 import { jwtDecode } from 'jwt-decode';
 
 import { HttpStatusCode } from 'axios';
+import { set } from 'react-hook-form';
 
 interface DormProblem {
     id: number;
@@ -85,6 +86,9 @@ function DormProblemView() {
             if (response.status == HttpStatusCode.InternalServerError) {
                 //navigate("/problems")
             }
+            const data = await response.json();
+            console.log(data);
+            setDormProblem(data);
             return response;
 
 
@@ -95,8 +99,8 @@ function DormProblemView() {
 
     useEffect(() => {
         event?.preventDefault();
-        const problem = fetchDormProblem();
-        console.log(problem)
+        fetchDormProblem();
+
         fetchProblemStatuses();
     }, [])
 
