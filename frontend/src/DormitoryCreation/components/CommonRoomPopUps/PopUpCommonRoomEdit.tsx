@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 interface PopupFormProps {
     onClose: () => void;
+    onSucced: () => void;
     common_room_id: number;
 }
 
@@ -16,7 +17,7 @@ interface CommonRoom {
     isArchived: boolean;
 }
 
-function PopUpCommonRoomEdit({ onClose, common_room_id }: PopupFormProps) {
+function PopUpCommonRoomEdit({ onClose, common_room_id, onSucced }: PopupFormProps) {
     const [commonRoom, setCommonRoom] = React.useState<CommonRoom | null>(null);
 
     const getInformation = async (common_room_id: number) => {
@@ -52,8 +53,8 @@ function PopUpCommonRoomEdit({ onClose, common_room_id }: PopupFormProps) {
             if (!response.ok) {
                 throw new Error("Failed to delete common room");
             }
-            alert("Pokój wspólny został usunięty!");
             onClose();
+            onSucced();
         } catch (error) {
             console.error("Error deleting common room:", error);
             alert("Wystąpił błąd podczas usuwania pokoju wspólnego.");

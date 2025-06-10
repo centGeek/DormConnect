@@ -5,7 +5,6 @@ import { UserContext } from "../Context/UserContext.tsx";
 
 function EventsCreate() {
     const userContext = useContext(UserContext);
-    const isAdmin = userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER');
     const organizerId = userContext?.user?.id;
 
     const [eventName, setEventName] = useState('');

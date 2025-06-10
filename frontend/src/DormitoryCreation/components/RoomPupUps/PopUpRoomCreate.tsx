@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Cookies from "js-cookie";
+import PopUpWrongRoomParm from "./PopUpWrongRoomParm.tsx";
 
 interface PopupFormProps {
     floor: number;
@@ -11,6 +12,7 @@ interface PopupFormProps {
 function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
     const [number, setNumber] = useState('');
     const [capacity, setCapacity] = useState(2);
+    const [showPopYupWrongRoomParm, setShowPopupWrongRoomParm] = useState(false);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -33,6 +35,7 @@ function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
             onSucced();
         } catch (error) {
             console.error('Błąd podczas tworzenia pokoju:', error);
+            setShowPopupWrongRoomParm(true);
         }
     };
 
@@ -77,6 +80,7 @@ function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
                     </div>
                 </form>
             </div>
+            {showPopYupWrongRoomParm && <PopUpWrongRoomParm onClose={() => setShowPopupWrongRoomParm(false)} /> }
         </div>
     );
 }

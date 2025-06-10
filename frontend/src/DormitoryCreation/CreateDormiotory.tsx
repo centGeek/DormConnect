@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Template from '../Template/Template.tsx';
 import CommonRoomCanva from "./components/CommonRoomCanva.tsx";
 import PopUpCommonRoomCreate from './components/CommonRoomPopUps/PopUpCommonRoomCreate.tsx';
@@ -30,6 +30,8 @@ function CreateDormitory() {
     const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
     const [isPopUpSuccedOpen, setIsPopUpSuccedOpen] = useState<boolean>(false);
 
+    const floorsContainerRef = useRef<HTMLDivElement>(null);
+
     const handleCommonRoomEdit = (id: number) => {
         setCommonRoomId(id);
         setIsPopupCREditOpen(true);
@@ -47,7 +49,6 @@ function CreateDormitory() {
     };
     const handleRemoveFloor = () => {
         setIsPopUpRemoveDialogOpen(false);
-        // setIsPopUpRemoveFloorsOpen(true);
         alert("Na razie ta funkcjonalność jest niedostępna")
     }
 
@@ -96,9 +97,28 @@ function CreateDormitory() {
     };
 
     useEffect(() => {
-
         getFloors();
     }, [refresh_floors_value]);
+
+    const handleAddFloor = async () => {
+        try {
+            await fetch('/api/floors/add', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
+                },
+            });
+            setRefresh_floors_value(refresh_floors_value + 1);
+
+            if (floorsContainerRef.current) {
+                floorsContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (error) {
+            console.error('Błąd podczas dodawania piętra:', error);
+        }
+    };
 
     return (
         <Template buttons={[
@@ -122,20 +142,15 @@ function CreateDormitory() {
                     <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center rounded-xl m-2">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
-                            onClick={() => {
-                                fetch('/api/floors/add', {
-                                    method: 'POST', credentials: "include", headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': `Bearer ${Cookies.get('token')}`,
-                                    }
-                                });
-                                setRefresh_floors_value(refresh_floors_value + 1);
-                            }}
+                            onClick={handleAddFloor}
                             className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
                         >
                             +
                         </button>
-                        <div className="mt-4 w-full h-96 overflow-y-auto flex flex-col-reverse gap-4 items-center">
+                        <div
+                            ref={floorsContainerRef}
+                            className="mt-4 w-full h-96 overflow-y-auto flex flex-col-reverse gap-4 items-center"
+                        >
                             {floors.map((floor, index) => (
                                 <div
                                     key={index}
@@ -180,7 +195,7 @@ function CreateDormitory() {
                 <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} onSucced={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopupCREditOpen && commonRoomId !== null && (
-                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId}/>
+                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId} onSucced={() =>setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopUpRemoveDialogOpen && (
                 <PopUpRemoveChoice onClose={handleClosePopup} onRemoveFloor={handleRemoveFloor}
