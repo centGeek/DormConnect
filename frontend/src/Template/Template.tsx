@@ -90,7 +90,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                             className="bg-white text-red-600 px-4 py-2 rounded-lg shadow hover:bg-red-600 transition hover:text-white"
                             onClick={handleLogout}
                         >
-                            Log out
+                            Wyloguj
                         </button>
                     </div>
                 </div>

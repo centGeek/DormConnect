@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import Template from '../Template/Template.tsx';
-import CommonRoomCanva  from "./components/CommonRoomCanva.tsx";
+import CommonRoomCanva from "./components/CommonRoomCanva.tsx";
 import PopUpCommonRoomCreate from './components/CommonRoomPopUps/PopUpCommonRoomCreate.tsx';
 import PopUpCommonRoomEdit from "./components/CommonRoomPopUps/PopUpCommonRoomEdit.tsx";
 import PopUpRemoveChoice from "./components/FloorPupUps/PopUpRemoveChoice.tsx";
@@ -9,6 +9,7 @@ import PopUpRemoveAllRooms from "./components/FloorPupUps/PopUpRemoveAllRooms.ts
 import RoomCanva from "./components/RoomCanva.tsx";
 import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
+import OperationSuccedPopUp from "./components/OperationSuccedPopUp.tsx";
 import Cookies from "js-cookie";
 
 function CreateDormitory() {
@@ -27,6 +28,7 @@ function CreateDormitory() {
     const [isPopUpRemoveRoomsOpen, setIsPopUpRemoveRoomsOpen] = useState<boolean>(false);
     const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
+    const [isPopUpSuccedOpen, setIsPopUpSuccedOpen] = useState<boolean>(false);
 
     const handleCommonRoomEdit = (id: number) => {
         setCommonRoomId(id);
@@ -48,6 +50,7 @@ function CreateDormitory() {
         // setIsPopUpRemoveFloorsOpen(true);
         alert("Na razie ta funkcjonalność jest niedostępna")
     }
+
     const handleClosePopup = () => {
         setIsPopupCRCreateOpen(false);
         setIsPopupCREditOpen(false);
@@ -56,8 +59,9 @@ function CreateDormitory() {
         setIsPopUpRemoveRoomsOpen(false);
         setIsPopUpRoomCreateOpen(false);
         setIsPopUpRemoveRoomOpen(false);
-        setRefresh_rooms_value(refresh_rooms_value+1)
-        setRefresh_floors_value(refresh_rooms_value+1)
+        setIsPopUpSuccedOpen(false);
+        setRefresh_rooms_value(refresh_rooms_value + 1)
+        setRefresh_floors_value(refresh_rooms_value + 1)
     };
     const handleRemoveRooms = () => {
         setIsPopUpRemoveDialogOpen(false);
@@ -98,15 +102,15 @@ function CreateDormitory() {
 
     return (
         <Template buttons={[
-            { text: 'Chat', link: '/chat' },
-            { text: 'Events', link: '/events' },
-            { text: 'Common Rooms', link: '/common-rooms' },
-            { text: 'Rooms', link: '/rooms' },
-            { text: 'Problems', link: '/problems' },
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
         ]}>
             <div className="relative min-h-fit">
                 <h1 className="text-4xl font-bold text-gray-600 mb-6 text-center">Kreator akademika</h1>
-                {!(activeFloor===-1)&&(<button
+                {!(activeFloor === -1) && (<button
                     onClick={() => setIsPopUpRemoveDialogOpen(true)}
                     className="absolute top-4 right-4 bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow hover:bg-red-600 transition"
                 >
@@ -119,7 +123,12 @@ function CreateDormitory() {
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
                             onClick={() => {
-                                fetch('/api/floors/add', { method: 'POST', credentials: "include" });
+                                fetch('/api/floors/add', {
+                                    method: 'POST', credentials: "include", headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${Cookies.get('token')}`,
+                                    }
+                                });
                                 setRefresh_floors_value(refresh_floors_value + 1);
                             }}
                             className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
@@ -149,7 +158,7 @@ function CreateDormitory() {
                                 <h3>Pokoje</h3>
                                 <RoomCanva
                                     floor={activeFloor}
-                                    onRoomAdd={ handleRoomAdd}
+                                    onRoomAdd={handleRoomAdd}
                                     onRoomEdit={handleRoomEdit}
                                     refresh={refresh_rooms_value}
                                 />
@@ -168,13 +177,14 @@ function CreateDormitory() {
                 </div>
             )}
             {isPopupCRCreateOpen && (
-                <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} />
+                <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} onSucced={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopupCREditOpen && commonRoomId !== null && (
-                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId} />
+                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId}/>
             )}
             {isPopUpRemoveDialogOpen && (
-                <PopUpRemoveChoice onClose={handleClosePopup} onRemoveFloor={handleRemoveFloor} onRemoveRooms={handleRemoveRooms}/>
+                <PopUpRemoveChoice onClose={handleClosePopup} onRemoveFloor={handleRemoveFloor}
+                                   onRemoveRooms={handleRemoveRooms}/>
             )}
             {isPopUpRemoveFloorsOpen && (
                 <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor}/>
@@ -183,10 +193,14 @@ function CreateDormitory() {
                 <PopUpRemoveAllRooms onClose={handleClosePopup} floor={activeFloor}/>
             )}
             {isPopUpRoomCreateOpen && (
-                <PopUpRoomCreate onClose={handleClosePopup} floor={activeFloor}/>
+                <PopUpRoomCreate onClose={handleClosePopup} floor={activeFloor}
+                                 onSucced={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopUpRemoveRoomOpen && (
                 <PopUpRoomDelete onClose={handleClosePopup} roomNumber={roomNumber ?? ''} roomId={roomId ?? -1}/>
+            )}
+            {isPopUpSuccedOpen && (
+                <OperationSuccedPopUp onClose={handleClosePopup}/>
             )}
         </Template>
     );

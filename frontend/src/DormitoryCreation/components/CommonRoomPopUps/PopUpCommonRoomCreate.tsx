@@ -4,9 +4,10 @@ import Cookies from 'js-cookie';
 interface PopupFormProps {
     floor: number;
     onClose: () => void;
+    onSucced: () => void;
 }
 
-function PopUpCommonRoomCreate({ onClose, floor }: PopupFormProps) {
+function PopUpCommonRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -35,13 +36,11 @@ function PopUpCommonRoomCreate({ onClose, floor }: PopupFormProps) {
             if (!response.ok) {
                 throw new Error('Failed to create common room');
             }
-            alert('Pokój wspólny został dodany!');
             onClose();
+            onSucced();
         } catch (error) {
             console.error('Error creating common room:', error);
             alert('Wystąpił błąd podczas dodawania pokoju wspólnego.');
-        } finally {
-            onClose();
         }
     };
 

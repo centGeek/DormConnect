@@ -227,7 +227,7 @@ function EventsCreate() {
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                                 />
                             </div>
-                            <button type="submit" className="w-full bg-gray-300 text-white py-2 rounded-lg hover:bg-gray-300 transition">Create Event</button>
+                            <button type="submit" className="w-full bg-gray-300 text-white py-2 rounded-lg hover:bg-gray-600 transition">Create Event</button>
                         </form>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import { UserContext } from "../Context/UserContext";
 // @ts-expect-error
 import { groupBy } from "lodash";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
+import ErrorPopUp  from "./ErrorPopUp.tsx";
 
 interface assignmentProps {
     id: number;
@@ -31,6 +32,7 @@ function CommonRoomSchedule() {
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
     const userContext = useContext(UserContext);
+    const [isPopUpErrorOpen, setIsPopUpErrorOpen] = useState<boolean>(false);
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
@@ -93,13 +95,12 @@ function CommonRoomSchedule() {
             });
             if (!response.ok) {
                 const errorMessage = await response.text();
-                alert(errorMessage);
-                return;
+                setIsPopUpErrorOpen(true);
             }
             await fetchAssignments();
         } catch (error) {
             console.error("Error assigning to assignment:", error);
-            alert("Cannot join the assignment.");
+            setIsPopUpErrorOpen(true);
         }
     };
 
@@ -149,6 +150,9 @@ function CommonRoomSchedule() {
             alert("Cannot reset assignments.");
         }
     }
+    const handleClosePopUp = () => {
+        setIsPopUpErrorOpen(false);
+    }
 
     useEffect(() => {
         if (id) {
@@ -175,6 +179,7 @@ function CommonRoomSchedule() {
     }, []);
 
 
+    // @ts-ignore
     return (
         <Template buttons={[{text: 'Back', link: '/common-rooms'}]}>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
@@ -236,6 +241,7 @@ function CommonRoomSchedule() {
                     ))
                 )}
             </div>
+            {isPopUpErrorOpen && <ErrorPopUp onClose={handleClosePopUp} />}
         </Template>
     );
 }

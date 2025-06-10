@@ -5,9 +5,10 @@ import Cookies from "js-cookie";
 interface PopupFormProps {
     floor: number;
     onClose: () => void;
+    onSucced: () => void;
 }
 
-function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
+function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
     const [number, setNumber] = useState('');
     const [capacity, setCapacity] = useState(2);
 
@@ -28,9 +29,8 @@ function PopUpRoomCreate({ onClose, floor }: PopupFormProps) {
                 },
                 withCredentials: true,
             });
-
-            alert('Pokój został pomyślnie dodany!');
             onClose();
+            onSucced();
         } catch (error) {
             console.error('Błąd podczas tworzenia pokoju:', error);
         }

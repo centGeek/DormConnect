@@ -28,7 +28,7 @@ function PopUpRoomDelete({ onClose, roomNumber, roomId }: PopUpRoomDeleteProps) 
         //     console.error("Błąd podczas usuwania pokoju:", error);
         //     alert("Wystąpił błąd podczas usuwania pokoju.");
         // }
-        alert("Czekamy, aż maciej zrobi usuwanie pokoi")
+        alert("Czekamy, aż Maciej zrobi usuwanie pokoi")
     };
     return (
         <div className="fixed inset-0 border border-gray-500 flex items-center justify-center z-50">

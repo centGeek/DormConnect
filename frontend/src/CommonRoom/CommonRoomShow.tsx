@@ -51,15 +51,13 @@ function CommonRoomShow() {
     }, []);
 
     return (
-        <Template
-            buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Common Rooms', link: '/common-rooms' },
-                { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-            ]}
-        >
+        <Template buttons={[
+            { text: 'Chat', link: '/chat' },
+            { text: 'Wydarzenia', link: '/events' },
+            { text: 'Pokoje wspólne', link: '/common-rooms' },
+            { text: 'Pokój', link: '/rooms' },
+            { text: 'Zgłoś problem', link: '/problems' },
+        ]}>
             <div className="common-room-show-container flex flex-wrap justify-center gap-6 p-6 bg-gray-200 rounded-lg shadow-lg">
                 {loading ? (
                     <p className="text-gray-500">Ładowanie...</p>
