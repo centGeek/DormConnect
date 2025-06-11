@@ -23,6 +23,7 @@ import AccountSettingsPanel from './AccountSettingsPanel/AccountSettingsPanel.ts
 import AdminPanel from './AdminPanel/pages/AdminPanel.tsx';
 import UserManagementPanel from './AdminPanel/pages/UserManagementPanel.tsx';
 import NfcManagementPanel from './AdminPanel/pages/NfcManagementPanel.tsx';
+import ManageUser from './AdminPanel/pages/ManageUser.tsx';
 
 function App() {
     const userContext = useContext(UserContext);
@@ -60,6 +61,7 @@ function App() {
                         <Route path="/admin-panel" element={<AdminPanel/>}/>
                         <Route path="/users/manage" element={<UserManagementPanel/>}/>
                         <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
+                        <Route path="/users/manage/:id" element={<ManageUser/>}/>
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" replace />} />

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -33,6 +35,16 @@ public class UserController {
             throw new UserException( "Error fetching users: " + e.getMessage());
         }
     }
+
+    @GetMapping("/get/:id")
+    public ResponseEntity<GetUserDTO> getUserById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(userService.getUserById(id));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by ID: " + e.getMessage(), e);
+        }
+    }
+    
 
     @PutMapping("/update")
     @Transactional

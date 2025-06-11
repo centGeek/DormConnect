@@ -2,9 +2,11 @@ import { useContext, useEffect } from "react";
 import { UserContext } from "../../Context/UserContext";
 import Template from "../../Template/Template";
 import SettingsItemComponent from "../components/SettingsItemComponent";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminPanel() {
     const userContext = useContext(UserContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("User: " , userContext?.user);
@@ -20,6 +22,7 @@ export default function AdminPanel() {
                 { text: 'Problems', link: '/problems' }]}>
 
     <div className="flex flex-row items-center">
+
         <SettingsItemComponent text="Zarządzanie użytkownikami" url="/users/manage"></SettingsItemComponent>
         <SettingsItemComponent text="Zarządzanie domem studenckim" url="/dormitory"></SettingsItemComponent>
         <SettingsItemComponent text="Zarządzanie kontrolą dostępu" url="/nfc/manage"></SettingsItemComponent>

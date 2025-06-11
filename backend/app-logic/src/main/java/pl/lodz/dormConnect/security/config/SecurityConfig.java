@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/nfc-programmer/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
                         .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/users/get/**").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs",

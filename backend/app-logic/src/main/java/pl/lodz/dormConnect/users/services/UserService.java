@@ -47,5 +47,14 @@ public class UserService {
         userRepository.save(userEntity);
         return UserMapper.mapToGetUserDTO(userEntity);
     }
+
+    public GetUserDTO getUserById(Long id) {
+        // TODO Auto-generated method stub
+        UserEntity currUser = userRepository.findById(id).get();
+        if (currUser == null) {
+            throw new IllegalArgumentException("User not found with id: " + id);
+        }
+        return UserMapper.mapToGetUserDTO(currUser);
+    }
     
 }
