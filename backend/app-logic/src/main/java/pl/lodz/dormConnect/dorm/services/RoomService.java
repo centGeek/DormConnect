@@ -130,7 +130,68 @@ public class RoomService {
                         assignment.getRoom().getNumber(),
                         assignment.getRoom().getFloor(),
                         assignment.getFromDate(),
-                        assignment.getToDate()))
+                        assignment.getToDate() != null && assignment.getToDate().equals(LocalDate.of(2999, 1, 1))
+                                ? null
+                                : assignment.getToDate()
+                ))
                 .toList();
     }
+    public boolean simulateAssignWithoutOverflow(List<RoomAssignEntity> existingAssignments, Long roomId, LocalDate newStart, LocalDate newEnd) {
+        int capacity = roomRepository.findCapacityById(roomId);
+        Map<LocalDate, Integer> occupancy = new HashMap<>();
+
+        for (RoomAssignEntity assignment : existingAssignments) {
+            LocalDate from = assignment.getFromDate();
+            LocalDate to = assignment.getToDate() != null ? assignment.getToDate() : LocalDate.MAX;
+
+            LocalDate effectiveStart = from.isAfter(newStart) ? from : newStart;
+            LocalDate effectiveEnd = to.isBefore(newEnd) ? to : newEnd;
+
+            for (LocalDate date = effectiveStart; !date.isAfter(effectiveEnd); date = date.plusDays(1)) {
+                occupancy.put(date, occupancy.getOrDefault(date, 0) + 1);
+            }
+        }
+
+        for (LocalDate date = newStart; !date.isAfter(newEnd); date = date.plusDays(1)) {
+            int current = occupancy.getOrDefault(date, 0);
+            if (current + 1 > capacity) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    @Transactional
+    public void shortenAssignmentEndDate(Long assignmentId, Long userId, LocalDate newEndDate) {
+        RoomAssignEntity assignment = roomAssignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+
+        if (!assignment.getResidentId().equals(userId)) {
+            throw new IllegalArgumentException("You are not the owner of this assignment.");
+        }
+
+        LocalDate currentEnd = assignment.getToDate();
+        if (currentEnd == null || currentEnd.isAfter(LocalDate.now()) == false) {
+            throw new IllegalArgumentException("Assignment has already ended.");
+        }
+
+        if (newEndDate.isAfter(currentEnd)) {
+            throw new IllegalArgumentException("New end date must be before current end date.");
+        }
+
+        if (newEndDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("New end date must be today or in the future.");
+        }
+
+        if (newEndDate.isAfter(LocalDate.now().plusWeeks(10))) {
+            throw new IllegalArgumentException("New end date is too far in the future (max 10 weeks).");
+        }
+
+        assignment.setToDate(newEndDate);
+        roomAssignmentRepository.save(assignment);
+    }
+
+
 }

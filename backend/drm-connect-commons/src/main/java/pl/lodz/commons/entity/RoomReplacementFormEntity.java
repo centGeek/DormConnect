@@ -17,11 +17,12 @@ public class RoomReplacementFormEntity {
     // to check it before and after then having a fight with circular dependencies...
     @Id
     @GeneratedValue
-    private UUID id;
+    private Long id;
 
+    @Column(nullable = false)
     private Long requesterId;
 
-    private long targetStudent;
+    private Long targetStudent;
 
     // Pokój, z którego wychodzi requester
     @JoinColumn(name = "requester_room_id")

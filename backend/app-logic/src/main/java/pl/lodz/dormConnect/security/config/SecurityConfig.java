@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
                         .requestMatchers("/api/dorm-problem/**").authenticated()
                         .requestMatchers("/problems/**").authenticated()
-                        .requestMatchers("/api/dorm/**").permitAll()
+                        .requestMatchers("/api/dorm/**").authenticated()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
                         .requestMatchers("/api/**", "/swagger-ui/**").hasAnyAuthority("ADMIN")

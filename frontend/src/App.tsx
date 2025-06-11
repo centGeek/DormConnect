@@ -18,6 +18,7 @@ import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
+import MyAssignments from "./Rooms/components/MyAssignments.tsx";
 import { TemperatureProvider } from './Context/TemperatureContext.tsx';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
                             <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                             <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
                             <Route path='/problems' element={<DormProblem/>}/>
+                            <Route path="/rooms/assignment" element={<MyAssignments />} />
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
