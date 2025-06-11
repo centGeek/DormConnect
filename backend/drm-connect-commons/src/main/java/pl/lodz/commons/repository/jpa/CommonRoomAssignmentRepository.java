@@ -39,16 +39,16 @@ public interface CommonRoomAssignmentRepository extends JpaRepository<CommonRoom
     // returns current assingment for common room with id 1 that is active at given timestamp 
     // timestamp should be in format: yyyy-MM-dd HH:mm:ss
     @Query("""
-            select * from common_room_assignment crs
-            where crs.common_room_id = ?2
-            and ?1 BETWEEN crs.start_date and crs.end_date
+            select crs from CommonRoomAssignmentEntity crs
+            where crs.commonRoom.id = ?2
+            and ?1 BETWEEN crs.startDate and crs.endDate
             """)
     CommonRoomAssignmentEntity findByCurrentDateAndCommonRoomId(String timestamp, long commonRoomId);
 
     @Query("""
-            select * from common_room_assignment crs
-            where crs.common_room_id = ?1
-            and CURRENT_TIMESTAMP BETWEEN crs.start_date and crs.end_date
+            select crs from CommonRoomAssignmentEntity crs
+            where crs.commonRoom.id = ?1
+            and CURRENT_TIMESTAMP BETWEEN crs.startDate and crs.endDate
             """)
     CommonRoomAssignmentEntity findCurrentAssingmentByCommonRoomId(long commonRoomId);
 }

@@ -9,7 +9,7 @@ public record NfcDeviceRegisterDTO(
         @NotNull
         String uuid,
         @NotNull
-        Integer roomNumber,
+        String roomNumber,
         @NotNull
         String lockStatus
 ) {

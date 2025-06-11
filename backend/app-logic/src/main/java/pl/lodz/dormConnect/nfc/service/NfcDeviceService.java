@@ -37,7 +37,7 @@ public class NfcDeviceService {
                             RoomAssignmentRepository roomAssignmentRepository,
                             UserRepository userRepository,
                             CommonRoomAssignmentRepository commonRoomAssignmentRepository,
-                            CommonRoomRepository commonRoomRepository) { {
+                            CommonRoomRepository commonRoomRepository) { 
         this.nfcDeviceRepository = nfcDeviceRepository;
         this.roomAssignmentRepository = roomAssignmentRepository;
         this.userRepository = userRepository;
@@ -46,6 +46,17 @@ public class NfcDeviceService {
     }
 
     public NfcDeviceRegisterDTO registerDevice(NfcDeviceRegisterDTO nfcDeviceDTO) {
+        NfcDeviceEntity existingDevice = nfcDeviceRepository.findByUuid(UUID.fromString(nfcDeviceDTO.uuid()));
+        
+        // if the device alaready exisits, update it's information and continue
+        if (existingDevice != null) {
+            existingDevice.setDeviceStatus(nfcDeviceDTO.lockStatus());
+            existingDevice.setRoomNumber(nfcDeviceDTO.roomNumber());
+            nfcDeviceRepository.save(existingDevice);
+            return NfcDeviceMapper.entityToRegisterDto(existingDevice);
+        }
+
+        // else, create a new device and register it
         NfcDeviceEntity device = NfcDeviceMapper.registerDtoToEntity(nfcDeviceDTO);
         device.setId(0);
         device.setDeviceStatus("ACTIVE");
@@ -59,10 +70,17 @@ public class NfcDeviceService {
         if (currentUser == null) {
             throw new RuntimeException("Validation failed");
         }
+
+        // check if the user card uuid and the one from the request match
+        if (currentUser.getCardUuid() != nfcAccessRequestDTO.card_uid()) {
+            throw new UserException("User with uuid: " + nfcAccessRequestDTO.user_uuid() 
+            + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
+        }
+
         return roomAssignmentRepository.existsAssignmentAtDate(
                 currentUser.getId(),
                 LocalDate.now(),
-                Integer.toString(nfcAccessRequestDTO.roomNumber()));
+                nfcAccessRequestDTO.roomNumber());
     }
 
     public NfcDeviceUpdateDTO updateDeviceStatus(NfcDeviceUpdateDTO deviceUpdateDTO) {
@@ -77,16 +95,18 @@ public class NfcDeviceService {
         }
     }
 
+
+    // still does not work, model need refactoting
     public boolean checkCommonRoomAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
         // TODO Auto-generated method stub
         UserEntity currentUser = userRepository.findByUuid(nfcAccessRequestDTO.user_uuid()).orElse(null);
         if (currentUser == null) {
             throw new UserException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
         }
-        
-
-        CommonRoomAssignment currentAssignment = commonRoomAssignmentRepository
-                .findCurrentAssingmentByCommonRoomId(nfc)
+        //long currentRoomId = commonRoomRepository.findCommonRoomByName()
+        // TODO: Implement logic to fetch the current room ID based on the request
+        // CommonRoomAssignment currentAssignment = commonRoomAssignmentRepository
+        //         .findCurrentAssingmentByCommonRoomId(nfc)
         
         throw new UnsupportedOperationException("Unimplemented method 'checkCommonRoomAccess'");
     }

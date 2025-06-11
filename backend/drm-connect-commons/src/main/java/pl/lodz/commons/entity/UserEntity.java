@@ -19,11 +19,14 @@ public class UserEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "uuid")
+    @Column(name = "uuid", unique = true)
     private String uuid;
 
     @Column(name = "user_name")
     private String userName;
+
+    @Column (name="card_uuid", unique = true)
+    private String cardUuid;
 
     @Column(name = "email", unique = true)
     private String email;

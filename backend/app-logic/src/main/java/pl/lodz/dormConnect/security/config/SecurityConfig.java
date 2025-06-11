@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers("/api/floors/**").permitAll()
                         .requestMatchers("/api/nfc/**").permitAll()
+                        .requestMatchers("/api/nfc-programmer/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/swagger-ui/**",

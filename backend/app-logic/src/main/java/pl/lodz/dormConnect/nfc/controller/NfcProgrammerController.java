@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import pl.lodz.dormConnect.nfc.dto.NfcProgramCardDTO;
+import pl.lodz.dormConnect.nfc.dto.ProgrammedCardDTO;
 import pl.lodz.dormConnect.nfc.dto.RegisterNfcProgrammerDTO;
 import pl.lodz.dormConnect.nfc.service.NfcProgrammerService;
 
@@ -40,14 +41,18 @@ public class NfcProgrammerController {
     }
 
     // backend sends post request to nfc device to program the card
+    // the nfc device sends response containging:
+    // 1. programmer device uuid
+    // 2. card uid - unique identifier of the card, each user has a diffrent card uid
+    // 3. user uuid
     @PostMapping("/program-card")
-    public ResponseEntity<NfcProgramCardDTO> programCard(
+    public ResponseEntity<ProgrammedCardDTO> programCard(
             @RequestBody NfcProgramCardDTO nfcProgramCardDTO) {
         try {
             if (nfcProgramCardDTO == null || nfcProgramCardDTO.deviceUuid() == null) {
                 throw new IllegalArgumentException("Invalid input: nfcProgramCardDTO or deviceUuid cannot be null");
             }
-            NfcProgramCardDTO programmedCard = nfcProgrammerService.programCard(nfcProgramCardDTO);
+            ProgrammedCardDTO programmedCard = nfcProgrammerService.programCard(nfcProgramCardDTO);
 
             return ResponseEntity.ok(programmedCard);
         } catch (Exception e) {
