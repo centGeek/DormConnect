@@ -89,9 +89,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 roles: decodedToken.roles,
                 sub: decodedToken.sub,
             });
-            console.log('User logged in:', decodedToken);
         }
     }, [token]);
+
+
 
     return (
         <UserContext.Provider value={{ user, token, handleLogin, handleLogout }}>
