@@ -1,0 +1,30 @@
+package pl.lodz.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode
+@Entity
+@Table(name = "role")
+public class RoleEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
+    private Long id;
+    @Column(name = "role_name")
+    private String roleName;
+
+    public RoleEntity(Long id, String roleName) {
+        this.id = id;
+        this.roleName = roleName;
+    }
+
+
+    public RoleEntity(String roleName) {
+        this.roleName = roleName;
+    }
+}
