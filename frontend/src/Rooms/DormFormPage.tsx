@@ -3,7 +3,6 @@ import Template from '../Template/Template';
 import {parseJwt} from '../JWT/JWTDecoder';
 import {MapContainer, TileLayer, Marker, useMapEvents} from 'react-leaflet';
 import L from 'leaflet';
-import {Power} from "lucide-react";
 
 function LocationPicker({onLocationSelect}: { onLocationSelect: (latlng: L.LatLng) => void }) {
     useMapEvents({
@@ -90,7 +89,7 @@ function DormFormPage() {
         }
 
         if (!selectedLatLng) {
-            setError('Zaznacz lokalizację na mapie' + selectedLatLng + priorityScore);
+            setError('Zaznacz lokalizację na mapie!');
             return;
         }
 
@@ -114,7 +113,8 @@ function DormFormPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Nie udało się złożyć formularza');
+                console.error(response);
+                throw new Error('Posiadasz już formularz w podanym zakresie dat!');
             }
 
             setSuccessMessage('Formularz został pomyślnie złożony! Otrzymany wynik rekrutacji to: ' + priorityScore);

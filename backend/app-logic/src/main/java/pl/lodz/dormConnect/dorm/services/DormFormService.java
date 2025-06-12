@@ -2,7 +2,9 @@ package pl.lodz.dormConnect.dorm.services;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.dormConnect.dorm.DTO.DormFormDTO;
 import pl.lodz.commons.entity.DormFormEntity;
 import pl.lodz.commons.repository.jpa.DormFormRepository;
@@ -20,6 +22,16 @@ public class DormFormService {
     public DormFormEntity submitDormForm(DormFormEntity dormForm) {
         LocalDate endDate = handleNullEndDate(dormForm.getEndDate());
         dormForm.setEndDate(endDate);
+
+        List<DormFormEntity> conflicts = dormFormRepository.findConflictingUnprocessedForms(
+                dormForm.getUserId(),
+                dormForm.getStartDate(),
+                endDate
+        );
+
+        if(!conflicts.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"User already has form within that period");
+        }
 
         if (roomAssignmentRepository.existsAssignmentForStudentDuring(
                 dormForm.getUserId(),

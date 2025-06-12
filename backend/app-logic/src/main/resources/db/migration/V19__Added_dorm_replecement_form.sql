@@ -11,3 +11,15 @@ CREATE TABLE room_replacement_forms
     CONSTRAINT pk_room_replacement_forms PRIMARY KEY (id)
 );
 CREATE SEQUENCE IF NOT EXISTS room_replacement_forms_seq START WITH 1 INCREMENT BY 50;
+
+
+CREATE TABLE dorm_rooms_room_assigns
+(
+    room_entity_id  BIGINT NOT NULL,
+    room_assigns_id BIGINT NOT NULL
+);
+
+ALTER TABLE dorm_rooms_room_assigns
+    ADD CONSTRAINT fk_dorroorooass_on_room_assign_entity FOREIGN KEY (room_assigns_id) REFERENCES room_assign_entity (id),
+    ADD CONSTRAINT fk_dorroorooass_on_room_entity FOREIGN KEY (room_entity_id) REFERENCES dorm_rooms (id),
+    ADD CONSTRAINT uc_dorm_rooms_room_assigns_roomassigns UNIQUE (room_assigns_id);

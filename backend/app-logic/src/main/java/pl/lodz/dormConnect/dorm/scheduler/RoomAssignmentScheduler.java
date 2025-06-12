@@ -2,6 +2,7 @@ package pl.lodz.dormConnect.dorm.scheduler;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.lodz.commons.entity.DormFormEntity;
 import pl.lodz.commons.entity.RoomAssignEntity;
@@ -23,7 +24,7 @@ public class RoomAssignmentScheduler {
     private final RoomAssignmentRepository roomAssignRepository;
 
     @Transactional
-    //@Scheduled(fixedRate = 60000) // co minutę
+ //   @Scheduled(fixedRate = 60000) // co minutę
     public void assignRooms() {
         List<DormFormEntity> forms = dormFormRepository.findByIsProcessedFalseOrderByPriorityScoreDesc();
         List<RoomEntity> allRooms = roomRepository.findAll();

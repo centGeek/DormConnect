@@ -12,14 +12,13 @@ import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
+import MyDormRoomsInfo from "./Rooms/components/MyDormRoomsInfo.tsx";
 import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
 import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
 import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
-import MyAssignments from "./Rooms/components/MyAssignments.tsx";
-import { TemperatureProvider } from './Context/TemperatureContext.tsx';
 import 'leaflet/dist/leaflet.css';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 
@@ -40,11 +39,11 @@ function App() {
                         <Route path="/events/create" element={<EventsCreate />} />
                         <Route path="/rooms" element={<Rooms />} />
                         <Route path="/rooms/form" element={<DormFormPage />} />
+                        <Route path="/rooms/myInfo" element={<MyDormRoomsInfo />} />
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
                         <Route path='/problems' element={<DormProblem/>}/>
-                        <Route path="/rooms/assignment" element={<MyAssignments />} />
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
