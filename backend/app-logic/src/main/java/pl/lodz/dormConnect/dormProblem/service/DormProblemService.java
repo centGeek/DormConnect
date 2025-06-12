@@ -90,6 +90,8 @@ public class DormProblemService {
             return foundProblems.stream()
                     .map(DormProblemMapper::mapToGetDTO)
                     .toList();
+
+
         }
 
 
@@ -100,7 +102,6 @@ public class DormProblemService {
         if (dormProblem.isEmpty()) {
             throw new DormProblemNotFoundException("DormProblem with id " + id + " not found");
         }
-        System.out.println("DormProblemService.getDormProblemById: " + dormProblem.get());
         return DormProblemMapper.mapToGetDTO(dormProblem.get());
     }
 

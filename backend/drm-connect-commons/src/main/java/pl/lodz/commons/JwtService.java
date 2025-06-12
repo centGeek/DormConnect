@@ -18,12 +18,11 @@ public class JwtService {
 
     private final Key SECRET_KEY = Keys.hmacShaKeyFor("tajny_klucz_tajny_klucz_tajny_klucz"
             .getBytes(StandardCharsets.UTF_8));
-    public String generateToken(Long id, String email, String username, List<String> roles) {
+    public String generateToken(Long id, String email, List<String> roles) {
         String compact = Jwts.builder()
                 .setSubject(email)
                 .claim("id", id)
                 .claim("roles", roles)
-                .claim("username", username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1h
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)

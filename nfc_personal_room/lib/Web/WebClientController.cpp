@@ -25,16 +25,3 @@ uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData)
     http.end();
     return httpResponse;
 }
-
-uint8_t WebClientController::sendHttpGetRequest() {
-    this->http.begin(SERVER_REQUEST_ADDRESS);
-    uint8_t httpResponse = http.GET();
-    if (httpResponse > 0) {
-        String payload = http.getString();
-        Serial.println(httpResponse);
-        Serial.println(payload);
-    }
-
-    http.end();
-    return httpResponse;
-}
