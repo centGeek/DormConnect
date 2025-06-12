@@ -143,13 +143,13 @@ function CreateDormitory() {
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
                             onClick={handleAddFloor}
-                            className="w-8 h-8 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
+                            className="w-8 h-8 m-2 bg-gray-500 text-white rounded-full flex items-center justify-center text-xl hover:bg-gray-600 transition"
                         >
                             +
                         </button>
                         <div
                             ref={floorsContainerRef}
-                            className="mt-4 w-full h-96 overflow-y-auto flex flex-col-reverse gap-4 items-center"
+                            className="mt-2 w-full h-96 overflow-y-auto flex flex-col-reverse gap-4 items-center"
                         >
                             {floors.map((floor, index) => (
                                 <div

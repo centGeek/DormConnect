@@ -62,7 +62,7 @@ function Login() {
             type="submit"
             className="w-full py-2.5 rounded-lg font-semibold bg-gray-700 text-white hover:bg-gray-800 transition"
           >
-            Sign in
+            Zaloguj się
           </button>
 
           <div className="text-center text-sm text-gray-600 space-y-1 pt-2">
