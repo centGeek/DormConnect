@@ -3,6 +3,7 @@ package pl.lodz.dormConnect.users.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import pl.lodz.commons.entity.RoleEntity;
 import pl.lodz.commons.entity.UserEntity;
@@ -32,6 +33,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public GetUserDTO updateUser(UpdateUserDTO entity) {
         if (entity == null || entity.uuid() == null) {
             throw new IllegalArgumentException("Invalid input: entity or uuid cannot be null");
@@ -44,8 +46,8 @@ public class UserService {
         userEntity.setEmail(entity.email());
         userEntity.setRole(roleEntity);
         userEntity.setActive(entity.isActive());
-        userRepository.save(userEntity);
-        return UserMapper.mapToGetUserDTO(userEntity);
+        UserEntity saved = userRepository.save(userEntity);
+        return UserMapper.mapToGetUserDTO(saved);
     }
 
     public GetUserDTO getUserById(Long id) {

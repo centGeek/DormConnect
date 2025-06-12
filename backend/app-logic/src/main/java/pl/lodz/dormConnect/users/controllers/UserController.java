@@ -36,8 +36,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/get/:id")
-    public ResponseEntity<GetUserDTO> getUserById(@PathVariable("id") Long id) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<GetUserDTO> getUserById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.getUserById(id));
         } catch (Exception e) {
