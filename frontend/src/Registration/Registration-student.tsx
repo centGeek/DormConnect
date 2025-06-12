@@ -36,7 +36,7 @@ function RegistrationStudent() {
                 }
             };
             
-            const response = await fetch('/register/student', {
+            const response = await fetch('http://localhost:8000/register/student', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(student)

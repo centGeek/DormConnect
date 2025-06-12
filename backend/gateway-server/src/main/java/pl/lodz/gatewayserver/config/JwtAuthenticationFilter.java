@@ -1,4 +1,4 @@
-package pl.lodz.commons;
+package pl.lodz.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
