@@ -22,7 +22,7 @@ public class SingleRoomRequestEntity {
     // Obecny pokój, z którego student chce się przenieść
     @Column(nullable = false)
     private Long currentRoomId;
-
+//
     // Preferencje (opcjonalne)
     private boolean onlySingleRoom; // czy zgadza się tylko na całkowicie jednoosobowy pokój
 

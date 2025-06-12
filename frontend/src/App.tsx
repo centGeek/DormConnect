@@ -20,6 +20,7 @@ import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
 import MyAssignments from "./Rooms/components/MyAssignments.tsx";
 import { TemperatureProvider } from './Context/TemperatureContext.tsx';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
     const userContext = useContext(UserContext);
