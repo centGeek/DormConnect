@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.events.controller;
+package pl.lodz.eventservice.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,10 +9,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import pl.lodz.commons.JwtService;
-import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.dormConnect.events.service.EventOrganizerService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import pl.lodz.eventservice.dto.EventDTO;
+import pl.lodz.eventservice.service.EventOrganizerService;
+import pl.lodz.eventservice.service.JwtService;
 
 @Controller
 @RequestMapping("/api/event/organizer")

@@ -1,4 +1,4 @@
-package pl.lodz.commons;
+package pl.lodz.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,26 +18,21 @@ public class JwtService {
 
     private final Key SECRET_KEY = Keys.hmacShaKeyFor("tajny_klucz_tajny_klucz_tajny_klucz"
             .getBytes(StandardCharsets.UTF_8));
+
     public String generateToken(Long id, String email, List<String> roles) {
-        String compact = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(email)
                 .claim("id", id)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1h
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
-        log.info("Token generated " + compact);
-        return compact;
     }
-
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(token);
+            Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -45,30 +40,16 @@ public class JwtService {
     }
 
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+        return Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public List<String> getRolesFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
         return (List<String>) claims.get("roles");
     }
 
     public Long getIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
         return claims.get("id", Long.class);
     }
-
 }

@@ -6,11 +6,19 @@ services:
     ports:
       - "5434:5432"
     environment:
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "dormConnect"
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
+    command: >
+      bash -c "
+        docker-entrypoint.sh postgres & 
+        pid=$$!
+        until pg_isready -U admin; do sleep 1; done
+        psql -U admin -d postgres -c 'CREATE DATABASE auth_users_db;'
+        psql -U admin -d postgres -c 'CREATE DATABASE event_db;'
+        wait $$pid
+      "
 
 volumes:
   postgres_data_dev:

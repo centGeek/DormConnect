@@ -33,7 +33,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const handleLogin = async (email: string, password: string) => {
         try {
             const response: AxiosResponse = await axios.post(
-                'http://localhost:8000/auth/api/auth/login',
+                '/auth/api/auth/login',
                 { email, password },
                 {
                     withCredentials: true,
@@ -63,7 +63,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const handleLogout = async () => {
         try {
             await axios.post(
-                'http://localhost:8000/auth/api/auth/logout',
+                '/auth/api/auth/logout',
                 {},
                 {
                     withCredentials: true,

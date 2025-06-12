@@ -1,10 +1,10 @@
-package pl.lodz.dormConnect.events.mapper;
+package pl.lodz.eventservice.mapper;
 
 import org.springframework.stereotype.Component;
-import pl.lodz.commons.model.ApprovalStatus;
-import pl.lodz.dormConnect.events.dto.EventCreateDTO;
-import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.commons.entity.EventEntity;
+import pl.lodz.eventservice.dto.EventCreateDTO;
+import pl.lodz.eventservice.dto.EventDTO;
+import pl.lodz.eventservice.entity.ApprovalStatus;
+import pl.lodz.eventservice.entity.EventEntity;
 
 import java.util.List;
 

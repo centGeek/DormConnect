@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.events.validation;
+package pl.lodz.eventservice.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

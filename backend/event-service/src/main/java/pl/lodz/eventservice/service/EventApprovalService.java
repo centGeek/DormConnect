@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.events.service;
+package pl.lodz.eventservice.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,11 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.commons.model.ApprovalStatus;
-import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.dormConnect.events.mapper.EventMapper;
-import pl.lodz.commons.entity.EventEntity;
-import pl.lodz.commons.repository.jpa.EventRepository;
+import pl.lodz.eventservice.dto.EventDTO;
+import pl.lodz.eventservice.entity.ApprovalStatus;
+import pl.lodz.eventservice.entity.EventEntity;
+import pl.lodz.eventservice.mapper.EventMapper;
+import pl.lodz.eventservice.repository.EventRepository;
 
 import java.time.LocalDateTime;
 

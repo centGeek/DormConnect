@@ -1,0 +1,39 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  security:
+    user:
+      name: disabled
+      password: disabled
+  cloud:
+    gateway:
+      routes:
+        - id: auth-user-service
+          uri: lb://auth-user-service
+          predicates:
+            - Path=/auth/api/auth/**,/auth/register/**,/auth/v3/api-docs/**,/auth/swagger-ui/**,/auth/swagger-ui.html
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /${segment}
+        - id: event-service
+          uri: lb://event-service
+          predicates:
+            - Path=/event/api/event/administrate/**,/event/api/event/administrate,/event/v3/api-docs/**,/event/swagger-ui/**,/event/swagger-ui.html
+          filters:
+            - RewritePath=/event/(?<segment>.*), /${segment}
+
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Auth User Service
+        url: /auth/v3/api-docs
+      - name: Event Service
+        url: /event/v3/api-docs

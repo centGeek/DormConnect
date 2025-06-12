@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.co.JwtService;
+import pl.lodz.config.JwtService;
 import pl.lodz.entity.UserEntity;
 import pl.lodz.repository.jpa.UserRepository;
 
@@ -23,19 +24,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth/api")
+@AllArgsConstructor
+@Slf4j
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
-    private final UserRepository userRepository;
-
-    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request, HttpServletResponse response) {

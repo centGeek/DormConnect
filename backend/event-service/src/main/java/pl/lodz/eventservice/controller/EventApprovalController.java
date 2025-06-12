@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.events.controller;
+package pl.lodz.eventservice.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.commons.model.ApprovalStatus;
-import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.dormConnect.events.service.EventApprovalService;
+import pl.lodz.eventservice.dto.EventDTO;
+import pl.lodz.eventservice.entity.ApprovalStatus;
+import pl.lodz.eventservice.service.EventApprovalService;
 
 @Controller
 @RequestMapping("/api/event/administrate")

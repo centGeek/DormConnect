@@ -1,6 +1,8 @@
-package pl.lodz.dormConnect.events.controller;
+package pl.lodz.eventservice.controller;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,12 +10,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.commons.JwtService;
-import pl.lodz.dormConnect.events.dto.EventCreateDTO;
-import pl.lodz.dormConnect.events.dto.EventDTO;
-import pl.lodz.dormConnect.events.service.EventService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.lodz.eventservice.dto.EventCreateDTO;
+import pl.lodz.eventservice.dto.EventDTO;
+import pl.lodz.eventservice.service.EventService;
+import pl.lodz.eventservice.service.JwtService;
 
 
 @RestController

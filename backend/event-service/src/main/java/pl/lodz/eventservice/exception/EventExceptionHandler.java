@@ -1,4 +1,4 @@
-package pl.lodz.dormConnect.events.exception;
+package pl.lodz.eventservice.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice(basePackages = "pl.lodz.dormConnect.events")
+@RestControllerAdvice(basePackages = "pl.lodz")
 public class EventExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

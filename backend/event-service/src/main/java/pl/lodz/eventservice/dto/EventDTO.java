@@ -1,11 +1,11 @@
-package pl.lodz.dormConnect.events.dto;
+package pl.lodz.eventservice.dto;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import pl.lodz.commons.model.ApprovalStatus;
-import pl.lodz.dormConnect.events.validation.ValidEventDates;
+import pl.lodz.eventservice.entity.ApprovalStatus;
+import pl.lodz.eventservice.validation.ValidEventDates;
 
 import java.time.LocalDateTime;
 import java.util.List;

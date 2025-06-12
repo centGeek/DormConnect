@@ -1,10 +1,10 @@
-package pl.lodz.dormConnect;
+package pl.lodz;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import pl.lodz.commons.repository.jpa.UserRepository;
+import pl.lodz.repository.jpa.UserRepository;
 
 @Component
 public class StartupRunner implements CommandLineRunner {

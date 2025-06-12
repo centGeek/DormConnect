@@ -1,11 +1,10 @@
-package pl.lodz.commons.entity;
+package pl.lodz.eventservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.lodz.commons.model.ApprovalStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

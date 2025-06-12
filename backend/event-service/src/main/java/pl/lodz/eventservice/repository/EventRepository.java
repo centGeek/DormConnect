@@ -1,11 +1,11 @@
-package pl.lodz.commons.repository.jpa;
+package pl.lodz.eventservice.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.lodz.commons.entity.EventEntity;
-import pl.lodz.commons.model.ApprovalStatus;
+import pl.lodz.eventservice.entity.ApprovalStatus;
+import pl.lodz.eventservice.entity.EventEntity;
 
 import java.time.LocalDateTime;
 

@@ -1,9 +1,9 @@
-package pl.lodz.dormConnect.events.validation;
+package pl.lodz.eventservice.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.lodz.dormConnect.events.dto.EventCreateDTO;
-import pl.lodz.dormConnect.events.dto.EventDTO;
+import pl.lodz.eventservice.dto.EventCreateDTO;
+import pl.lodz.eventservice.dto.EventDTO;
 
 import java.time.LocalDateTime;
 
