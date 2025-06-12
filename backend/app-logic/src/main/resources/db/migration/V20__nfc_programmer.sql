@@ -4,6 +4,7 @@ CREATE TABLE nfc_programmer
     "uuid" UUID,
     "port"     varchar(255),
     ip_address   varchar(255),
+    mac_address    varchar(255),
     device_status     varchar(255),
 
     CONSTRAINT nfc_device_pk PRIMARY KEY (id)

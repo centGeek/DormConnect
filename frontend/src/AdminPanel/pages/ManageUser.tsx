@@ -7,6 +7,9 @@ import axios from "axios";
 import { UserContext } from "../../Context/UserContext";
 import DeleteUserDialog from "../components/DeleteUserDialog";
 import GenerateUUIDDialog from "../components/GenerateUUIDDialog";
+import ChangeRoleDialog from "../components/ChangeRoleDialog";
+import ChangeEmailDialog from "../components/ChangeEmailDialog";
+import LockAccountDialog from "../components/LockAccountDialog";
 
 
 
@@ -89,15 +92,10 @@ export default function ManageUser() {
                         {!currUser?.isActive &&
                             <h2 className="text-lg">Status konta: nieaktywne</h2>}
                         <DeleteUserDialog/>
-                        <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zmień rolę</button>
-                        {currUser?.isActive &&
-                            <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zablokuj konto</button>
-                        }
-                        {!currUser?.isActive &&
-                            <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Odblokuj konto</button>
-                        }
+                        <ChangeRoleDialog/>
+                        <LockAccountDialog isLocked={currUser?.isActive}/>
                         <GenerateUUIDDialog/>
-                        <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zmień adres e-mail</button>
+                        <ChangeEmailDialog/>
                         <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>
 

@@ -22,5 +22,6 @@ public class NfcProgrammerEntity {
     private int port;
     private String ipAddress;
     private String deviceStatus;
+    private String macAddress;
 
 }

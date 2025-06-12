@@ -22,5 +22,7 @@ public class NfcDeviceEntity {
     private String roomNumber;
     private String lockStatus;
     private String deviceStatus;
+    private String ipAddress;
+    private String macAddress;
 }
 

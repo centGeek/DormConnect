@@ -5,6 +5,8 @@ CREATE TABLE nfc_device
     room_number     varchar(255),
     device_status   varchar(255),
     lock_status     varchar(255),
+    ip_address      varchar(255),
+    mac_address     varchar(255),
 
     CONSTRAINT nfc_programmer_pk PRIMARY KEY (id)
 );

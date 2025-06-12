@@ -11,6 +11,10 @@ public record NfcDeviceRegisterDTO(
         @NotNull
         String roomNumber,
         @NotNull
-        String lockStatus
+        String lockStatus,
+        @Nullable
+        String ipAddress,
+        @Nullable
+        String macAddress
 ) {
 }

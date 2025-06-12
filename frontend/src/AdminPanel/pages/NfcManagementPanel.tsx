@@ -1,10 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import Template from "../../Template/Template";
 import { mainPageButtons } from "../interfaces/MainPageButtons";
+import { UserContext } from "../../Context/UserContext";
+import { useContext } from "react";
+import axios from "axios";
 
 
 export default function NfcManagementPanel() {
     const navigate = useNavigate();
+    const userContext = useContext(UserContext);
+
+    const fetchNfcDevices = async () => {
+        try {
+            const response = await axios.get("/api/nfc")
+        } catch (error) {
+            console.error("Error while fetching NFC devices: ", error)
+        }
+    }
 
     return (
         <Template buttons={mainPageButtons}>
@@ -16,7 +28,10 @@ export default function NfcManagementPanel() {
                 ← Powrót
             </button>
             <div>
-                <h1 className="text-xl">Panel zarządzania inteligentnymi zamkami</h1>
+                <h1 className="text-xl">Dostępne programatory kart:</h1>
+            </div>
+            <div>
+                <h1 className="text-xl">Dostępne urządzenia kontroli dostępu:</h1>
             </div>
         </Template>
     )

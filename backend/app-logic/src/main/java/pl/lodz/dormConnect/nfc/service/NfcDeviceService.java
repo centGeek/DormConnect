@@ -11,6 +11,7 @@ import pl.lodz.commons.repository.jpa.CommonRoomRepository;
 import pl.lodz.commons.repository.jpa.NfcDeviceRepository;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.UserRepository;
+import pl.lodz.dormConnect.nfc.dto.GetNfcDeviceDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcAccessRequestDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceRegisterDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceUpdateDTO;
@@ -20,6 +21,7 @@ import pl.lodz.dormConnect.nfc.mapper.NfcDeviceMapper;
 import pl.lodz.dormConnect.users.exceptions.UserException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,6 +54,8 @@ public class NfcDeviceService {
         if (existingDevice != null) {
             existingDevice.setDeviceStatus(nfcDeviceDTO.lockStatus());
             existingDevice.setRoomNumber(nfcDeviceDTO.roomNumber());
+            existingDevice.setIpAddress(nfcDeviceDTO.ipAddress());
+            // mac address is constant - it never changes
             nfcDeviceRepository.save(existingDevice);
             return NfcDeviceMapper.entityToRegisterDto(existingDevice);
         }
@@ -109,6 +113,17 @@ public class NfcDeviceService {
         //         .findCurrentAssingmentByCommonRoomId(nfc)
         
         throw new UnsupportedOperationException("Unimplemented method 'checkCommonRoomAccess'");
+    }
+
+    public List<GetNfcDeviceDTO> getNfcDevices() {
+        List<GetNfcDeviceDTO> nfcDevices = nfcDeviceRepository.findAll()
+                .stream()
+                .map(NfcDeviceMapper::entityToGetDTO)
+                .toList();
+        if (nfcDevices == null) {
+            throw new DeviceNotFoundException("Error while fetching NFC devices");
+        }
+        return nfcDevices;
     }
 
 }
