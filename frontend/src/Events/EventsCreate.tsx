@@ -52,7 +52,7 @@ function EventsCreate() {
         };
 
         try {
-            const response = await fetch('/api/event/create', {
+            const response = await fetch('/event/api/event/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

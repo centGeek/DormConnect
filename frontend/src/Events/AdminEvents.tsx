@@ -59,7 +59,7 @@ function AdminEvents() {
 
         try {
             setLoading(true);
-            let url = `http://localhost:8000/event/api/event/administrate`;
+            let url = `/event/api/event/administrate`;
             if (activeTab !== 'all') url += `/${activeTab}`;
             url += `?page=${page}&size=6&sort=${sortOption},${sortOrder}`;
 
@@ -87,7 +87,7 @@ function AdminEvents() {
 
     const handleApprove = async (eventId: number) => {
         if (!token) return;
-        await fetch(`http://localhost:8000/event/api/event/administrate/${eventId}/approve`, {
+        await fetch(`/event/api/event/administrate/${eventId}/approve`, {
             method: 'PUT',
             headers: { Authorization: `Bearer ${token}` },
             credentials: 'include',
@@ -97,7 +97,7 @@ function AdminEvents() {
 
     const handleReject = async (eventId: number) => {
         if (!token) return;
-        await fetch(`http://localhost:8000/event/api/event/administrate/${eventId}/reject`, {
+        await fetch(`/event/api/event/administrate/${eventId}/reject`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` },
             credentials: 'include',

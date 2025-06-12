@@ -7,27 +7,16 @@ export default defineConfig({
   server: {
     proxy: {
       '/auth': {
-        target: 'http://localhost:8091',
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-      '/login': {
-        target: 'http://localhost:8091',
+      '/event/api': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
 
-      '/api': {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-        secure: false,
-      },
-      
-      '/register': {
-        target: 'http://localhost:8091',
-        changeOrigin: true,
-        secure: false,
-      }
     }
   },
 });
