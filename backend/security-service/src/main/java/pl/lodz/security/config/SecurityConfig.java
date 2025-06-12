@@ -62,13 +62,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login",
-                                "api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
-                        .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
-                        .requestMatchers("/api/dorm-problem/**").authenticated()
-                        .requestMatchers("/problems/**").authenticated()
+                                "/api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
+                        .requestMatchers("/api/event/**", "api/event/participant/**").authenticated()
+                        .requestMatchers("/api/dorm-problem/**").permitAll()
+                        .requestMatchers("/problems/**").permitAll()
                         .requestMatchers("/api/dorm/**").permitAll()
                         .requestMatchers("/api/common-room/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).permitAll()
+                        .requestMatchers(("/api/users/**")).permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/*").permitAll()

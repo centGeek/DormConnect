@@ -6,7 +6,7 @@ public record NfcAccessRequestDTO(
         String device_uuid,
         String card_uid,
         String user_uuid,
-        int roomNumber,
+        String roomNumber,
         String lockStatus
 ) {
 }
