@@ -15,7 +15,7 @@ function Login() {
       await userContext?.handleLogin(email, password);
     } catch (error) {
       console.error('Login failed:', error instanceof Error ? error.message : error);
-      setError('Invalid email or password');
+      setError('Nieprawidłowy email lub hasło');
     }
   };
 
@@ -25,7 +25,7 @@ function Login() {
         <h1
           className="text-3xl font-extrabold text-center text-gray-800 mb-2"
             style={{ fontFamily: "'Poppins', sans-serif" }}>
-        DormConnect
+        Dorm Connect
         </h1>
 
         <h2 className="text-lg font-medium text-center text-gray-600 mb-6">Login</h2>
@@ -50,7 +50,7 @@ function Login() {
             <input
               type="password"
               id="password"
-              placeholder="Password"
+              placeholder="Hasło"
               className="pl-11 w-full py-2.5 pr-4 border border-gray-300 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -67,17 +67,17 @@ function Login() {
 
           <div className="text-center text-sm text-gray-600 space-y-1 pt-2">
             <p>
-              Don&apos;t have an account?{' '}
+              Nie masz jeszcze konta?{' '}
               <Link to="/register/student" className="font-semibold text-gray-700 hover:underline">
-                Register as Student
+                Zarejestruj się jako Student
               </Link>
             </p>
-            <p>
-              Looking to manage dorms?{' '}
-              <Link to="/register/manager" className="font-semibold text-gray-700 hover:underline">
-                Register as Manager
-              </Link>
-            </p>
+            {/*<p>*/}
+            {/*  Looking to manage dorms?{' '}*/}
+            {/*  <Link to="/register/manager" className="font-semibold text-gray-700 hover:underline">*/}
+            {/*    Register as Manager*/}
+            {/*  </Link>*/}
+            {/*</p>*/}
           </div>
         </form>
       </div>

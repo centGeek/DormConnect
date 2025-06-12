@@ -30,8 +30,8 @@ function Home() {
             const tooltip =
                 !loading && !error && temperature !== null
                     ? temperature > 10
-                        ? 'Good weather for Flanki!'
-                        : 'Bad weather for Flanki'
+                        ? 'Dobra pogoda na Flanki!'
+                        : 'Zła pogoda do Flanek'
                     : '';
 
             let el = document.querySelector('.header-temperature') as HTMLElement;
@@ -51,18 +51,16 @@ function Home() {
     }, [temperature, loading, error]);
 
     return (
-        <Template
-            buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Common Rooms', link: '/common-rooms' },
-                { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-            ]}
-        >
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
             <div className="justify-items-center">
-                <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-4">Welcome to Dorm Connect</h1>
-                <h3 className="text-lg text-gray-600 text-center mt-2">It's an application designed to manage your dormitory</h3>
+                <h1 className="text-4xl font-extrabold text-gray-800 text-center mb-4">Witaj w Dorm Connect</h1>
+                <h3 className="text-lg text-gray-600 text-center mt-2">Jest to aplikacja do zarządzania domem studenckim</h3>
             </div>
         </Template>
     );

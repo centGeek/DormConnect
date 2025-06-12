@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login/Login.tsx';
 import RegistrationStudent from './Registration/Registration-student.tsx';
@@ -29,10 +29,6 @@ import ManageUser from './AdminPanel/pages/ManageUser.tsx';
 function App() {
     const userContext = useContext(UserContext);
 
-    useEffect(() => {
-        console.log('User context:', userContext?.user?.roles);
-    }, [userContext]);
-
     return (
 
             <Routes>
@@ -50,13 +46,15 @@ function App() {
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
-                        <Route path="/dormitory" element={<CreateDormitory />} />
                         <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
                         {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
                             <Route path="/events/admin/AdminEvents" element={<AdminEvents />} />
+                        )}
+                        {userContext?.user?.roles.includes('ADMIN') && (
+                            <Route path="/dormitory" element={<CreateDormitory />} />
                         )}
                         <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         <Route path="/admin-panel" element={<AdminPanel/>}/>

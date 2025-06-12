@@ -1,6 +1,7 @@
 package pl.lodz.dormConnect.commonRoom.service;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormConnect.commonRoom.dto.CommonRoomCreateDTO;
@@ -92,5 +93,12 @@ public class CommonRoomService {
                 .map(CommonRoomEntity::getFloor)
                 .distinct()
                 .toList();
+    }
+
+    public ResponseEntity<?> resetAssignmentsForNextWeek(Long commonRoomId) {
+        CommonRoomEntity commonRoom = repository.findById(commonRoomId).orElseThrow(() -> new IllegalArgumentException("Common room not found"));
+        scheduler.deleteAllAssigmentsForRoom(commonRoom);
+        scheduler.createAssignmentsForNextWeek(commonRoom);
+        return ResponseEntity.ok("Assignments for next week reset successfully");
     }
 }
