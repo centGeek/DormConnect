@@ -31,19 +31,12 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(
-                        "/api/auth/**",
-                        "/register/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/api-docs/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement().disable()
-                .httpBasic().disable();
+                .authorizeHttpRequests(authorize -> authorize
+
+                        .anyRequest().permitAll()
+                )
+                .httpBasic().disable()
+                .sessionManagement().disable();
 
         return http.build();
     }

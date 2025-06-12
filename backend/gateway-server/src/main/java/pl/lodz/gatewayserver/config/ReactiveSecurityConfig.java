@@ -15,14 +15,23 @@ public class ReactiveSecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
+                        // Udostępnij Swagger UI i dokumentację publicznie
                         .pathMatchers(
-                                "/auth/**" // Public
+                                "/swagger-ui.html", "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/webjars/**",
+                                "/auth/v3/api-docs/**",
+                                "/event/v3/api-docs/**"
                         ).permitAll()
-                        .pathMatchers(
-                                "/event/api/event/administrate" // Events that need Admin or Managare role/privilege
-                        ).permitAll()
+                        // Endpointy auth publiczne
+                        .pathMatchers("/auth/**", "/auth/api/**", "/auth/register/**").permitAll()
+                        // Endpointy event, przykładowe role
+                        .pathMatchers("/event/api/event/administrate/**").hasAnyRole("ADMIN", "MANAGER")
+                        .pathMatchers("/event/api/event/**").permitAll()
+                        // Wszystkie inne wymagają autoryzacji
                         .anyExchange().authenticated()
                 )
+                // Wyłącz podstawowe formy logowania
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .build();

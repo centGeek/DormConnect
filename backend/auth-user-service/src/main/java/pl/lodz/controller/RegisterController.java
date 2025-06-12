@@ -16,7 +16,7 @@ import pl.lodz.service.ManagerRegisterService;
 import pl.lodz.service.StudentRegisterService;
 
 @RestController
-@RequestMapping("/auth/register")
+@RequestMapping("/register")
 @AllArgsConstructor
 @Slf4j
 public class RegisterController {

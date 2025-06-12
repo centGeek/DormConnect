@@ -3,8 +3,6 @@ server:
 
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
@@ -16,24 +14,30 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth-user-service
-          uri: lb://auth-user-service
+        - id: auth
+          uri: lb://AUTH-USER-SERVICE
           predicates:
-            - Path=/auth/api/auth/**,/auth/register/**,/auth/v3/api-docs/**,/auth/swagger-ui/**,/auth/swagger-ui.html
+            - Path=/auth/api/auth/**,/auth/register/**,/auth/v3/api-docs/**
           filters:
             - RewritePath=/auth/(?<segment>.*), /${segment}
-        - id: event-service
-          uri: lb://event-service
+        - id: event
+          uri: lb://EVENT-SERVICE
           predicates:
-            - Path=/event/api/event/administrate/**,/event/api/event/administrate,/event/v3/api-docs/**,/event/swagger-ui/**,/event/swagger-ui.html
+            - Path=/event/api/event/administrate/**,/event/api/event/administrate,/event/v3/api-docs/**
           filters:
             - RewritePath=/event/(?<segment>.*), /${segment}
 
-
 springdoc:
+  api-docs:
+    gateway:
+      enabled: true
+      locations:
+        - http://localhost:8081/v3/api-docs
+        - http://localhost:8091/v3/api-docs
+
   swagger-ui:
     urls:
-      - name: Auth User Service
+      - name: AUTH-USER-SERVICE
         url: /auth/v3/api-docs
-      - name: Event Service
+      - name: EVENT-SERVICE
         url: /event/v3/api-docs

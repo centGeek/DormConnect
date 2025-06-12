@@ -29,7 +29,12 @@ public class JwtAuthenticationFilter implements WebFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().toString();
 
-        if (path.startsWith("/auth/")) {
+        if (path.startsWith("/auth/") ||
+                path.startsWith("/event/") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/swagger-ui.html") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/webjars")) {
             return chain.filter(exchange);
         }
 

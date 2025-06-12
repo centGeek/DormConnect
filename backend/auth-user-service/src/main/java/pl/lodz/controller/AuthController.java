@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/auth/api")
+@RequestMapping("/api/auth")
 @AllArgsConstructor
 @Slf4j
 public class AuthController {
