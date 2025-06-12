@@ -6,13 +6,6 @@ spring:
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/centGeek/DormConnect.git
-          default-label: main
-          clone-on-start: true
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -30,5 +23,18 @@ spring:
       embedding:
         options:
           model: text-embedding-3-large
+  flyway:
+    enabled: true
 server:
   port: 8081
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/centGeek/DormConnect.git
+          default-label: main
+          clone-on-start: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

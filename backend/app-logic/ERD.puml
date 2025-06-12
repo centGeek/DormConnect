@@ -1,0 +1,153 @@
+@startuml
+!pragma layout smetana
+
+entity event {
+  *event_name : varchar(255)
+  description : varchar(1000)
+  start_date_time : timestamp
+  end_date_time : timestamp
+  location : varchar(255)
+  event_type : varchar(255)
+  max_participants : integer
+  image_url : varchar(255)
+  organizer_id : bigint
+  version : bigint
+  approval_status : varchar(100)
+  --
+  *event_id : bigint
+}
+
+entity event_participant {
+  *event_id : bigint
+  *participant_id : bigint
+}
+
+entity common_room {
+  common_room_id : bigint
+  common_room_type : smallint
+  capacity : integer
+  floor : integer
+  hours_of_time_windows : integer
+  how_many_times_a_week_you_can_use_it : integer
+  is_active : boolean
+}
+
+entity common_room_assignment {
+  *common_room_id : bigint
+  users_id : bigint
+  archived : boolean
+  start_date : timestamp
+  end_date : timestamp
+}
+
+entity dorm_rooms {
+  *room_id : bigint
+  number : varchar(255)
+  capacity : integer
+  floor : integer
+  active : boolean
+}
+
+entity room_assign_entity {
+  *room_id : bigint
+  resident_id : bigint
+  from_date : date
+  to_date : date
+}
+
+entity dorm_problem {
+  *student_id : bigint
+  name : varchar(255)
+  description : varchar(255)
+  answer : varchar(255)
+  problem_date : date
+  submitted_date : date
+  problem_status : varchar(255)
+}
+
+entity floor {
+  *floor_number : integer
+  rooms : bigint
+  common_rooms : bigint
+}
+
+entity student {
+  *name : varchar(64)
+  surname : varchar(64)
+  user_id : integer
+}
+
+entity manager {
+  *name : varchar(64)
+  surname : varchar(64)
+  user_id : integer
+}
+
+entity user_profile {
+  *user_name : varchar(64)
+  email : varchar(255)
+  password : varchar(255)
+  is_active : boolean
+  role_id : integer
+  --
+  *user_id : integer
+}
+
+entity role {
+  *role_name : varchar(255)
+  --
+  *role_id : integer
+}
+
+entity flyway_schema_history {
+  *version : varchar(50)
+  description : varchar(200)
+  type : varchar(20)
+  script : varchar(1000)
+  checksum : integer
+  installed_by : varchar(100)
+  installed_on : timestamp
+  execution_time : integer
+  success : boolean
+}
+
+' RELACJE
+
+' event N:1 user_profile (organizator)
+event }o--|| user_profile
+
+' event_participant N:M event oraz user_profile
+event_participant }o--|| event
+event_participant }o--|| user_profile
+
+' common_room_assignment N:1 common_room
+common_room_assignment }o--|| common_room
+
+' common_room_assignment N:1 user_profile
+common_room_assignment }o--|| user_profile
+
+' room_assign_entity N:1 dorm_rooms
+room_assign_entity }o--|| dorm_rooms
+
+' room_assign_entity N:1 user_profile (rezydent)
+room_assign_entity }o--|| user_profile
+
+' dorm_problem N:1 student
+dorm_problem }o--|| student
+
+
+' student 1:1 user_profile
+student ||--|| user_profile
+
+' manager 1:1 user_profile
+manager ||--|| user_profile
+
+' floor 1:N dorm_rooms
+floor ||--o{ dorm_rooms
+' floor 1:N common_room
+floor ||--o{ common_room
+
+' user_profile N:1 role
+user_profile }o--|| role
+
+@enduml

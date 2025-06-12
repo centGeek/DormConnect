@@ -32,7 +32,6 @@ function DormProblem() {
 
     const handleButtonClick = () => navigate('/problems/create');
 
-
     const filteredProblems = dormProblems.filter(problem => {
         const matchesSearch = problem.name.toLowerCase()
             .includes(filters.searchTerm.toLowerCase());
@@ -42,12 +41,12 @@ function DormProblem() {
     });
 
     const handleViewDetails = (problemId: number) => {
-        navigate('/problems/details/' + problemId)
-    }
+        navigate('/problems/details/' + problemId);
+    };
 
     const handleManageButtonClick = (problemId: number) => {
         navigate('/problems/manage/' + problemId);
-    }
+    };
 
     const fetchStudentData = async () => {
         try {
@@ -62,13 +61,13 @@ function DormProblem() {
                 credentials: 'include'
             });
             const data = await response.json();
-            setDormProblems(data.content || data || [])
+            setDormProblems(data.content || data || []);
         } catch (err) {
             console.error('Error fetching dormitory problems');
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const fetchDormProblems = async () => {
         try {
@@ -76,7 +75,7 @@ function DormProblem() {
             if (token != null) {
                 decodedToken = jwtDecode<TokenJwtPayload>(token);
             } else {
-                throw new Error('Cannot get token...')
+                throw new Error('Cannot get token...');
             }
 
             console.log(decodedToken['roles'][0]);
@@ -95,112 +94,121 @@ function DormProblem() {
                 credentials: 'include'
             });
             const data = await response.json();
-            setDormProblems(data.content || data || [])
+            setDormProblems(data.content || data || []);
         } catch (err) {
             console.error('Error fetching dormitory problems');
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         fetchDormProblems();
-        
-    }, [])
+    }, []);
 
     return (
-        <Template
-            buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Common Rooms', link: '/common-rooms' },
-                { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-            ]}
-        >
-
-            <div className="flex flex-col items-center p-4">
-                <div className="text-center mb-4">
-                    <h2 className="text-3xl font-bold text-gray-800">Dormitory Problems</h2>
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
+            <div className="p-6">
+                <div className="text-center mb-8">
+                    <h2 className="text-4xl font-bold text-gray-800">Dormitory Problems</h2>
                 </div>
-                <div className="flex flex-wrap gap-6 items-center justify-between w-full mb-6">
-                    <input
-                        type="text"
-                        placeholder="Search by description..."
-                        value={filters.searchTerm}
-                        onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
-                        className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
-                    />
-                    <select
-                        value={filters.statusFilter}
-                        onChange={(e) => setFilters({ ...filters, statusFilter: e.target.value })}
-                        className="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500 "
-                    >
-                        <option value="ALL">All Statuses</option>
-                        <option value="SUBMITTED">Submitted</option>
-                        <option value="RESOLVED">Resolved</option>
-                        <option value="REJECTED">Rejected</option>
-                    </select>
-                    {!isAdmin && (
+                
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
+                    <div className="w-full md:w-1/3">
                         <input
-                            type="button"
-                            className="w-full md:w-auto bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition"
-                            value="Report a problem"
-                            onClick={handleButtonClick}
+                            type="text"
+                            placeholder="Search by description..."
+                            value={filters.searchTerm}
+                            onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-sm"
                         />
+                    </div>
+                    
+                    <div className="w-full md:w-1/4">
+                        <select
+                            value={filters.statusFilter}
+                            onChange={(e) => setFilters({ ...filters, statusFilter: e.target.value })}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-sm"
+                        >
+                            <option value="ALL">All Statuses</option>
+                            <option value="IN_PROGRESS">In progress</option> 
+                            <option value="SUBMITTED">Submitted</option>
+                            <option value="RESOLVED">Resolved</option>
+                            <option value="REJECTED">Rejected</option>
+                        </select>
+                    </div>
+                    
+                    {!isAdmin && (
+                        <button
+                            className="w-full md:w-auto bg-gray-800 text-white font-bold py-2 px-6 rounded-lg hover:bg-white hover:text-gray-800 border border-gray-800 transition duration-300 shadow-sm"
+                            onClick={handleButtonClick}
+                        >
+                            Report a Problem
+                        </button>
                     )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                    {loading ? (
-                        <div className="text-center text-gray-500">Loading problems...</div>
-                    ) : filteredProblems.length === 0 ? (
-                        <div className="text-center text-gray-500">No problems found matching your criteria</div>
-                    ) : (
-                        filteredProblems.map((problem) => (
+                
+                {loading ? (
+                    <div className="text-center text-gray-500 py-8">Loading problems...</div>
+                ) : filteredProblems.length === 0 ? (
+                    <div className="text-center text-gray-500 py-8">No problems found matching your criteria</div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredProblems.map((problem) => (
                             <div
                                 key={problem.id}
-                                className="p-4 bg-white border border-gray-300 rounded-lg shadow-md"
+                                className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                             >
-                                <h3 className="text-lg font-bold text-gray-800">{problem.name}</h3>
-                                <p className="text-gray-600">Student id: {problem.studentId}</p>
-                                <p
-                                    className={`font-semibold ${
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">{problem.name}</h3>
+                                <p className="text-gray-600 mb-1">Student ID: {problem.studentId}</p>
+                                <div className="flex items-center mb-2">
+                                    <span className="font-semibold mr-2">Status:</span>
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                         problem.problemStatus === "SUBMITTED"
-                                            ? "text-yellow-500"
+                                            ? "bg-yellow-100 text-yellow-800"
                                             : problem.problemStatus === "RESOLVED"
-                                                ? "text-green-500"
-                                                : "text-red-500"
-                                    }`}
-                                >
-                                    Status: {problem.problemStatus}
-                                </p>
-                                <p className="text-gray-600">
+                                                ? "bg-green-100 text-green-800"
+                                                : "bg-red-100 text-red-800"
+                                    }`}>
+                                        {problem.problemStatus}
+                                    </span>
+                                </div>
+                                <p className="text-gray-600 mb-1">
                                     Problem date: {new Date(problem.problemDate).toLocaleDateString()}
                                 </p>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 mb-4">
                                     Date submitted: {new Date(problem.submittedDate).toLocaleDateString()}
                                 </p>
-                                {isAdmin && (
-                                    <input
-                                        type="button"
-                                        className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition mt-2"
-                                        value="Manage"
-                                        onClick={() => handleManageButtonClick(problem.id)}
-                                    />
-                                )}
-                                <input
-                                    type="button"
-                                    className="w-full bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition mt-2"
-                                    value="View details"
-                                    onClick={() => handleViewDetails(problem.id)}
-                                />
+                                
+                                <div className="flex flex-col space-y-2">
+                                    {isAdmin && problem.problemStatus != 'RESOLVED' && problem.problemStatus != 'REJECTED' && (
+                                        <button
+                                            className="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
+                                            onClick={() => handleManageButtonClick(problem.id)}
+                                        >
+                                            Manage
+                                        </button>
+                                    )}
+                                    <button
+                                        className="w-full bg-gray-800 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300"
+                                        onClick={() => handleViewDetails(problem.id)}
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
                             </div>
-                        ))
-                    )}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </Template>
-    )
+    );
 }
 
 export default DormProblem;

@@ -44,6 +44,10 @@ public class RoomController {
     public List<RoomInGroupDTO> getRooms() {
         return roomService.getAllRooms().stream().map(GroupedRoomsMapper::toRoomDto).toList();
     }
+    @GetMapping("/room/floor/{floor}")
+    public List<RoomInGroupDTO> getRoomsByFloor(@PathVariable Integer floor) {
+        return roomService.getRoomsByFloor(floor).stream().map(GroupedRoomsMapper::toRoomDto).toList();
+    }
 
 
     @PostMapping("/room/create")
@@ -129,4 +133,17 @@ public class RoomController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
         }
     }
+
+//    @GetMapping("/assign/myAssigns")
+//    public ResponseEntity<List<AssignmentsDTO>> getMyAssignments(@RequestHeader("Authorization") String authorizationHeader) {
+//        try {
+//            Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
+//            List<AssignmentsDTO> assignments = roomService.getAssignmentsByUserId(userId);
+//            return ResponseEntity.ok(assignments);
+//        } catch (Exception e) {
+//            logger.error("Error retrieving assignments: ", e);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }
+
