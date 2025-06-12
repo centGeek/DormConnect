@@ -8,6 +8,7 @@ interface User {
     id: number;
     roles: string[];
     sub: string;
+    username: string;
 }
 
 interface UserContextProps {
@@ -21,6 +22,7 @@ interface DecodedToken {
     roles: string[];
     sub: string;
     id: number;
+    username: string;
 }
 
 export const UserContext = createContext<UserContextProps | null>(null);
@@ -50,6 +52,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 id: decodedToken.id,
                 roles: decodedToken.roles,
                 sub: decodedToken.sub,
+                username: decodedToken.username,
             });
             console.log('User logged in:', decodedToken);
 
@@ -88,6 +91,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 id: decodedToken.id,
                 roles: decodedToken.roles,
                 sub: decodedToken.sub,
+                username: decodedToken.username
             });
         }
     }, [token]);
