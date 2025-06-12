@@ -18,7 +18,7 @@ function PopUpRoomCreate({ onClose, floor, onSucced }: PopupFormProps) {
         event.preventDefault();
 
         const newRoom = {
-            number: `${floor}-${number}`,
+            number: `${floor}${number}`,
             capacity,
             floor,
         };
