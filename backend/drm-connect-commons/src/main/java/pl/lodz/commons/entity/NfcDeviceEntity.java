@@ -19,10 +19,8 @@ public class NfcDeviceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private UUID uuid;
-    private String roomNumber;
+    private int roomNumber;
     private String lockStatus;
     private String deviceStatus;
-    private String ipAddress;
-    private String macAddress;
 }
 

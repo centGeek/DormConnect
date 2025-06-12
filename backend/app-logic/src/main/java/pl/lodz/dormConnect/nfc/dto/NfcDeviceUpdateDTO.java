@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record NfcDeviceUpdateDTO(
         UUID device_uuid,
-        String roomNumber,
+        int roomNumber,
         String lockStatus
 ) {
 }

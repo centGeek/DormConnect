@@ -11,7 +11,6 @@ import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
 import OperationSuccedPopUp from "./components/OperationSuccedPopUp.tsx";
 import Cookies from "js-cookie";
-import { useNavigate } from 'react-router-dom';
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -30,7 +29,6 @@ function CreateDormitory() {
     const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
     const [isPopUpSuccedOpen, setIsPopUpSuccedOpen] = useState<boolean>(false);
-    const navigate = useNavigate();
 
     const floorsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -130,13 +128,6 @@ function CreateDormitory() {
             {text: 'Pokój', link: '/rooms'},
             {text: 'Zgłoś problem', link: '/problems'},
         ]}>
-            <button
-                type="button"
-                className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
-                onClick={() => navigate('/admin-panel')}
-            >
-                ← Powrót
-            </button>
             <div className="relative min-h-fit">
                 <h1 className="text-4xl font-bold text-gray-600 mb-6 text-center">Kreator akademika</h1>
                 {!(activeFloor === -1) && (<button

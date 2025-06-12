@@ -18,7 +18,7 @@ function Home() {
 
     useEffect(() => {
         const updateHeaderTemperature = () => {
-            const btn = document.querySelector('a[href="/problems"]');
+            const btn = document.querySelector('a[href="/common-rooms"]');
             if (!btn) return;
 
             const tempText = loading

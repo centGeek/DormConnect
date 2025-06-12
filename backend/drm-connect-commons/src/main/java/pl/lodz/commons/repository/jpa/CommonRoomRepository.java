@@ -11,7 +11,6 @@ import java.util.List;
 public interface CommonRoomRepository extends JpaRepository<CommonRoomEntity, Long> {
     CommonRoomEntity findCommonRoomById(Long id);
 
-
     CommonRoomEntity findCommonRoomByCommonRoomType(CommonRoomEntity.CommonRoomType commonRoomType);
 
     List<CommonRoomEntity> findCommonRoomByFloor(int floor);
