@@ -30,6 +30,7 @@ function CreateDormitory() {
     const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
     const [isPopUpSuccedOpen, setIsPopUpSuccedOpen] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const floorsContainerRef = useRef<HTMLDivElement>(null);
 
