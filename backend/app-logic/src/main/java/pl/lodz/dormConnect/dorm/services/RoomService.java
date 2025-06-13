@@ -1,16 +1,22 @@
 package pl.lodz.dormConnect.dorm.services;
 
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.commons.entity.RoomAssignEntity;
 import pl.lodz.commons.entity.RoomEntity;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.RoomRepository;
+import pl.lodz.dormConnect.dorm.DTO.DeleteRoomImpactPreviewDTO;
+import pl.lodz.dormConnect.dorm.DTO.ResidentReassignmentPreview;
+import pl.lodz.dormConnect.dorm.DTO.SimulatedRollback;
+import pl.lodz.dormConnect.dorm.scheduler.RoomAssignmentScheduler;
 import pl.lodz.dormConnect.floors.service.FloorsService;
 
 import java.time.LocalDate;
@@ -18,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class RoomService {
@@ -26,11 +33,13 @@ public class RoomService {
     @Autowired
     private final RoomAssignmentRepository roomAssignmentRepository;
     private final FloorsService floorsService;
+    private final RoomAssignmentScheduler roomAssignmentScheduler;
 
-    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository, @Lazy FloorsService floorsService) {
+    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository, @Lazy FloorsService floorsService, RoomAssignmentScheduler roomAssignmentScheduler) {
         this.roomRepository = roomRepository;
         this.roomAssignmentRepository = roomAssignmentRepository;
         this.floorsService = floorsService;
+        this.roomAssignmentScheduler = roomAssignmentScheduler;
     }
 
 
@@ -134,7 +143,10 @@ public class RoomService {
                         assignment.getRoom().getNumber(),
                         assignment.getRoom().getFloor(),
                         assignment.getFromDate(),
-                        assignment.getToDate()))
+                        assignment.getToDate() != null && assignment.getToDate().equals(LocalDate.of(2999, 1, 1))
+                                ? null
+                                : assignment.getToDate()
+                ))
                 .toList();
     }
 
@@ -144,8 +156,99 @@ public class RoomService {
                 .distinct()
                 .toList();
     }
+
     public List<RoomEntity> getRoomsByFloor(int floor) {
         return roomRepository.findByFloor(floor);
     }
+
+    public boolean simulateAssignWithoutOverflow(List<RoomAssignEntity> existingAssignments, Long roomId, LocalDate newStart, LocalDate newEnd) {
+        int capacity = roomRepository.findCapacityById(roomId);
+        Map<LocalDate, Integer> occupancy = new HashMap<>();
+
+        for (RoomAssignEntity assignment : existingAssignments) {
+            LocalDate from = assignment.getFromDate();
+            LocalDate to = assignment.getToDate() != null ? assignment.getToDate() : LocalDate.MAX;
+
+            LocalDate effectiveStart = from.isAfter(newStart) ? from : newStart;
+            LocalDate effectiveEnd = to.isBefore(newEnd) ? to : newEnd;
+
+            for (LocalDate date = effectiveStart; !date.isAfter(effectiveEnd); date = date.plusDays(1)) {
+                occupancy.put(date, occupancy.getOrDefault(date, 0) + 1);
+            }
+        }
+
+        for (LocalDate date = newStart; !date.isAfter(newEnd); date = date.plusDays(1)) {
+            int current = occupancy.getOrDefault(date, 0);
+            if (current + 1 > capacity) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    @Transactional
+    public void shortenAssignmentEndDate(Long assignmentId, Long userId, LocalDate newEndDate) {
+        RoomAssignEntity assignment = roomAssignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+
+        if (!assignment.getResidentId().equals(userId)) {
+            throw new IllegalArgumentException("You are not the owner of this assignment.");
+        }
+
+        LocalDate currentEnd = assignment.getToDate();
+        if (currentEnd == null || currentEnd.isAfter(LocalDate.now()) == false) {
+            throw new IllegalArgumentException("Assignment has already ended.");
+        }
+
+        if (newEndDate.isAfter(currentEnd)) {
+            throw new IllegalArgumentException("New end date must be before current end date.");
+        }
+
+        if (newEndDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("New end date must be today or in the future.");
+        }
+
+        if (newEndDate.isAfter(LocalDate.now().plusWeeks(10))) {
+            throw new IllegalArgumentException("New end date is too far in the future (max 10 weeks).");
+        }
+
+        assignment.setToDate(newEndDate);
+        roomAssignmentRepository.save(assignment);
+    }
+
+
+    public DeleteRoomImpactPreviewDTO simulateRoomDeletionImpact(Long roomId) {
+        try {
+            roomAssignmentScheduler.simulateRoomDeletion(roomId);
+        } catch (SimulatedRollback rollback) {
+            return rollback.getPreviewDTO(); // zwracamy "wynik" symulacji
+        }
+        return null;
+    }
+
+
+
+    @Transactional
+    public void deleteRoomWithRelocations(Long roomId) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+
+        // Pobierz przypisania aktualne i przyszłe do tego pokoju
+        List<RoomAssignEntity> assignmentsToReassign = roomAssignmentRepository.findByRoomIdAndToDateAfter(roomId, LocalDate.now());
+
+        if (!assignmentsToReassign.isEmpty()) {
+            // Uruchom algorytm relokacji z wysokim priorytetem dla tych przypisań
+            roomAssignmentScheduler.reassignResidentsImmediately(assignmentsToReassign, roomRepository.findAll());
+        }
+
+        // Usuń wszystkie przypisania do tego pokoju (bo pokój będzie usuwany)
+        //roomAssignmentRepository.deleteAll(assignmentsToReassign);
+
+        // Usuń pokój
+        roomRepository.delete(room);
+    }
+
 
 }

@@ -13,6 +13,7 @@ import pl.lodz.dormConnect.dorm.services.DormFormService;
 import pl.lodz.commons.entity.DormFormEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dorm/form")
@@ -88,6 +89,7 @@ public class DormFormController {
         try {
             Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
             List<DormFormDTO> forms = dormFormService.getUserForms(userId);
+            forms = forms.stream().filter(form -> !form.isProcessed()).toList();
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
             logger.error("Error retrieving user forms: ", e);

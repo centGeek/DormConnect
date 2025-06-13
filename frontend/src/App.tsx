@@ -12,13 +12,17 @@ import Rooms from './Rooms/RoomPage.tsx';
 import AdminEvents from './Events/AdminEvents.tsx';
 import EventsEdit from './Events/EventsEdit.tsx';
 import DormFormPage from "./Rooms/DormFormPage.tsx";
+import MyDormRoomsInfo from "./Rooms/components/MyDormRoomsInfo.tsx";
 import CommonRoomShow from "./CommonRoom/CommonRoomShow.tsx";
 import CommonRoomSchedule from "./CommonRoom/CommonRoomSchedule.tsx";
 import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
+import 'leaflet/dist/leaflet.css';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
+import RoomDeletion from "./Rooms/components/RoomDeletion.tsx";
+import RoomDeleteTest from "./Rooms/RoomDeleteTest.tsx";
 import AccountSettingsPanel from './AccountSettingsPanel/AccountSettingsPanel.tsx';
 import AdminPanel from './AdminPanel/pages/AdminPanel.tsx';
 import UserManagementPanel from './AdminPanel/pages/UserManagementPanel.tsx';
@@ -43,6 +47,8 @@ function App() {
                         <Route path="/events/create" element={<EventsCreate />} />
                         <Route path="/rooms" element={<Rooms />} />
                         <Route path="/rooms/form" element={<DormFormPage />} />
+                        <Route path="/rooms/myInfo" element={<MyDormRoomsInfo />} />
+
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
@@ -55,6 +61,9 @@ function App() {
                         )}
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/dormitory" element={<CreateDormitory />} />
+                        )}
+                        {userContext?.user?.roles.includes('ADMIN') && (
+                            <Route path="/dormitory/delete" element={<RoomDeletion roomId={4} />} />
                         )}
                         <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         <Route path="/admin-panel" element={<AdminPanel/>}/>

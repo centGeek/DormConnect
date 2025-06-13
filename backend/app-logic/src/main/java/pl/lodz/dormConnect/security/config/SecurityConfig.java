@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
                         .requestMatchers("/api/dorm-problem/**").permitAll()
                         .requestMatchers("/problems/**").authenticated()
-                        .requestMatchers("/api/dorm/**").permitAll()
+                        .requestMatchers("/api/dorm/**").authenticated()
                         .requestMatchers("/api/common-room/**").authenticated()
                         .requestMatchers("/api/floors/**").authenticated()
                         .requestMatchers("/api/nfc/**").permitAll()

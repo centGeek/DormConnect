@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import pl.lodz.commons.entity.RoomAssignEntity;
 
+import java.util.Optional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,5 +58,10 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignEntity
         """)
     boolean existsAssignmentAtDate(@Param("studentId") Long studentId,
                                    @Param("currDate") LocalDate currDate,
-                                   @Param("roomNumber") String roomNumber);      
+                                   @Param("roomNumber") String roomNumber);
+
+    @Query("SELECT r FROM RoomAssignEntity r WHERE r.residentId = :studentId AND r.room.id = :roomId AND (r.toDate IS NULL OR r.toDate >= CURRENT_DATE)")
+    Optional<RoomAssignEntity> findCurrentAssignment(@Param("studentId") Long studentId, @Param("roomId") Long roomId);
+
+    List<RoomAssignEntity> findByRoomIdAndToDateAfter(Long roomId, LocalDate now);
 }
