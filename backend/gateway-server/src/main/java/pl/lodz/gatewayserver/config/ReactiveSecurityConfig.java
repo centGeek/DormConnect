@@ -63,6 +63,15 @@ public class ReactiveSecurityConfig {
                         .pathMatchers(
                                 "/api/dorm-problem/**"
                         ).permitAll()
+                        // Dorm Service with NFC
+                        .pathMatchers(
+                                "/api/common-room-assignment/**",
+                                "/api/common-room/**",
+                                "/api/floors/**",
+                                "/api/dorm/form/**",
+                                "/api/dorm/room/group/**",
+                                "/api/dorm/**"
+                        ).permitAll()
                 )
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
