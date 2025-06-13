@@ -57,7 +57,7 @@ function App() {
                             <Route path="/dormitory" element={<CreateDormitory />} />
                         )}
                         {userContext?.user?.roles.includes('ADMIN') && (
-                            <Route path="/dormitory/delete" element={<RoomDeletion roomId={3} />} />
+                            <Route path="/dormitory/delete" element={<RoomDeletion roomId={4} />} />
                         )}
                     </>
                 ) : (

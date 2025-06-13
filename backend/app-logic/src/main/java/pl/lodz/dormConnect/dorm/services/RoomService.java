@@ -1,11 +1,12 @@
 package pl.lodz.dormConnect.dorm.services;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
 import pl.lodz.commons.entity.RoomAssignEntity;
@@ -14,6 +15,7 @@ import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.RoomRepository;
 import pl.lodz.dormConnect.dorm.DTO.DeleteRoomImpactPreviewDTO;
 import pl.lodz.dormConnect.dorm.DTO.ResidentReassignmentPreview;
+import pl.lodz.dormConnect.dorm.DTO.SimulatedRollback;
 import pl.lodz.dormConnect.dorm.scheduler.RoomAssignmentScheduler;
 import pl.lodz.dormConnect.floors.service.FloorsService;
 
@@ -154,6 +156,7 @@ public class RoomService {
                 .distinct()
                 .toList();
     }
+
     public List<RoomEntity> getRoomsByFloor(int floor) {
         return roomRepository.findByFloor(floor);
     }
@@ -217,35 +220,15 @@ public class RoomService {
 
 
     public DeleteRoomImpactPreviewDTO simulateRoomDeletionImpact(Long roomId) {
-        RoomEntity room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
-
-        LocalDate today = LocalDate.now();
-        List<RoomAssignEntity> current = room.getRoomAssigns().stream()
-                .filter(a -> !a.getFromDate().isAfter(today) && !a.getToDate().isBefore(today))
-                .toList();
-
-        List<RoomAssignEntity> future = room.getRoomAssigns().stream()
-                .filter(a -> a.getFromDate().isAfter(today))
-                .toList();
-
-        List<RoomEntity> otherRooms = roomRepository.findAll().stream()
-                .filter(r -> !r.getId().equals(roomId))
-                .toList();
-
-        List<ResidentReassignmentPreview> nowResidents = roomAssignmentScheduler.simulateRelocation(current, otherRooms);
-        List<ResidentReassignmentPreview> futureResidents = roomAssignmentScheduler.simulateRelocation(future, otherRooms);
-
-        LocalDate minDate = Stream.concat(nowResidents.stream(), futureResidents.stream())
-                .filter(ResidentReassignmentPreview::roomAvailable)
-                .map(ResidentReassignmentPreview::plannedNewStartDate)
-                .min(LocalDate::compareTo)
-                .orElse(null);
-
-        boolean canDeleteNow = nowResidents.stream().allMatch(ResidentReassignmentPreview::roomAvailable);
-
-        return new DeleteRoomImpactPreviewDTO(roomId, canDeleteNow, minDate, nowResidents, futureResidents);
+        try {
+            roomAssignmentScheduler.simulateRoomDeletion(roomId);
+        } catch (SimulatedRollback rollback) {
+            return rollback.getPreviewDTO(); // zwracamy "wynik" symulacji
+        }
+        return null;
     }
+
+
 
     @Transactional
     public void deleteRoomWithRelocations(Long roomId) {
@@ -257,7 +240,7 @@ public class RoomService {
 
         if (!assignmentsToReassign.isEmpty()) {
             // Uruchom algorytm relokacji z wysokim priorytetem dla tych przypisań
-            roomAssignmentScheduler.reassignResidentsImmediately(assignmentsToReassign,roomRepository.findAll());
+            roomAssignmentScheduler.reassignResidentsImmediately(assignmentsToReassign, roomRepository.findAll());
         }
 
         // Usuń wszystkie przypisania do tego pokoju (bo pokój będzie usuwany)
@@ -266,8 +249,6 @@ public class RoomService {
         // Usuń pokój
         roomRepository.delete(room);
     }
-
-
 
 
 }

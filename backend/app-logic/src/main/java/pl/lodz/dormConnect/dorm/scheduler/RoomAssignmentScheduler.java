@@ -1,23 +1,28 @@
 package pl.lodz.dormConnect.dorm.scheduler;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import pl.lodz.commons.entity.DormFormEntity;
 import pl.lodz.commons.entity.RoomAssignEntity;
 import pl.lodz.commons.entity.RoomEntity;
 import pl.lodz.commons.repository.jpa.DormFormRepository;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.RoomRepository;
+import pl.lodz.dormConnect.dorm.DTO.DeleteRoomImpactPreviewDTO;
 import pl.lodz.dormConnect.dorm.DTO.ResidentReassignmentPreview;
+import pl.lodz.dormConnect.dorm.DTO.SimulatedRollback;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -65,34 +70,88 @@ public class RoomAssignmentScheduler {
 
     }
 
-    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms) {
-        RoomAssignmentLock.LOCK.lock(); // czekaj na swoją kolej
+
+    @org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void simulateRoomDeletion(Long roomId) {
+
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
+
+        LocalDate today = LocalDate.now();
+        List<RoomAssignEntity> current = room.getRoomAssigns().stream()
+                .filter(a -> !a.getFromDate().isAfter(today) && !a.getToDate().isBefore(today))
+                .toList();
+
+        List<RoomAssignEntity> future = room.getRoomAssigns().stream()
+                .filter(a -> a.getFromDate().isAfter(today))
+                .toList();
+
+        List<RoomEntity> otherRooms = roomRepository.findAll().stream()
+                .filter(r -> !r.getId().equals(roomId))
+                .toList();
+
+        List<ResidentReassignmentPreview> nowResidents = simulateRelocation(current, otherRooms, true);
+        List<ResidentReassignmentPreview> futureResidents = simulateRelocation(future, otherRooms, false);
+
+        LocalDate minDate = Stream.concat(nowResidents.stream(), futureResidents.stream())
+                .filter(ResidentReassignmentPreview::roomAvailable)
+                .map(ResidentReassignmentPreview::plannedNewStartDate)
+                .min(LocalDate::compareTo)
+                .orElse(null);
+
+        boolean canDeleteNow = Stream.concat(nowResidents.stream(), futureResidents.stream())
+                .allMatch(ResidentReassignmentPreview::roomAvailable);
+
+        //boolean canDeleteNow = nowResidents.stream().allMatch(ResidentReassignmentPreview::roomAvailable);
+
+        throw new SimulatedRollback(new DeleteRoomImpactPreviewDTO(roomId, canDeleteNow, minDate, nowResidents, futureResidents));
+    }
+
+    /**
+    Use with caution as this truly creates new Assignments!
+    **/
+    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms,boolean isOngoing) {
+        RoomAssignmentLock.LOCK.lock();
 
         try {
-
             List<ResidentReassignmentPreview> previews = new ArrayList<>();
 
-            for (RoomAssignEntity assign : assignmentsToReassign) {
+            for (RoomAssignEntity oldAssign : assignmentsToReassign) {
                 Optional<RoomEntity> replacementRoom = allRooms.stream()
-                        .filter(room -> !room.getId().equals(assign.getRoom().getId())) // pomijamy ten usuwany
-                        .filter(room -> isRoomAvailable(room, assign.getFromDate(), assign.getToDate()))
+                        .filter(room -> !room.getId().equals(oldAssign.getRoom().getId()))
+                        .filter(room -> isRoomAvailable(room, oldAssign.getFromDate(), oldAssign.getToDate()))
                         .findFirst();
 
                 if (replacementRoom.isPresent()) {
+                    RoomEntity targetRoom = replacementRoom.get();
+
+                    // Tworzymy nowe przypisanie
+                    RoomAssignEntity newAssign = new RoomAssignEntity();
+                    newAssign.setResidentId(oldAssign.getResidentId());
+                    newAssign.setRoom(targetRoom);
+                    if (isOngoing) {
+                        newAssign.setFromDate(LocalDate.now());
+                    }else newAssign.setFromDate(oldAssign.getFromDate());
+                    newAssign.setToDate(oldAssign.getToDate());
+
+                    // Aktualizujemy obie strony relacji
+                    //targetRoom.getRoomAssigns().add(newAssign);
+                    roomAssignRepository.save(newAssign);
+
                     previews.add(new ResidentReassignmentPreview(
-                            assign.getResidentId(),
-                            "N/A", // można dodać `userRepository` i pobrać nazwisko
-                            assign.getFromDate(),
-                            assign.getToDate(),
-                            assign.getFromDate(), // załóżmy, że od tego samego dnia
+                            oldAssign.getResidentId(),
+                            "N/A", // TODO tutaj pobrać z resta
+                            oldAssign.getFromDate(),
+                            oldAssign.getToDate(),
+                            oldAssign.getFromDate(),
                             true
                     ));
                 } else {
                     previews.add(new ResidentReassignmentPreview(
-                            assign.getResidentId(),
+                            oldAssign.getResidentId(),
                             "N/A",
-                            assign.getFromDate(),
-                            assign.getToDate(),
+                            oldAssign.getFromDate(),
+                            oldAssign.getToDate(),
                             null,
                             false
                     ));

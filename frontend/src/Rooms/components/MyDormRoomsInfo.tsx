@@ -132,7 +132,7 @@ const MyDormRoomsInfo: React.FC = () => {
                         <button
                             onClick={() => setView(view === 'current' ? 'historical' : 'current')}
                             className={`w-14 h-8 flex items-center bg-gray-400 rounded-full p-1 transition-colors duration-300 ${
-                                view === 'historical' ? 'bg-gray-400' : ''
+                                view === 'historical' ? 'bg-gray-500' : ''
                             }`}
                         >
                             <div

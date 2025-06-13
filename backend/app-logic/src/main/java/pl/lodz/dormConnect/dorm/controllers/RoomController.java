@@ -141,7 +141,7 @@ public class RoomController {
             // symulacja – kto będzie przeniesiony i czy się da
             DeleteRoomImpactPreviewDTO simulation =
                     roomService.simulateRoomDeletionImpact(roomId);
-            return ResponseEntity.status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(266)
                     .body(simulation);
         } else {
             //faktyczna operacja usunięcia pokoju + relokacje
