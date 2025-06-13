@@ -14,3 +14,4 @@ public interface RoleJpaRepository extends JpaRepository<RoleEntity, Long> {
             """)
     RoleEntity findByRole(@Param("roleName") String roleName);
 }
+

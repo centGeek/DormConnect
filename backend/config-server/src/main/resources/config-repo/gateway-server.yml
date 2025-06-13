@@ -32,12 +32,18 @@ spring:
             - Path=/chat/v3/api-docs/**
           filters:
             - RewritePath=/chat/(?<segment>.*), /${segment}
+        - id: dorm-problem-swagger
+          uri: lb://DORM-PROBLEM-SERVICE
+          predicates:
+            - Path=/dormProblem/v3/api-docs/**
+          filters:
+            - RewritePath=/dormProblem/(?<segment>.*), /${segment}
 
         # API gateway
         - id: auth-api
           uri: lb://AUTH-USER-SERVICE
           predicates:
-            - Path=/api/auth/**, /register/**, /api/weather/**
+            - Path=/api/auth/**, /register/**, /api/weather/**, /api/users/**
 
         - id: event-api
           uri: lb://EVENT-SERVICE
@@ -49,6 +55,11 @@ spring:
           predicates:
             - Path=/api/chat/**
 
+        - id: dorm-problem-api
+          uri: lb://DORM-PROBLEM-SERVICE
+          predicates:
+            - Path=/api/dorm-problem/**
+
 springdoc:
   api-docs:
     gateway:
@@ -56,6 +67,7 @@ springdoc:
       locations:
         - http://localhost:8081/v3/api-docs
         - http://localhost:8082/v3/api-docs
+        - http://localhost:8083/v3/api-docs
         - http://localhost:8091/v3/api-docs
 
   swagger-ui:
@@ -66,3 +78,5 @@ springdoc:
         url: /event/v3/api-docs
       - name: CHAT-SERVICE
         url: /chat/v3/api-docs
+      - name: DORM-PROBLEM-SERVICE
+        url: /dormProblem/v3/api-docs

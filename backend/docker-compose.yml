@@ -17,6 +17,8 @@ services:
         until pg_isready -U admin; do sleep 1; done
         psql -U admin -d postgres -c 'CREATE DATABASE auth_users_db;'
         psql -U admin -d postgres -c 'CREATE DATABASE event_db;'
+        psql -U admin -d postgres -c 'CREATE DATABASE dorm_db;'
+        psql -U admin -d postgres -c 'CREATE DATABASE dorm_problem_db;'
         wait $$pid
       "
 

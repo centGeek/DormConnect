@@ -1,8 +1,5 @@
 package pl.lodz.commons.fixtures;
 
-import pl.lodz.commons.entity.RoleEntity;
-import pl.lodz.commons.entity.UserEntity;
-
 public class SecurityFixture {
     public static RoleEntity adminRole(){
         return new RoleEntity("ADMIN");

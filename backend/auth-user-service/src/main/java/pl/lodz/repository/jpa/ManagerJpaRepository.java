@@ -18,3 +18,4 @@ public interface ManagerJpaRepository extends JpaRepository<ManagerEntity, Long>
             """)
     Optional<ManagerEntity> findByEmail(@Param("email") String email);
 }
+

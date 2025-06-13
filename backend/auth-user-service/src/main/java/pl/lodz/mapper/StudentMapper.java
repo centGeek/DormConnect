@@ -12,3 +12,4 @@ public class StudentMapper {
         return new Student(student.getId(), student.getName(), student.getSurname(), student.getUser());
     }
 }
+

@@ -35,7 +35,8 @@ public class ReactiveSecurityConfig {
                                 // Microservices
                                 "/auth/v3/api-docs/**",
                                 "/event/v3/api-docs/**",
-                                "/chat/v3/api-docs/**"
+                                "/chat/v3/api-docs/**",
+                                "/dormProblem/v3/api-docs/**"
                         ).permitAll()
                         // Users and Auth
                         .pathMatchers(
@@ -43,6 +44,9 @@ public class ReactiveSecurityConfig {
                                 "/register/**",
                                 "/api/weather/**"
                         ).permitAll()
+                        .pathMatchers(
+                                "/api/users/**"
+                        ).authenticated()
                         // Events
                         .pathMatchers(
                                 "/api/event/administrate/**",
@@ -55,6 +59,10 @@ public class ReactiveSecurityConfig {
                         .pathMatchers(
                                 "/api/chat/**"
                         ).authenticated()
+                        // Dorm Problem
+                        .pathMatchers(
+                                "/api/dorm-problem/**"
+                        ).permitAll()
                 )
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)

@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import pl.lodz.commons.config.TestApplication;
-import pl.lodz.commons.entity.UserEntity;
 import pl.lodz.commons.fixtures.SecurityFixture;
 
 @DataJpaTest

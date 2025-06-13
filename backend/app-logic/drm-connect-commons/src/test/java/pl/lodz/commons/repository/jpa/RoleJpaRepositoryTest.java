@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import pl.lodz.commons.config.TestApplication;
-import pl.lodz.commons.entity.RoleEntity;
 import pl.lodz.commons.fixtures.StudentFixture;
 
 @DataJpaTest
