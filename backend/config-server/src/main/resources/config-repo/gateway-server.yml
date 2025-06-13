@@ -37,7 +37,7 @@ spring:
         - id: auth-api
           uri: lb://AUTH-USER-SERVICE
           predicates:
-            - Path=/api/auth/**, /register/**
+            - Path=/api/auth/**, /register/**, /api/weather/**
 
         - id: event-api
           uri: lb://EVENT-SERVICE

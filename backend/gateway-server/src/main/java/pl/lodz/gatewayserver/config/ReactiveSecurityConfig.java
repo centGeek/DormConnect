@@ -40,7 +40,8 @@ public class ReactiveSecurityConfig {
                         // Users and Auth
                         .pathMatchers(
                                 "/api/auth/**",
-                                "/register/**"
+                                "/register/**",
+                                "/api/weather/**"
                         ).permitAll()
                         // Events
                         .pathMatchers(
