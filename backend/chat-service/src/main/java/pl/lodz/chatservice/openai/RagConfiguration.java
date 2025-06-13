@@ -13,8 +13,6 @@ import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,6 +22,9 @@ import java.util.regex.Pattern;
 public class RagConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(RagConfiguration.class);
+
+    @Value("classpath:/data/vectorstore.json")
+    private Resource vectorStoreResource;
 
     @Value("vectorstore.json")
     private String vectorStoreName;
@@ -82,10 +83,8 @@ public class RagConfiguration {
         return builder.build();
     }
 
-    private File getVectorStoreFile() {
-        Path path = Paths.get("src", "main", "resources", "data");
-        String absolutePath = path.toFile().getAbsolutePath() + File.separator + vectorStoreName;
-        return new File(absolutePath);
+    private File getVectorStoreFile() throws IOException {
+        return vectorStoreResource.getFile();
     }
 
 }

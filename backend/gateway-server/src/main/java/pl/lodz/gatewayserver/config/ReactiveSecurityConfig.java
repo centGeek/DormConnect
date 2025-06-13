@@ -46,7 +46,7 @@ public class ReactiveSecurityConfig {
                         .pathMatchers(
                                 "/api/event/administrate/**",
                                 "/api/event/administrate"
-                        ).authenticated()
+                        ).hasAnyRole("ADMIN", "MANAGER")
                         .pathMatchers(
                                 "/api/event/**"
                         ).authenticated()

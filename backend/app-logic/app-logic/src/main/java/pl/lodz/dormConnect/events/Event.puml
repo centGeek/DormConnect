@@ -1,0 +1,55 @@
+c@startuml
+left to right direction
+skin rose
+
+actor Administrator
+actor Organizer
+actor Participant
+
+package "Event Management" {
+
+    usecase "Create event" as UC_Create
+    usecase "Edit event" as UC_Edit
+    usecase "Delete event" as UC_Delete
+    usecase "View upcoming events" as UC_View
+    usecase "Filter/sort events" as UC_Filter
+
+    usecase "Register for event" as UC_Register
+    usecase "Unregister from event" as UC_Unregister
+    usecase "Auto-update seats" as UC_Seats
+    usecase "Send notifications" as UC_Notify
+
+    usecase "View participants" as UC_ViewPart
+    usecase "Remove participant" as UC_RemovePart
+}
+
+' Admin i organizer mogą zarządzać eventami
+Administrator --> UC_Create
+Administrator --> UC_Edit
+Administrator --> UC_Delete
+
+Organizer --> UC_Edit
+Organizer --> UC_Delete
+Organizer --> UC_ViewPart
+Organizer --> UC_RemovePart
+
+' Uczestnik może tworzyć wydarzenie i wtedy staje się organizatorem
+Participant --> UC_Create : becomes Organizer
+
+' Uczestnik - normalne akcje
+Participant --> UC_View
+Participant --> UC_Filter
+Participant --> UC_Register
+Participant --> UC_Unregister
+
+' Powiązania między przypadkami użycia
+UC_Register ..> UC_Seats : <<include>>
+UC_Unregister ..> UC_Seats : <<include>>
+UC_RemovePart ..> UC_Seats : <<include>>
+
+UC_Create --> UC_Notify
+UC_Edit --> UC_Notify
+UC_Delete --> UC_Notify
+UC_Register --> UC_Notify
+
+@enduml
