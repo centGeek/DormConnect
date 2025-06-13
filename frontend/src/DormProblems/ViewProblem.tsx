@@ -8,6 +8,7 @@ import getToken from './GetToken';
 import { jwtDecode } from 'jwt-decode';
 
 import { HttpStatusCode } from 'axios';
+import { set } from 'react-hook-form';
 
 interface DormProblem {
     id: number;
@@ -27,9 +28,7 @@ function DormProblemView() {
     const navigate = useNavigate();
     const [problemAnswer, setProblemAnswer] = useState('');
     const [problemStatus, setProblemStatus] = useState('');
-
-    var decodedToken: TokenJwtPayload;
-    const token = getToken();
+    const context = useContext(UserContext);
 
     const [dormProblemStatuses, setDormProblemStatuses] = useState<string[]>([]);
     const handleButtonClick = () => navigate('/problems');
@@ -47,13 +46,13 @@ function DormProblemView() {
 
     const fetchProblemStatuses = async () => {
         try {
-            console.log(pageData.problemId);
+            console.log(context?.token);
             const fetchUrl = '/api/dorm-problem/problem-statuses';
             const response = await fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${context?.token}`
                 },
                 credentials: 'include'
             });
@@ -73,36 +72,35 @@ function DormProblemView() {
         try {
             console.log(pageData.problemId);
             const fetchUrl = '/api/dorm-problem/get/' + pageData.problemId;
-            const request = await fetch(fetchUrl, {
+            console.log(fetchUrl);
+
+            const response = await fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${context?.token}`
                 },
                 credentials: 'include'
             });
-            const response  = await request;
+            console.log(response);
             if (response.status == HttpStatusCode.InternalServerError) {
-                navigate("/problems")
+                //navigate("/problems")
             }
-
             const data = await response.json();
-            //console.log(data)
-            console.log(data)
-            setDormProblem(data || [])
-            setProblemStatus(dormProblem.problemStatus);
-            setProblemAnswer(dormProblem.answer || '');
+            console.log(data);
+            setDormProblem(data);
+            return response;
 
 
         } catch (err) {
             console.log(err);
-            console.log()
         }
     }
 
     useEffect(() => {
         event?.preventDefault();
         fetchDormProblem();
+
         fetchProblemStatuses();
     }, [])
 

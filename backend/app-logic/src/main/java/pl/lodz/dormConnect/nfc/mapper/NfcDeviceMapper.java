@@ -1,7 +1,7 @@
 package pl.lodz.dormConnect.nfc.mapper;
 
 import pl.lodz.commons.entity.NfcDeviceEntity;
-
+import pl.lodz.dormConnect.nfc.dto.GetNfcDeviceDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceRegisterDTO;
 import pl.lodz.dormConnect.nfc.dto.NfcDeviceUpdateDTO;
 
@@ -22,7 +22,9 @@ public class NfcDeviceMapper {
         return new NfcDeviceRegisterDTO(
                 nfcDevice.getUuid().toString(),
                 nfcDevice.getRoomNumber(),
-                nfcDevice.getLockStatus()
+                nfcDevice.getLockStatus(),
+                nfcDevice.getIpAddress(),
+                nfcDevice.getMacAddress()
         );
     }
 
@@ -31,6 +33,17 @@ public class NfcDeviceMapper {
                 nfcDevice.getUuid(),
                 nfcDevice.getRoomNumber(),
                 nfcDevice.getLockStatus()
+        );
+    }
+
+    public static GetNfcDeviceDTO entityToGetDTO(NfcDeviceEntity nfcDevice) {
+        return new GetNfcDeviceDTO(
+                nfcDevice.getId(),
+                nfcDevice.getRoomNumber(),
+                nfcDevice.getDeviceStatus(),
+                nfcDevice.getLockStatus(),
+                nfcDevice.getIpAddress(),
+                nfcDevice.getMacAddress()
         );
     }
 

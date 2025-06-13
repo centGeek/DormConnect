@@ -64,12 +64,16 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/chat/get-message", "/api/auth/login",
                                 "api/auth/logout", "api/weather/**", "register/student", "register/manager").permitAll()
                         .requestMatchers("api/event/**", "api/event/participant/**").authenticated()
-                        .requestMatchers("/api/dorm-problem/**").authenticated()
+                        .requestMatchers("/api/dorm-problem/**").permitAll()
                         .requestMatchers("/problems/**").authenticated()
                         .requestMatchers("/api/dorm/**").authenticated()
                         .requestMatchers("/api/common-room/**").authenticated()
                         .requestMatchers("/api/floors/**").authenticated()
+                        .requestMatchers("/api/nfc/**").permitAll()
+                        .requestMatchers("/api/nfc-programmer/**").permitAll()
                         .requestMatchers(("/api/common-room-assignment/**")).authenticated()
+                        .requestMatchers("/api/users/**").permitAll()
+                        .requestMatchers("/api/users/get/**").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs",

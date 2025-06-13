@@ -23,6 +23,12 @@ import 'leaflet/dist/leaflet.css';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 import RoomDeletion from "./Rooms/components/RoomDeletion.tsx";
 import RoomDeleteTest from "./Rooms/RoomDeleteTest.tsx";
+import AccountSettingsPanel from './AccountSettingsPanel/AccountSettingsPanel.tsx';
+import AdminPanel from './AdminPanel/pages/AdminPanel.tsx';
+import UserManagementPanel from './AdminPanel/pages/UserManagementPanel.tsx';
+import NfcManagementPanel from './AdminPanel/pages/NfcManagementPanel.tsx';
+import ManageUser from './AdminPanel/pages/ManageUser.tsx';
+
 
 function App() {
     const userContext = useContext(UserContext);
@@ -59,6 +65,12 @@ function App() {
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/dormitory/delete" element={<RoomDeletion roomId={4} />} />
                         )}
+                        <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
+                        <Route path="/admin-panel" element={<AdminPanel/>}/>
+                        <Route path="/users/manage" element={<UserManagementPanel/>}/>
+                        <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
+                        <Route path="/users/manage/:id" element={<ManageUser/>}/>
+
                     </>
                 ) : (
                     <Route path="*" element={<Navigate to="/" replace />} />
