@@ -65,7 +65,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
         if (!userId || participants.includes(userId) || availableSpots <= 0 || !token) return;
         try {
             setLoading(true);
-            const response = await fetch(`/event/api/event/participant/${event.eventId}`, {
+            const response = await fetch(`/api/event/participant/${event.eventId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -86,7 +86,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
         if (!userId || !participants.includes(userId) || !token) return;
         try {
             setLoading(true);
-            const response = await fetch(`/event/api/event/participant/${event.eventId}`, {
+            const response = await fetch(`/api/event/participant/${event.eventId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -111,7 +111,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, userId, isOrganizer, onEve
         if (!token) return;
         try {
             setLoading(true);
-            const response = await fetch(`/event/api/event/${event.eventId}`, {
+            const response = await fetch(`/api/event/${event.eventId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

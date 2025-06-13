@@ -13,27 +13,47 @@ function ChatPage() {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-   const handleSend = async () => {
-  const messageToSend = input.trim();
-  if (messageToSend) {
-    const userMessage: Message = { text: messageToSend, sender: 'user' };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
+    const handleSend = async () => {
+        const messageToSend = input.trim();
+        if (messageToSend) {
+            const userMessage: Message = { text: messageToSend, sender: 'user' };
+            setMessages(prev => [...prev, userMessage]);
+            setInput('');
+            setIsLoading(true);
 
-    try {
-      const response = await axios.get('/api/chat/get-message', { params: { message: messageToSend } });
-      const llmMessage: Message = { text: response.data.reply, sender: 'llm' };
-      setMessages(prev => [...prev, llmMessage]);
-    } catch (error) {
-      console.error('Error fetching response from backend:', error);
-      const errorMessage: Message = { text: 'Error during communication', sender: 'llm' };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-};
+            try {
+                const token = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('token='))
+                    ?.split('=')[1];
+
+                if (!token) {
+                    throw new Error('No token found in cookies');
+                }
+
+                const response = await axios.get('/api/chat/get-message', {
+                    params: { message: messageToSend },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const llmMessage: Message = { text: response.data.reply, sender: 'llm' };
+                setMessages(prev => [...prev, llmMessage]);
+            } catch (error) {
+                console.error('Error fetching response from backend:', error);
+                const errorMessage: Message = {
+                    text: error.response?.status === 401
+                        ? 'Please log in to use the chat'
+                        : 'Error during communication',
+                    sender: 'llm'
+                };
+                setMessages(prev => [...prev, errorMessage]);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
 
     return (
         <Template

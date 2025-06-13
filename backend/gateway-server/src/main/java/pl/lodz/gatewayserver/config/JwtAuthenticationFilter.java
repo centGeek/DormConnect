@@ -3,12 +3,13 @@ package pl.lodz.gatewayserver.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -26,33 +27,30 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        String path = request.getPath().toString();
+        String token = getJwtFromRequest(exchange.getRequest());
 
-        if (path.startsWith("/auth/") ||
-                path.startsWith("/event/") ||
-                path.startsWith("/swagger-ui") ||
-                path.startsWith("/swagger-ui.html") ||
-                path.startsWith("/v3/api-docs") ||
-                path.startsWith("/webjars")) {
+        if (token == null) {
             return chain.filter(exchange);
         }
 
-        String token = getJwtFromRequest(request);
+        try {
+            if (jwtService.validateToken(token)) {
+                String email = jwtService.getEmailFromToken(token);
+                List<SimpleGrantedAuthority> authorities = jwtService.getRolesFromToken(token).stream()
+                        .map(role -> role.startsWith("ROLE_") ? new SimpleGrantedAuthority(role)
+                                : new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
 
-        if (token != null && jwtService.validateToken(token)) {
-            String email = jwtService.getEmailFromToken(token);
-            List<SimpleGrantedAuthority> authorities = jwtService.getRolesFromToken(token).stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList());
-
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
-            return chain.filter(exchange)
-                    .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(new SecurityContextImpl(auth))));
-        } else {
-            log.warn("Brak lub nieprawidłowy token JWT");
-            return chain.filter(exchange);
+                var auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                return chain.filter(exchange)
+                        .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+            }
+        } catch (Exception e) {
+            log.warn("Invalid JWT token: {}", e.getMessage());
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
         }
+
+        return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
     }
 
     private String getJwtFromRequest(ServerHttpRequest request) {

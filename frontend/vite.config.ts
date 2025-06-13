@@ -6,17 +6,21 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/auth': {
+      '/api/auth': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-      '/event/api': {
+      '/api/event': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-
+      '/api/chat': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     }
   },
 });

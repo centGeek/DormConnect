@@ -61,12 +61,12 @@ const Events = () => {
 
         try {
             setLoading(true);
-            let url = `/event/api/event?page=${pageToFetch}&size=6&sort=${sortType}`;
+            let url = `/api/event?page=${pageToFetch}&size=6&sort=${sortType}`;
 
             if (tab === 'organized') {
-                url = `/event/api/event/organizer?page=${pageToFetch}&size=6&sort=${sortType}`;
+                url = `/api/event/organizer?page=${pageToFetch}&size=6&sort=${sortType}`;
             } else if (tab === 'participating') {
-                url = `/event/api/event/participant?page=${pageToFetch}&size=6&sort=${sortType}`;
+                url = `/api/event/participant?page=${pageToFetch}&size=6&sort=${sortType}`;
             }
 
             const response = await fetch(url, {

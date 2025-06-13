@@ -9,13 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.eventservice.dto.EventDTO;
 import pl.lodz.eventservice.entity.ApprovalStatus;
 import pl.lodz.eventservice.service.EventApprovalService;
 
-@Controller
+@RestController
 @RequestMapping("/api/event/administrate")
 public class EventApprovalController {
 
@@ -60,6 +59,7 @@ public class EventApprovalController {
 
     @GetMapping("/waiting")
     public ResponseEntity<Page<EventDTO>> getAllWaitingEvents(@PageableDefault Pageable pageable) {
+
         try {
             Page<EventDTO> waitingEvents = eventApprovalService.getEventsByApprovalStatus(ApprovalStatus.WAITING, pageable);
             return ResponseEntity.ok(waitingEvents);

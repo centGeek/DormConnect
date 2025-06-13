@@ -33,7 +33,7 @@ function EventsEdit() {
                     return;
                 }
 
-                const response = await fetch(`/event/api/event/${eventId}`, {
+                const response = await fetch(`/api/event/${eventId}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
@@ -113,7 +113,7 @@ function EventsEdit() {
         };
 
         try {
-            const response = await fetch(`/event/api/event/${eventId}`, {
+            const response = await fetch(`/api/event/${eventId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

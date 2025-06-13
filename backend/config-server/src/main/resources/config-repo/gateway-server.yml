@@ -14,18 +14,40 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth
+        - id: auth-swagger
           uri: lb://AUTH-USER-SERVICE
           predicates:
-            - Path=/auth/api/auth/**,/auth/register/**,/auth/v3/api-docs/**
+            - Path=/auth/v3/api-docs/**
           filters:
             - RewritePath=/auth/(?<segment>.*), /${segment}
-        - id: event
+        - id: event-swagger
           uri: lb://EVENT-SERVICE
           predicates:
-            - Path=/event/api/event/administrate/**,/event/api/event/administrate,/event/v3/api-docs/**
+            - Path=/event/v3/api-docs/**
           filters:
             - RewritePath=/event/(?<segment>.*), /${segment}
+        - id: chat-swagger
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chat/v3/api-docs/**
+          filters:
+            - RewritePath=/chat/(?<segment>.*), /${segment}
+
+        # API gateway
+        - id: auth-api
+          uri: lb://AUTH-USER-SERVICE
+          predicates:
+            - Path=/api/auth/**, /register/**
+
+        - id: event-api
+          uri: lb://EVENT-SERVICE
+          predicates:
+            - Path=/api/event/**
+
+        - id: chat-api
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/chat/**
 
 springdoc:
   api-docs:
@@ -33,6 +55,7 @@ springdoc:
       enabled: true
       locations:
         - http://localhost:8081/v3/api-docs
+        - http://localhost:8082/v3/api-docs
         - http://localhost:8091/v3/api-docs
 
   swagger-ui:
@@ -41,3 +64,5 @@ springdoc:
         url: /auth/v3/api-docs
       - name: EVENT-SERVICE
         url: /event/v3/api-docs
+      - name: CHAT-SERVICE
+        url: /chat/v3/api-docs
