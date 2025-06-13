@@ -1,5 +1,6 @@
 package pl.lodz.dormConnect.dorm.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -11,6 +12,9 @@ import pl.lodz.commons.entity.RoomAssignEntity;
 import pl.lodz.commons.entity.RoomEntity;
 import pl.lodz.commons.repository.jpa.RoomAssignmentRepository;
 import pl.lodz.commons.repository.jpa.RoomRepository;
+import pl.lodz.dormConnect.dorm.DTO.DeleteRoomImpactPreviewDTO;
+import pl.lodz.dormConnect.dorm.DTO.ResidentReassignmentPreview;
+import pl.lodz.dormConnect.dorm.scheduler.RoomAssignmentScheduler;
 import pl.lodz.dormConnect.floors.service.FloorsService;
 
 import java.time.LocalDate;
@@ -18,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class RoomService {
@@ -26,11 +31,13 @@ public class RoomService {
     @Autowired
     private final RoomAssignmentRepository roomAssignmentRepository;
     private final FloorsService floorsService;
+    private final RoomAssignmentScheduler roomAssignmentScheduler;
 
-    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository, @Lazy FloorsService floorsService) {
+    public RoomService(RoomRepository roomRepository, RoomAssignmentRepository roomAssignmentRepository, @Lazy FloorsService floorsService, RoomAssignmentScheduler roomAssignmentScheduler) {
         this.roomRepository = roomRepository;
         this.roomAssignmentRepository = roomAssignmentRepository;
         this.floorsService = floorsService;
+        this.roomAssignmentScheduler = roomAssignmentScheduler;
     }
 
 
@@ -207,6 +214,60 @@ public class RoomService {
         assignment.setToDate(newEndDate);
         roomAssignmentRepository.save(assignment);
     }
+
+
+    public DeleteRoomImpactPreviewDTO simulateRoomDeletionImpact(Long roomId) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
+
+        LocalDate today = LocalDate.now();
+        List<RoomAssignEntity> current = room.getRoomAssigns().stream()
+                .filter(a -> !a.getFromDate().isAfter(today) && !a.getToDate().isBefore(today))
+                .toList();
+
+        List<RoomAssignEntity> future = room.getRoomAssigns().stream()
+                .filter(a -> a.getFromDate().isAfter(today))
+                .toList();
+
+        List<RoomEntity> otherRooms = roomRepository.findAll().stream()
+                .filter(r -> !r.getId().equals(roomId))
+                .toList();
+
+        List<ResidentReassignmentPreview> nowResidents = roomAssignmentScheduler.simulateRelocation(current, otherRooms);
+        List<ResidentReassignmentPreview> futureResidents = roomAssignmentScheduler.simulateRelocation(future, otherRooms);
+
+        LocalDate minDate = Stream.concat(nowResidents.stream(), futureResidents.stream())
+                .filter(ResidentReassignmentPreview::roomAvailable)
+                .map(ResidentReassignmentPreview::plannedNewStartDate)
+                .min(LocalDate::compareTo)
+                .orElse(null);
+
+        boolean canDeleteNow = nowResidents.stream().allMatch(ResidentReassignmentPreview::roomAvailable);
+
+        return new DeleteRoomImpactPreviewDTO(roomId, canDeleteNow, minDate, nowResidents, futureResidents);
+    }
+
+    @Transactional
+    public void deleteRoomWithRelocations(Long roomId) {
+        RoomEntity room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+
+        // Pobierz przypisania aktualne i przyszłe do tego pokoju
+        List<RoomAssignEntity> assignmentsToReassign = roomAssignmentRepository.findByRoomIdAndToDateAfter(roomId, LocalDate.now());
+
+        if (!assignmentsToReassign.isEmpty()) {
+            // Uruchom algorytm relokacji z wysokim priorytetem dla tych przypisań
+            roomAssignmentScheduler.reassignResidentsImmediately(assignmentsToReassign,roomRepository.findAll());
+        }
+
+        // Usuń wszystkie przypisania do tego pokoju (bo pokój będzie usuwany)
+        //roomAssignmentRepository.deleteAll(assignmentsToReassign);
+
+        // Usuń pokój
+        roomRepository.delete(room);
+    }
+
+
 
 
 }

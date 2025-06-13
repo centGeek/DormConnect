@@ -11,16 +11,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.commons.JwtService;
-import pl.lodz.dormConnect.dorm.DTO.RoomAssignDTO;
-import pl.lodz.dormConnect.dorm.DTO.AssignmentsDTO;
-import pl.lodz.dormConnect.dorm.DTO.RoomInGroupDTO;
-import pl.lodz.dormConnect.dorm.DTO.RoomUpdateDTO;
+import pl.lodz.dormConnect.dorm.DTO.*;
 import pl.lodz.dormConnect.dorm.mapper.GroupedRoomsMapper;
 import pl.lodz.dormConnect.dorm.services.RoomService;
 import pl.lodz.commons.entity.RoomEntity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dorm")
@@ -131,6 +129,24 @@ public class RoomController {
         } catch (Exception e) {
             logger.error("Error shortening assignment: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error occurred");
+        }
+    }
+
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<?> deleteRoom(
+            @PathVariable Long roomId,
+            @RequestParam(defaultValue = "false") boolean areYouSure
+    ) {
+        if (!areYouSure) {
+            // symulacja – kto będzie przeniesiony i czy się da
+            DeleteRoomImpactPreviewDTO simulation =
+                    roomService.simulateRoomDeletionImpact(roomId);
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(simulation);
+        } else {
+            //faktyczna operacja usunięcia pokoju + relokacje
+            roomService.deleteRoomWithRelocations(roomId);
+            return ResponseEntity.ok("Room deleted and residents reassigned successfully.");
         }
     }
 

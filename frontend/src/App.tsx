@@ -21,6 +21,8 @@ import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
 import 'leaflet/dist/leaflet.css';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
+import RoomDeletion from "./Rooms/components/RoomDeletion.tsx";
+import RoomDeleteTest from "./Rooms/RoomDeleteTest.tsx";
 
 function App() {
     const userContext = useContext(UserContext);
@@ -40,6 +42,7 @@ function App() {
                         <Route path="/rooms" element={<Rooms />} />
                         <Route path="/rooms/form" element={<DormFormPage />} />
                         <Route path="/rooms/myInfo" element={<MyDormRoomsInfo />} />
+
                         <Route path="/events/edit/:eventId" element={<EventsEdit />} />
                         <Route path="/common-rooms" element={<CommonRoomShow/>}/>
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
@@ -52,6 +55,9 @@ function App() {
                         )}
                         {userContext?.user?.roles.includes('ADMIN') && (
                             <Route path="/dormitory" element={<CreateDormitory />} />
+                        )}
+                        {userContext?.user?.roles.includes('ADMIN') && (
+                            <Route path="/dormitory/delete" element={<RoomDeletion roomId={3} />} />
                         )}
                     </>
                 ) : (

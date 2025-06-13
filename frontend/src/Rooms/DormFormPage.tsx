@@ -131,8 +131,7 @@ function DormFormPage() {
 
     return (
         <Template
-            buttons={[{text: 'Chat', link: '/chat'}, {text: 'Akademiki', link: '/dorms'}]}
-            footerContent={<p></p>}
+
         >
             <div className="flex-1 flex justify-center items-start p-5">
                 <button
