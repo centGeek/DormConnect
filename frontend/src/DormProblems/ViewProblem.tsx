@@ -8,6 +8,7 @@ import getToken from './GetToken';
 import { jwtDecode } from 'jwt-decode';
 
 import { HttpStatusCode } from 'axios';
+import { set } from 'react-hook-form';
 
 interface DormProblem {
     id: number;
@@ -27,9 +28,7 @@ function DormProblemView() {
     const navigate = useNavigate();
     const [problemAnswer, setProblemAnswer] = useState('');
     const [problemStatus, setProblemStatus] = useState('');
-
-    var decodedToken: TokenJwtPayload;
-    const token = getToken();
+    const context = useContext(UserContext);
 
     const [dormProblemStatuses, setDormProblemStatuses] = useState<string[]>([]);
     const handleButtonClick = () => navigate('/problems');
@@ -47,13 +46,13 @@ function DormProblemView() {
 
     const fetchProblemStatuses = async () => {
         try {
-            console.log(pageData.problemId);
+            console.log(context?.token);
             const fetchUrl = '/api/dorm-problem/problem-statuses';
             const response = await fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${context?.token}`
                 },
                 credentials: 'include'
             });
@@ -73,48 +72,46 @@ function DormProblemView() {
         try {
             console.log(pageData.problemId);
             const fetchUrl = '/api/dorm-problem/get/' + pageData.problemId;
-            const request = await fetch(fetchUrl, {
+            console.log(fetchUrl);
+
+            const response = await fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${context?.token}`
                 },
                 credentials: 'include'
             });
-            const response  = await request;
+            console.log(response);
             if (response.status == HttpStatusCode.InternalServerError) {
-                navigate("/problems")
+                //navigate("/problems")
             }
-
             const data = await response.json();
-            //console.log(data)
-            console.log(data)
-            setDormProblem(data || [])
-            setProblemStatus(dormProblem.problemStatus);
-            setProblemAnswer(dormProblem.answer || '');
+            console.log(data);
+            setDormProblem(data);
+            return response;
 
 
         } catch (err) {
             console.log(err);
-            console.log()
         }
     }
 
     useEffect(() => {
         event?.preventDefault();
         fetchDormProblem();
+
         fetchProblemStatuses();
     }, [])
 
     return (
-<Template
-    buttons={[
-        { text: 'Home', link: '/home' },
-        { text: 'Chat', link: '/chat' },
-        { text: 'Events', link: '/events' }
-    ]}
-    footerContent={<p></p>}
->
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <button
             className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center"

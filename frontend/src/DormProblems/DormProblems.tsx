@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode} from 'jwt-decode';
 import Template from '../Template/Template';
 import getToken from './GetToken';
 import TokenJwtPayload from './TokenJwtPayload';
+import { UserContext } from '../Context/UserContext';
 
 
 interface DormProblem {
@@ -21,7 +22,7 @@ function DormProblem() {
     const navigate = useNavigate();
     let decodedToken: TokenJwtPayload;
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
-    const token = getToken();
+    const userContext = useContext(UserContext);
 
     const [dormProblems, setDormProblems] = useState<DormProblem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -56,7 +57,7 @@ function DormProblem() {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${userContext?.token}`
                 },
                 credentials: 'include'
             });
@@ -72,14 +73,10 @@ function DormProblem() {
     const fetchDormProblems = async () => {
         try {
             setLoading(true);
-            if (token != null) {
-                decodedToken = jwtDecode<TokenJwtPayload>(token);
-            } else {
-                throw new Error('Cannot get token...');
-            }
 
-            console.log(decodedToken['roles'][0]);
-            if (decodedToken['roles'][0] == 'ADMIN') {
+
+            console.log(userContext?.token);
+            if (userContext?.user?.roles.includes('ADMIN')) {
                 setIsAdmin(true);
             } else {
                 setIsAdmin(false);
@@ -89,7 +86,7 @@ function DormProblem() {
                 method: 'GET',
                 headers: {
                     'Content-Type': "application/json",
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${userContext?.token}`
                 },
                 credentials: 'include'
             });
@@ -107,15 +104,13 @@ function DormProblem() {
     }, []);
 
     return (
-        <Template
-            buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Common Rooms', link: '/common-rooms' },
-                { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-            ]}
-        >
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
             <div className="p-6">
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-bold text-gray-800">Dormitory Problems</h2>

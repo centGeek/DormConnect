@@ -63,25 +63,25 @@ function RegistrationStudent() {
             setSurname('');
             
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+            setError(error instanceof Error ? error.message : 'Rejestracja nie powiodła się');
         }
     };
     
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-                <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">Welcome to DormConnect</h1>
-                <h2 className="text-xl font-semibold text-center text-gray-600 mb-4">Student Registration</h2>
+                <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">Witaj Dorm Connect</h1>
+                <h2 className="text-xl font-semibold text-center text-gray-600 mb-4">Rejestracja Studenta</h2>
                 
                 {success ? (
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        <p>Registration successful! You can now login.</p>
+                        <p>Rejestracja powiodła się! Teraz możesz się zalogować.</p>
                         <div className="flex justify-center mt-4">
                             <a 
                                 href="/" 
                                 className="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-white hover:text-gray-500 transition"
                             >
-                                Go to Login
+                                Zaloguj się
                             </a>
                         </div>
                     </div>
@@ -89,7 +89,7 @@ function RegistrationStudent() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="name" className="block text-gray-700 font-bold mb-2">First Name</label>
+                                <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Imię</label>
                                 <input
                                     type="text"
                                     id="name"
@@ -100,7 +100,7 @@ function RegistrationStudent() {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="surname" className="block text-gray-700 font-bold mb-2">Last Name</label>
+                                <label htmlFor="surname" className="block text-gray-700 font-bold mb-2">Nazwisko</label>
                                 <input
                                     type="text"
                                     id="surname"
@@ -113,7 +113,7 @@ function RegistrationStudent() {
                         </div>
                         
                         <div>
-                            <label htmlFor="userName" className="block text-gray-700 font-bold mb-2">Username</label>
+                            <label htmlFor="userName" className="block text-gray-700 font-bold mb-2">Nazwa użytkownika</label>
                             <input
                                 type="text"
                                 id="userName"
@@ -137,7 +137,7 @@ function RegistrationStudent() {
                         </div>
                         
                         <div>
-                            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Password</label>
+                            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Hasło</label>
                             <input
                                 type="password"
                                 id="password"
@@ -147,11 +147,11 @@ function RegistrationStudent() {
                                 required
                                 minLength={4}
                             />
-                            <p className="text-gray-500 text-xs mt-1">Must be at least 4 characters long</p>
+                            <p className="text-gray-500 text-xs mt-1">Hasło musi mieć przynajmniej 4 znaki</p>
                         </div>
                         
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-gray-700 font-bold mb-2">Confirm Password</label>
+                            <label htmlFor="confirmPassword" className="block text-gray-700 font-bold mb-2">Potwierdź hasło</label>
                             <input
                                 type="password"
                                 id="confirmPassword"
@@ -168,14 +168,14 @@ function RegistrationStudent() {
                             type="submit"
                             className="w-full bg-gray-500 text-white font-bold py-2 px-4 rounded-lg border hover:bg-white hover:text-gray-500 transition"
                         >
-                            Register
+                            Zarejestruj się
                         </button>
                         
                         <div className="text-center mt-4">
                             <p className="text-gray-600">
-                                Already have an account?{" "}
+                                Masz już konto?{" "}
                                 <a href="/" className="text-gray-700 font-semibold hover:underline">
-                                    Login
+                                    Zaloguj się
                                 </a>
                             </p>
                         </div>

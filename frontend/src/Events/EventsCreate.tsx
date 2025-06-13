@@ -5,7 +5,6 @@ import { UserContext } from "../Context/UserContext.tsx";
 
 function EventsCreate() {
     const userContext = useContext(UserContext);
-    const isAdmin = userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER');
     const organizerId = userContext?.user?.id;
 
     const [eventName, setEventName] = useState('');
@@ -108,7 +107,6 @@ function EventsCreate() {
     return (
         <Template
             buttons={[]}
-            footerContent={<p></p>}
         >
             <div className="flex w-full min-h-screen">
                 {/* Lewa kolumna */}
@@ -227,7 +225,7 @@ function EventsCreate() {
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                                 />
                             </div>
-                            <button type="submit" className="w-full bg-gray-300 text-white py-2 rounded-lg hover:bg-gray-300 transition">Create Event</button>
+                            <button type="submit" className="w-full bg-gray-300 text-white py-2 rounded-lg hover:bg-gray-600 transition">Create Event</button>
                         </form>
                     </div>
                 </div>

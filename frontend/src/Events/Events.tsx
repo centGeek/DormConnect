@@ -128,15 +128,13 @@ const Events = () => {
     };
 
     return (
-        <Template
-            buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Common Rooms', link: '/common-rooms' },
-                { text: 'Rooms', link: '/rooms' },
-                { text: 'Problems', link: '/problems' },
-            ]}
-        >
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms'},
+            {text: 'Zgłoś problem', link: '/problems'},
+        ]}>
             <div className="p-6">
                 {successMessage && <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4 justify-center">{successMessage}</div>}
 
@@ -151,10 +149,10 @@ const Events = () => {
                     </button>
                     {isAdmin && (
                         <button
-                            className="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
+                            className="bg-gray-500 text-white px-4 border border-gray py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
                             onClick={handleAdminNavigation}
                         >
-                            Admin Panel
+                            Panel administratora
                         </button>
                     )}
                 </div>
@@ -162,7 +160,7 @@ const Events = () => {
                 <div className="flex gap-4 mb-6 justify-center  bg-gray-100">
                     <button
                         className={`px-4 py-2 rounded-lg shadow transition ${
-                            activeTab === 'organized' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                            activeTab === 'organized' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-400 hover:text-white'
                         }`}
                         onClick={() => handleTabChange('organized')}
                     >
@@ -170,7 +168,7 @@ const Events = () => {
                     </button>
                     <button
                         className={`px-4 py-2 rounded-lg shadow transition ${
-                            activeTab === 'participating' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                            activeTab === 'participating' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-400 hover:text-white'
                         }`}
                         onClick={() => handleTabChange('participating')}
                     >
@@ -178,7 +176,7 @@ const Events = () => {
                     </button>
                     <button
                         className={`px-4 py-2 rounded-lg shadow transition ${
-                            activeTab === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'
+                            activeTab === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-400 hover:text-white'
                         }`}
                         onClick={() => handleTabChange('all')}
                     >

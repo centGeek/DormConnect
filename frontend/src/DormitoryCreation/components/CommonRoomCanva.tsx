@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import getRoomStatusTranslation from "../../ReusableComponents/CommonRoomTypes";
 import CommonRoomTypes from "../../ReusableComponents/CommonRoomTypes";
 import getRoomIcon from "../../ReusableComponents/CommonRoomIcon";
+import Cookies from "js-cookie";
 
 interface CommonRoomProps {
     id: number;
@@ -30,6 +31,7 @@ function CommonRoomCanva({ floor, onCommonRoomAdd, onCommonRoomEdit, refresh }: 
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`,
                 },
                 credentials: "include"
             });
