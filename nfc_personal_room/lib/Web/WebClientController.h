@@ -11,5 +11,6 @@ public:
     WebClientController();
     uint8_t initialize();
     uint8_t sendHttpPostRequest(JsonDocument jsonData);
+    uint8_t sendHttpGetRequest(String url);
 
 };

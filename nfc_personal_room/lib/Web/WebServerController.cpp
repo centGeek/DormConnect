@@ -15,6 +15,18 @@ WebServerController::~WebServerController()
     
 }
 
+/**
+ * @brief Initializes and starts the web server, setting up API endpoints.
+ *
+ * This method configures the web server with the following endpoints:
+ * - GET /api/wifi-inwo: Returns a JSON object containing the WiFi status, SSID, and local IP address.
+ *   Introduces a 2-second delay before sending the response.
+ * - POST /api/post-test: Accepts a JSON payload containing "serverId", "roomNumber", "userUUID", and "authorizationstatus".
+ *   Responds with a JSON object containing "deviceId", "roomNumber", "userUUID", and "authorizationStatus" if all keys are present.
+ *   Returns an error if the content type is not "application/json" or if required keys are missing.
+ *
+ * @return uint8_t Returns 0 upon successful server initialization.
+ */
 uint8_t WebServerController::startServer()
 {
     Serial.println("Server started");

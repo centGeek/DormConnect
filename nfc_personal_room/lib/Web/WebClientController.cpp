@@ -26,7 +26,7 @@ uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData)
     return httpResponse;
 }
 
-uint8_t WebClientController::sendHttpGetRequest() {
+uint8_t WebClientController::sendHttpGetRequest(String url) {
     this->http.begin(SERVER_REQUEST_ADDRESS);
     uint8_t httpResponse = http.GET();
     if (httpResponse > 0) {

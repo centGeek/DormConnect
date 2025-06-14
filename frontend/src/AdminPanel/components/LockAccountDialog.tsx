@@ -1,9 +1,52 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { useState } from 'react'
+import { use, useContext, useEffect, useState } from 'react'
+import { UserContext } from '../../Context/UserContext';
+import axios from 'axios';
+import UpdateUserDTO from '../interfaces/UpdateUserDTO';
+import { set } from 'date-fns';
 
-export default function DeleteUserDialog(isLocked: boolean) {
-  let [isOpen, setIsOpen] = useState(false)
+export default function DeleteUserDialog({ user, onSuccess, onError }: { user: UpdateUserDTO, onSuccess?: (msg: string) => void, onError?: (msg: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const userContext = useContext(UserContext);
+  const [isLocked, setIsLocked] = useState(user.isActive);
+  const handleLockAccount = async () => {
+    setIsOpen(false);
+    const token = userContext?.token;
+    const updatedUserDTO: UpdateUserDTO = {
+      uuid: user.uuid,
+      userName: user.userName,
+      email: user.email,
+      role: user.role,
+      isActive: !user.isActive 
+  }
+  try {
+    const response = await axios.put(
+      "/api/users/update", 
+      updatedUserDTO,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
+    if (response.status === 200) {
+      if (onSuccess) {
+        onSuccess("Status konta użytkownika został pomyślnie zmieniony.");
+        console.log("User account status updated successfully:", response.data);
+      }
+    }
+  } catch (error) {
+    console.error("An error occurred while locking/unlocking user account: ", error);
+    if (onError) {
+      onError("Wystąpił błąd podczas zmiany statusu konta użytkownika.");
+    }
+  }
+
+
+
+  }
   return (
     <>
 
@@ -16,7 +59,7 @@ export default function DeleteUserDialog(isLocked: boolean) {
             <DialogTitle className="font-bold">Odblokuj konto</DialogTitle>
             <Description> Czy na pewno chcesz odblokować konto użytkownika?</Description>
             <div className="flex gap-4">
-              <button className='bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition' onClick={() => setIsOpen(false)}>Odblokuj</button>
+              <button className='bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition' onClick={handleLockAccount}>Odblokuj</button>
               <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
             </div>
           </DialogPanel>
@@ -34,7 +77,7 @@ export default function DeleteUserDialog(isLocked: boolean) {
             <DialogTitle className="font-bold">Zablokuj konto </DialogTitle>
             <Description>Czy na pewno chcesz zablokować konto użytkownika?</Description>
             <div className="flex gap-4">
-              <button className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition' onClick={() => setIsOpen(false)}>Zablokuj</button>
+              <button className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition' onClick={handleLockAccount}>Zablokuj</button>
               <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
             </div>
           </DialogPanel>
