@@ -9,10 +9,9 @@
 #define USER_UUID_STOP_NUMBER 0xFF
 #define USER_UUID_CONTROL_BYTE_NUMBER 2
 #define USER_UUID_TOTAL_BYTES 
-#define SERVER_REQUEST_ADDRESS "http://192.168.206.74:8091/api/nfc/check-access"
 
-#define DEVICE_UUID "773c4f56-e9a0-4f94-9cd2-403e7342fc29"
-#define ROOM_NUMBER 222
+
+#define DEVICE_UUID "e7c560a3-8b7b-49bb-bcf9-cca125571cf5"
 
 #define WIFI_SSID "Redmi Note 10S"
 #define WIFI_PASSWORD "watxur6z45avvpy"

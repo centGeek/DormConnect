@@ -1,12 +1,11 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 
-export default function ErrorDialog({
+export default function SuccessDialog({
   open,
-  onClose,
   message,
 }: {
   open: boolean,
-  onClose: () => {},
+  onClose: () => void,
   message: string
 }) {
 
@@ -14,20 +13,20 @@ export default function ErrorDialog({
         window.location.reload();
     }
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-50">
+    <Dialog open={open} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-          <DialogTitle className="font-bold">Wystąpił błąd</DialogTitle>
+          <DialogTitle className="font-bold">Operacja zakończona powodzeniem</DialogTitle>
           <Description>
             <label className="block mb-2 text-sm font-medium text-gray-700">
-              Wystąpił błąd: {message}
+              Operacja zakończona pomyślnie: {message}
             </label>
           </Description>
           <div className="flex gap-4">
             <button
               type="button"
-              className="bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition"
-              onClick={onClose}
+              className="bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition"
+              onClick={handleClose}
             >
               OK
             </button>

@@ -77,8 +77,9 @@ uint8_t WebServerController::startServer()
                                     Serial.println("Card programmed");
 
                                     JsonDocument responseJson;
-                                    responseJson["deviceId"] = "test-uuid";
+                                    responseJson["deviceId"] = DEVICE_UUID;
                                     responseJson["userUUID"] = userUUID;
+                                    responseJson["cardUuid"] = this->nfcController.nfcTagToString(cardUid);
                                     Serial.println("ok");
                                     serializeJson(responseJson, *response);
                                     response->setCode(200);

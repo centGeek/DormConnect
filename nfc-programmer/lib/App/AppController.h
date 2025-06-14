@@ -8,8 +8,6 @@
 class AppController
 {
 private:
-    uint8_t lockStatus;
-    WebClientController webClientController;
     WebServerController webServerController;
     NetworkController networkController;
     LiquidCrystal_I2C lcd;
