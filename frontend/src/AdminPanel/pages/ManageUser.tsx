@@ -114,7 +114,10 @@ export default function ManageUser() {
                         onError={handleDialogChangeError} 
                         onSuccess={handleDialogChangeSuccess} />}
                         {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
-                        <LockAccountDialog isLocked={currUser?.isActive} />
+                        {currUser && <LockAccountDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
                         {currUser && <GenerateUUIDDialog 
                         user={currUser}
                         onError={handleDialogChangeError} 
