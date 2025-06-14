@@ -28,4 +28,8 @@ public class GroupedRoomsEntity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<RoomEntity> rooms;
 
+    public GroupedRoomsEntity(String groupName, List<RoomEntity> rooms) {
+        this.groupName = groupName;
+        this.rooms = rooms;
+    }
 }

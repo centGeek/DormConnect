@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface DormFormRepository extends JpaRepository<DormFormEntity, Long> {
 
-    Collection<DormFormEntity> findByUserId(Long userId);
+    List<DormFormEntity> findByUserId(Long userId);
 
     List<DormFormEntity> findByIsProcessedFalseOrderByPriorityScoreDesc();
 

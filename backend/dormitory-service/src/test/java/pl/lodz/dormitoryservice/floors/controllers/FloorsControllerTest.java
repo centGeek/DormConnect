@@ -7,8 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.lodz.dormitoryservice.entity.FloorEntity;
-import pl.lodz.dormitoryservice.fixtures.FloorFixture;
 import pl.lodz.dormitoryservice.floors.service.FloorsService;
 
 import java.util.List;

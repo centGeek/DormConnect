@@ -1,6 +1,7 @@
 package pl.lodz.dormitoryservice.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "room_replacement_forms")
 public class RoomReplacementFormEntity {
 
@@ -39,6 +41,17 @@ public class RoomReplacementFormEntity {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime respondedAt;
+
+    public RoomReplacementFormEntity(Long requesterId, Long targetStudent, Long requesterRoom, Long targetRoom,
+                                     FormStatus status, LocalDateTime createdAt, LocalDateTime respondedAt) {
+        this.requesterId = requesterId;
+        this.targetStudent = targetStudent;
+        this.requesterRoom = requesterRoom;
+        this.targetRoom = targetRoom;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.respondedAt = respondedAt;
+    }
 
     public enum FormStatus {
         PENDING,

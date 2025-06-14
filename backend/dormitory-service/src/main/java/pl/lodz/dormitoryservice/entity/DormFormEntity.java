@@ -42,4 +42,12 @@ public class DormFormEntity {
     private Integer priorityScore;
 
 
+    public DormFormEntity(Long userId, LocalDate startDate, LocalDate endDate, boolean isProcessed, String comments, Integer priorityScore) {
+        this.userId = userId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isProcessed = isProcessed;
+        this.comments = comments;
+        this.priorityScore = priorityScore;
+    }
 }

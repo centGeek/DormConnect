@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,19 +20,24 @@ public class RoomAssignEntity {
 
     @ManyToOne
     private RoomEntity room;
-    //WARNING!
-    //Idk if students entities are gonna be in my module, so for now i only put Id
+
     private Long residentId;
 
     @Column(nullable = false)
     LocalDate fromDate;
 
-    //Ongoing "rentals" are gonna have endDate null
-    @Column(nullable = true)
+    @Column
     private LocalDate toDate;
 
     public void setRoom(RoomEntity room) {
         this.room = room;
         room.getRoomAssigns().add(this);
+    }
+
+    public RoomAssignEntity(RoomEntity room, Long residentId, LocalDate fromDate, LocalDate toDate) {
+        this.room = room;
+        this.residentId = residentId;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
 }

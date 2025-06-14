@@ -32,10 +32,15 @@ public class RoomEntity {
     private List<RoomAssignEntity> roomAssigns = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(nullable = true)
-    //null means there is no grouping
+    @JoinColumn()
     private GroupedRoomsEntity groupedRooms;
 
-
-
+    public RoomEntity(String number, int capacity, int floor, boolean active, List<RoomAssignEntity> roomAssigns, GroupedRoomsEntity groupedRooms) {
+        this.number = number;
+        this.capacity = capacity;
+        this.floor = floor;
+        this.active = active;
+        this.roomAssigns = roomAssigns;
+        this.groupedRooms = groupedRooms;
+    }
 }

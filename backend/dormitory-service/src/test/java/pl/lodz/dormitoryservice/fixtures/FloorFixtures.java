@@ -4,10 +4,10 @@ import pl.lodz.dormitoryservice.entity.FloorEntity;
 
 import java.util.List;
 
-public class FloorFixture {
+public class FloorFixtures {
 
     public static FloorEntity anyFloorEntity() {
-        return new FloorEntity(1L, 1, List.of(1L, 2L), List.of(3L, 4L));
+        return new FloorEntity(1, List.of(1L, 2L), List.of(3L, 4L));
     }
 
     public static FloorEntity anotherFloorEntity() {
