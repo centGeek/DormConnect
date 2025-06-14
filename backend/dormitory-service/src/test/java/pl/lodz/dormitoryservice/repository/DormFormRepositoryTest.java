@@ -13,7 +13,6 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
 class DormFormRepositoryTest {
 
     @Autowired
