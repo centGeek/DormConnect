@@ -56,6 +56,16 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/api/users': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/weather': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     }
   },
 });
