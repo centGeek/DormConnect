@@ -14,8 +14,6 @@ services:
 
   eureka-server:
     build: ./eureka-server
-    ports:
-      - "8761:8761"
     depends_on:
       config-server:
         condition: service_healthy

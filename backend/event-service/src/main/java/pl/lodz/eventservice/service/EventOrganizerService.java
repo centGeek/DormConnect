@@ -31,7 +31,6 @@ public class EventOrganizerService {
     }
 
     public boolean hasOrganizedEvent(Long organizerId) {
-        // Zamiast liczyć wszystkie wydarzenia, sprawdzamy, czy istnieje jakiekolwiek
         return eventRepository.existsByOrganizerId(organizerId);
     }
 
