@@ -3,11 +3,13 @@ import Cookies from "js-cookie";
 interface PopupRemoveFloorProps {
     onClose: () => void,
     floor: number,
+    onSucess: () => void,
 }
 
-function PopUpRemoveFloor({onClose, floor}: PopupRemoveFloorProps) {
+function PopUpRemoveFloor({onClose, floor, onSucess}: PopupRemoveFloorProps) {
 
     const handleRemoveFloor = async () => {
+        console.log(floor);
         try {
             const response = await fetch(`/api/floors/delete-floor/${floor}`, {
                 method: "DELETE",
@@ -20,6 +22,8 @@ function PopUpRemoveFloor({onClose, floor}: PopupRemoveFloorProps) {
                 throw new Error('Failed to remove floor');
             }
             console.log(`Floor ${floor} removed successfully`);
+            onClose();
+            onSucess();
         } catch (error) {
             console.error('Error removing floor:', error);
         }

@@ -11,7 +11,7 @@ import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
 import OperationSuccedPopUp from "./components/OperationSuccedPopUp.tsx";
 import Cookies from "js-cookie";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -49,23 +49,10 @@ function CreateDormitory() {
     const handleRoomAdd = (data: boolean) => {
         setIsPopUpRoomCreateOpen(data);
     };
-const handleRemoveFloor = async () => {
-    setIsPopUpRemoveDialogOpen(false);
-    try {
-        const response = await fetch('/api/floors/delete-floor/{floorNumber}', {
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${Cookies.get('token')}`,
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to remove floor');
-        }
-    } catch (error) {
-        console.error('Error removing floor:', error);
-    }
-};
+    const handleRemoveFloor = () => {
+        setIsPopUpRemoveDialogOpen(false);
+        setIsPopUpRemoveFloorsOpen(true);
+    };
     const handleClosePopup = () => {
         setIsPopupCRCreateOpen(false);
         setIsPopupCREditOpen(false);
@@ -127,7 +114,7 @@ const handleRemoveFloor = async () => {
             setRefresh_floors_value(refresh_floors_value + 1);
 
             if (floorsContainerRef.current) {
-                floorsContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                floorsContainerRef.current.scrollTo({top: 0, behavior: 'smooth'});
             }
         } catch (error) {
             console.error('Błąd podczas dodawania piętra:', error);
@@ -213,17 +200,19 @@ const handleRemoveFloor = async () => {
                 </div>
             )}
             {isPopupCRCreateOpen && (
-                <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor} onSucced={() => setIsPopUpSuccedOpen(true)}/>
+                <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor}
+                                       onSucced={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopupCREditOpen && commonRoomId !== null && (
-                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId} onSucced={() =>setIsPopUpSuccedOpen(true)}/>
+                <PopUpCommonRoomEdit onClose={handleClosePopup} common_room_id={commonRoomId}
+                                     onSucced={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopUpRemoveDialogOpen && (
                 <PopUpRemoveChoice onClose={handleClosePopup} onRemoveFloor={handleRemoveFloor}
                                    onRemoveRooms={handleRemoveRooms}/>
             )}
             {isPopUpRemoveFloorsOpen && (
-                <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor}/>
+                <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor} onSucess={() => setIsPopUpSuccedOpen(true)}/>
             )}
             {isPopUpRemoveRoomsOpen && (
                 <PopUpRemoveAllRooms onClose={handleClosePopup} floor={activeFloor}/>

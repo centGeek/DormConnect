@@ -49,17 +49,24 @@ public class FloorsService {
     @Transactional
     public void deleteAllRooms(Integer floorNumber){
         FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
-        for(Long commonRoomId : floor.getCommonRooms()){
-            commonRoomService.deleteCommonRoom(commonRoomId);
+        if (floor.getCommonRooms() != null) {
+            for(Long commonRoomId : floor.getCommonRooms()){
+                commonRoomService.deleteCommonRoom(commonRoomId);
+            }
         }
-        for(Long roomId : floor.getRooms()){
-            roomService.deleteRoomById(roomId);
+        if (floor.getRooms() != null) {
+            for(Long roomId : floor.getRooms()){
+                roomService.deleteRoomById(roomId);
+            }
         }
     }
 
     @Transactional
     public ResponseEntity<String> deleteFloor(Integer floorNumber) {
         FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
+        if (floor == null) {
+            return ResponseEntity.status(404).body("Floor " + floorNumber + " not found.");
+        }
         if(floor.getFloorNumber() == getFloors().stream().max(Integer::compare).orElse(-1)){
             deleteAllRooms(floorNumber);
             floorsRepository.delete(floor);
