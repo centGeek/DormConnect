@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Template from '../Template/Template';
-import TokenJwtPayload from './TokenJwtPayload';
 import { UserContext } from '../Context/UserContext';
 import translateStatus from "./components/TranslateProblemStatus.tsx";
 
@@ -19,7 +18,6 @@ interface DormProblem {
 
 function DormProblems() {
     const navigate = useNavigate();
-    let decodedToken: TokenJwtPayload;
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const userContext = useContext(UserContext);
 
@@ -115,7 +113,7 @@ function DormProblems() {
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-bold text-gray-800">Zgłoszenia</h2>
                 </div>
-                
+
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
                     <div className="w-full md:w-1/3">
                         <input
@@ -126,7 +124,7 @@ function DormProblems() {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-sm"
                         />
                     </div>
-                    
+
                     <div className="w-full md:w-1/4">
                         <select
                             value={filters.statusFilter}
@@ -140,7 +138,7 @@ function DormProblems() {
                             <option value="REJECTED">Odrzucone</option>
                         </select>
                     </div>
-                    
+
                     {!isAdmin && (
                         <button
                             className="w-full md:w-auto bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-white hover:text-gray-800 border border-gray-800 transition duration-300 shadow-sm"
@@ -150,7 +148,7 @@ function DormProblems() {
                         </button>
                     )}
                 </div>
-                
+
                 {loading ? (
                     <div className="text-center text-gray-500 py-8">Ładowanie zdarzeń...</div>
                 ) : filteredProblems.length === 0 ? (
@@ -182,7 +180,7 @@ function DormProblems() {
                                 <p className="text-gray-600 mb-4 font-semibold">
                                     Data przyjęcia zdarzenia: {new Date(problem.submittedDate).toLocaleDateString()}
                                 </p>
-                                
+
                                 <div className="flex flex-col space-y-2">
                                     {isAdmin && problem.problemStatus != 'RESOLVED' && problem.problemStatus != 'REJECTED' && (
                                         <button

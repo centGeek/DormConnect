@@ -17,6 +17,5 @@ createRoot(document.getElementById('root')!).render(
                 </TemperatureProvider>
             </UserProvider>
         </Router>
-
     </StrictMode>
 )
