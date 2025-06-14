@@ -132,9 +132,9 @@ function AdminEvents() {
                 <div className="absolute top-5 left-5 z-10">
                     <button
                         className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                        onClick={() => navigate('/events')}
+                        onClick={() => navigate(-1)}
                     >
-                        Wróć
+                        Powrót
                     </button>
                 </div>
 

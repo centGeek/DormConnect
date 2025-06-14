@@ -1,14 +1,12 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsItemComponent({text, url}: {text: string, url: string}) {
 
     const navigate = useNavigate();
-    const [pageUrl, setPageUrl] = useState<string>(url);
 
     const handleNavigate = () => {
-        if (pageUrl !== "") {
-            navigate(pageUrl);
+        if (url !== "") {
+            navigate(url);
         }
     }
 

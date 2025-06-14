@@ -10,7 +10,6 @@ import { TemperatureProvider } from "./Context/TemperatureContext.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-
         <Router>
             <UserProvider>
                 <TemperatureProvider>

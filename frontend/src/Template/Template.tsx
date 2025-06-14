@@ -1,9 +1,8 @@
 import { ReactNode, useEffect, useState } from 'react';
-import LogoPL from '../assets/logo_v1.1.png';
+import LogoPL from '/logo_cale.png';
 import { useContext } from 'react';
 import { UserContext } from "../Context/UserContext.tsx";
 import { useTemperature } from "../Context/TemperatureContext.tsx";
-import { set } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 interface TemplateProps {
@@ -56,8 +55,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
             const tooltip =
                 !loading && !error && temperature !== null
                     ? temperature > 10
-                        ? 'Good weather for Flanki!'
-                        : 'Bad weather for Flanki'
+                        ? 'Dobra pogoda na Flanki!'
+                        : 'Zła pogoda na Flanki'
                     : '';
 
             let el = document.querySelector('.header-temperature') as HTMLElement;
@@ -91,7 +90,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
         handleDropdownButtonProps();
         const intervalId = setInterval(updateHeaderTemperature, 30000);
         return () => clearInterval(intervalId);
-    }, [temperature, loading, error]);
+    }, [temperature, loading, error, userContext?.user?.roles]);
 
     return (
         <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
@@ -123,11 +122,25 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         <button
                             id="dropdownDefaultButton"
                             onClick={() => setIsOpen(!isOpen)}
-                            className="text-white w-65 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            className="text-white w-fit bg-gray-500 hover:bg-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center "
                             type="button"
                         >
                             {userContext?.user?.username}
-                            <svg
+                            {isOpen ? (<svg
+                                className="w-2.5 h-2.5 ms-3"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 10 6"
+                            >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="m1 5 4-4 4 4"
+                                />
+                            </svg>):(<svg
                                 className="w-2.5 h-2.5 ms-3"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -141,18 +154,18 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                                     strokeWidth="2"
                                     d="m1 1 4 4 4-4"
                                 />
-                            </svg>
+                            </svg>)}
                         </button>
 
                         { }
                         {isOpen && (
                             <div
                                 id="dropdown"
-                                className="z-10 absolute  bg-white divide-y divide-gray-100 rounded-lg shadow w-65 dark:bg-gray-700"
+                                className="z-10 absolute border border-gray-600  bg-gray-500 divide-y  rounded-lg w-fit "
                             >
                                 <ul
-                                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownDefaultButton"
+                                    className="py-2 text-sm "
+
                                 >
                                     {dropdownButtonProps.map(key => (
                                         <li>
@@ -160,7 +173,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                                                 onClick={() => {
                                                     handleDropdownEvent(key.url);
                                                 }}
-                                                className="hover:cursor-default block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                className="hover:cursor-default block px-4 py-2 hover:bg-gray-400"
                                             >
                                                 {key.name}
                                             </a>
