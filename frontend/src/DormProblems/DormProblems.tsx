@@ -11,9 +11,10 @@ interface DormProblem {
     userName: string;
     name: string;
     description: string;
+    answer: string| null;
     problemDate: string;
-    submittedDate: string;
-    problemStatus: string
+    submittedDate: string|null;
+    problemStatus: string;
 
 }
 
@@ -72,15 +73,6 @@ function DormProblems() {
     const fetchDormProblems = async () => {
         try {
             setLoading(true);
-
-
-            console.log(userContext?.token);
-            if (userContext?.user?.roles.includes('ADMIN')) {
-                setIsAdmin(true);
-            } else {
-                setIsAdmin(false);
-            }
-            console.log(isAdmin);
             const response = await fetch(`/api/dorm-problem/get`, {
                 method: 'GET',
                 headers: {
@@ -100,7 +92,18 @@ function DormProblems() {
 
     useEffect(() => {
         fetchDormProblems();
+        if (userContext?.user?.roles.includes('ADMIN')) {
+            setIsAdmin(true);
+        } else {
+            setIsAdmin(false);
+        }
     }, []);
+
+    useEffect(() => {
+        if (userContext?.user?.roles) {
+            setIsAdmin(userContext.user.roles.includes('ADMIN'));
+        }
+    }, [userContext?.user?.roles]);
 
     return (
         <Template buttons={[
@@ -110,7 +113,16 @@ function DormProblems() {
             {text: 'Pokój', link: '/rooms'},
             {text: 'Zgłoś problem', link: '/problems'},
         ]}>
-            <div className="p-6">
+            <div className="relative p-6">
+                <div className="absolute top-5 left-5 z-10">
+                    <button
+                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                        onClick={() => navigate(-1)}
+                    >
+                        Powrót
+                    </button>
+                </div>
+
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-bold text-gray-800">Zgłoszenia</h2>
                 </div>

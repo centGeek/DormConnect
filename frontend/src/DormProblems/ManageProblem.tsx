@@ -142,15 +142,14 @@ function DormProblemManage() {
             {text: 'Zgłoś problem', link: '/problems'},
         ]}>
         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            <button
-                onClick={handleButtonClick}
-                className="flex items-center gap-2 mb-6 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                </svg>
-                Back
-            </button>
+            <div>
+                <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
+                    onClick={() => navigate(-1)}
+                >
+                    Powrót
+                </button>
+            </div>
     
             <form onSubmit={handleFormSubmit} className="space-y-6">
                 <h3 className="text-2xl font-bold text-gray-800 border-b pb-2">Problem Details</h3>

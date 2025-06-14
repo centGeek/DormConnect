@@ -34,15 +34,6 @@ public class DormProblemMapper {
         );
     }
 
-    public static CreateDormProblemDTO mapToCreateDTO(DormProblemEntity dormProblemEntity) {
-        return new CreateDormProblemDTO(
-                dormProblemEntity.getStudentId(),
-                dormProblemEntity.getName(),
-                dormProblemEntity.getDescription(),
-                dormProblemEntity.getProblemDate()
-        );
-    }
-
     public static DormProblemEntity mapCreateDTOToEntity(CreateDormProblemDTO createDormProblemDTO) {
         return new DormProblemEntity(
                 0,

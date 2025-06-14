@@ -17,7 +17,6 @@ public record GetDormProblemDTO(
         String answer,
         @NotNull
         LocalDate problemDate,
-        @NotNull
         LocalDate submittedDate,
         @NotNull
         ProblemStatus problemStatus

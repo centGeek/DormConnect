@@ -1,60 +1,34 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder';
-import { UserContext } from '../Context/UserContext';
+import { useNavigate } from 'react-router-dom';
 import Template from '../Template/Template';
-import axios, { AxiosResponse } from 'axios';
-import getToken from './GetToken';
-import TokenJwtPayload from './TokenJwtPayload';
-import { jwtDecode } from 'jwt-decode';
+import { UserContext } from '../Context/UserContext';
 
-interface DormProblem {
-    studentId: number;
-    name: string;
-    description: string;
-    problemDate: string;
-    problemStatus: string
 
-}
+
 
 
 function DormProblemCreate() {
-    const { state } = useLocation();
     const navigate = useNavigate();
-    var decodedToken: TokenJwtPayload;
     const [problemDesc, setProblemDesc] = useState('');
     const [problemDate, setProblemDate] = useState('');
     const [problemName, setProblemName] = useState('');
     const handleButtonClick = () => navigate('/problems');
-    const [problemStatus, setProblemStatus] = useState('');
-    // const {onSubmit, values} = useForm(
-    // handle
-    // );
-    const token = getToken();
+    const userContext = useContext(UserContext);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (token != null) {
-            decodedToken = jwtDecode<TokenJwtPayload>(token);
-        } else {
-            throw new Error('Cannot get token...')
-        }
         const createdDormProblem = {
-            studentId: decodedToken['id'],
             name: problemName,
             description: problemDesc,
             problemDate: problemDate,
-            problemStatus: "SUBMITTED"
         }
 
-        console.log("submitted");
         console.log(createdDormProblem);
-
         const response = await fetch('/api/dorm-problem/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${userContext?.token}`
             },
             body: JSON.stringify(createdDormProblem),
             credentials: 'include'
@@ -94,7 +68,7 @@ function DormProblemCreate() {
 
         <form className="space-y-6" name="dorm-problem-form" onSubmit={handleSubmit}>
             <div className='space-y-2'>
-                <label className="block text-gray-700 font-medium">Nazwa Problemu:</label>
+                <label className="block text-gray-700 font-medium">Nazwa problemu:</label>
                 <input
                     type='text'
                     name='name'
@@ -106,11 +80,12 @@ function DormProblemCreate() {
             </div>
 
             <div className="space-y-2">
-                <label className="block text-gray-700 font-medium">Problem Date:</label>
+                <label className="block text-gray-700 font-medium">Data wystąpienia problemu:</label>
                 <input
                     type="date"
                     name="problemDate"
                     value={problemDate}
+                    max={new Date().toISOString().split('T')[0]}
                     onChange={(e) => setProblemDate(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                     required
@@ -118,11 +93,11 @@ function DormProblemCreate() {
             </div>
 
             <div className="space-y-2">
-                <label className="block text-gray-700 font-medium">Description:</label>
+                <label className="block text-gray-700 font-medium">Opis:</label>
                 <textarea
                     name="problemDesc"
                     value={problemDesc}
-                    placeholder="Describe the problem in detail"
+                    placeholder="Opisz zdarzenie"
                     onChange={(e) => setProblemDesc(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 min-h-[120px]"
                     required
@@ -133,7 +108,7 @@ function DormProblemCreate() {
                 type="submit"
                 className="w-full bg-gray-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-700 transition duration-300"
             >
-                Report Problem
+                Zgłoś problem
             </button>
         </form>
     </div>

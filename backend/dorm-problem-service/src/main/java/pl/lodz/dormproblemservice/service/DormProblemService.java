@@ -28,12 +28,16 @@ public class DormProblemService {
 
     public GetDormProblemDTO createDormProblem(@NotNull CreateDormProblemDTO dto, String jwt) {
         Long userId = jwtService.getIdFromToken(jwt);
+        DormProblemEntity entity = new DormProblemEntity();
 
-        DormProblemEntity entity = DormProblemMapper.mapCreateDTOToEntity(dto);
         entity.setId(0L);
         entity.setStudentId(userId);
-        entity.setProblemStatus(ProblemStatus.SUBMITTED);
+        entity.setName(dto.name());
+        entity.setDescription(dto.description());
+        entity.setAnswer(null);
+        entity.setProblemDate(dto.problemDate());
         entity.setSubmittedDate(LocalDate.now());
+        entity.setProblemStatus(ProblemStatus.SUBMITTED);
 
         DormProblemEntity saved = dormProblemRepository.save(entity);
         return DormProblemMapper.mapToGetDTO(saved, getUserNameById(userId));

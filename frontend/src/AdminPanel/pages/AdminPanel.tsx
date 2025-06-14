@@ -54,7 +54,7 @@ export default function AdminPanel() {
                         <img src={eventIcon} alt="Event icon" className="h-20 mt-4"/>
                     </button>
                     <button
-                        onClick={() => navigate('#')}
+                        onClick={() => navigate('problems')}
                         className="bg-gray-500 text-white text-xl px-6 py-3 rounded-lg shadow hover:bg-gray-400 transition flex flex-col items-center justify-center"
                     >
                         <p>Zarządzanie problemami</p>
