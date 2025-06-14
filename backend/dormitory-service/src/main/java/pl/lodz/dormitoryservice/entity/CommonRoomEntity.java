@@ -3,7 +3,9 @@ package pl.lodz.dormitoryservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -14,6 +16,8 @@ import java.util.List;
 @Setter
 @Getter
 @Table (name = "common_room")
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommonRoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +45,16 @@ public class CommonRoomEntity {
     @OneToMany(mappedBy = "commonRoom")
     @JsonIgnore
     private List<CommonRoomAssignmentEntity> commonRoomAssign = new ArrayList<>();
+
+    public CommonRoomEntity(CommonRoomType commonRoomType, int capacity, int floor, int hoursOfTimeWindows, int howManyTimesAWeekYouCanUseIt, boolean active, List<CommonRoomAssignmentEntity> commonRoomAssign) {
+        this.commonRoomType = commonRoomType;
+        this.capacity = capacity;
+        this.floor = floor;
+        this.hoursOfTimeWindows = hoursOfTimeWindows;
+        this.howManyTimesAWeekYouCanUseIt = howManyTimesAWeekYouCanUseIt;
+        this.active = active;
+        this.commonRoomAssign = commonRoomAssign;
+    }
 
     public enum CommonRoomType {
         STUDY_ROOM,

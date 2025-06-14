@@ -19,14 +19,12 @@ public class CommonRoomService {
 
     private final CommonRoomRepository repository;
     private final CommonRoomAssignmentScheduler scheduler;
-    private final CommonRoomMapper mapper;
     private final FloorsService floorService;
 
 
-    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, CommonRoomMapper mapper, @Lazy FloorsService floorService) {
+    public CommonRoomService(CommonRoomRepository repository, CommonRoomAssignmentScheduler scheduler, @Lazy FloorsService floorService) {
         this.repository = repository;
         this.scheduler = scheduler;
-        this.mapper = mapper;
         this.floorService = floorService;
     }
 
@@ -47,7 +45,7 @@ public class CommonRoomService {
 
 
 
-        CommonRoomEntity savedRoom = repository.save(mapper.toCommonRoomEntity(commonRoomCreateDTO));
+        CommonRoomEntity savedRoom = repository.save(CommonRoomMapper.toCommonRoomEntity(commonRoomCreateDTO));
         floorService.addCommonRoomToFloor(savedRoom.getId(), savedRoom.getFloor());
         scheduler.createAssignmentsForNextWeek(savedRoom);
 
@@ -55,7 +53,7 @@ public class CommonRoomService {
     }
 
     public List<CommonRoomGetDTO> getAllCommonRooms() {
-        return mapper.toCommonRoomGetDTOs(repository.findAll());
+        return CommonRoomMapper.toCommonRoomGetDTOs(repository.findAll());
     }
 
     @Transactional
@@ -79,7 +77,7 @@ public class CommonRoomService {
         return repository.findByFloor(floor);
     }
     public CommonRoomGetDTO getCommonRoomById(Long id) {
-        return mapper.toCommonRoomGetDTO(repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found")));
+        return CommonRoomMapper.toCommonRoomGetDTO(repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Common room not found")));
     }
 
     public List<String> getCommonRoomTypes() {

@@ -33,4 +33,12 @@ public class CommonRoomAssignmentEntity {
 
     private Date startDate;
     private Date endDate;
+
+    public CommonRoomAssignmentEntity(CommonRoomEntity commonRoom, List<Long> usersId, boolean archived, Date startDate, Date endDate) {
+        this.commonRoom = commonRoom;
+        this.usersId = usersId;
+        this.archived = archived;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

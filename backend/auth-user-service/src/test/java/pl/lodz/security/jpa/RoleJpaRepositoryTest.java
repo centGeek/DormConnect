@@ -1,23 +1,22 @@
 package pl.lodz.security.jpa;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.entity.RoleEntity;
 import pl.lodz.repository.jpa.RoleJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
-import pl.lodz.security.config.TestApplication;
 import pl.lodz.security.fixtures.StudentFixture;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = TestApplication.class)
+import java.util.Optional;
+
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 public class RoleJpaRepositoryTest {
 
     @Autowired
@@ -27,21 +26,22 @@ public class RoleJpaRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    public void thatRoleIsRetrievedProperlyByRoleName(){
-        //given
-        var studentEntity = StudentFixture.anyStudentEntity();
+    public void thatRoleIsRetrievedProperlyByRoleName() {
+        // given
+        RoleEntity studentRole = new RoleEntity("STUDENT");
+        roleJpaRepository.saveAndFlush(studentRole);
+
+        var studentEntity = StudentFixture.anyStudentEntity(studentRole);
         var userEntity = studentEntity.getUser();
-        roleJpaRepository.saveAndFlush(userEntity.getRole());
         userRepository.saveAndFlush(userEntity);
 
-        //when
-        RoleEntity studentRole = roleJpaRepository.findByRole("STUDENT");
+        // when
+        Optional<RoleEntity> foundRoleOpt = Optional.ofNullable(roleJpaRepository.findByRole("STUDENT"));
 
-        //then
-        RoleEntity expectedStudentRole = studentEntity.getUser().getRole();
-        String actualRoleName = studentRole.getRoleName();
-        String expectedRoleName = expectedStudentRole.getRoleName();
+        // then
+        Assertions.assertTrue(foundRoleOpt.isPresent(), "Role STUDENT should be present");
+        RoleEntity foundRole = foundRoleOpt.get();
 
-        Assertions.assertEquals(expectedRoleName, actualRoleName);
+        Assertions.assertEquals(studentRole.getRoleName(), foundRole.getRoleName());
     }
 }
