@@ -99,11 +99,11 @@ function DormProblemManage() {
     return (
         <Template
             buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Wydarzenia', link: '/events' },
-                { text: 'Pokoje wspólne', link: '/common-rooms' },
-                { text: 'Pokój', link: '/rooms' },
-                { text: 'Zgłoś problem', link: '/problems' },
+                {text: 'Chat', link: '/chat'},
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}
             ]}
         >
             <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-gray-200">

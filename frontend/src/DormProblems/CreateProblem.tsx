@@ -50,8 +50,8 @@ function DormProblemCreate() {
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms'},
-            {text: 'Zgłoś problem', link: '/problems'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <button

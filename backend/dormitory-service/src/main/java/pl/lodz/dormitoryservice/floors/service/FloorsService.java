@@ -3,6 +3,7 @@ package pl.lodz.dormitoryservice.floors.service;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormitoryservice.commonRoom.service.CommonRoomService;
@@ -57,11 +58,15 @@ public class FloorsService {
     }
 
     @Transactional
-    public void deleteFloor(Integer floorNumber) {
+    public ResponseEntity<String> deleteFloor(Integer floorNumber) {
         FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
-        if (floor != null) {
+        if(floor.getFloorNumber() == getFloors().stream().max(Integer::compare).orElse(-1)){
             deleteAllRooms(floorNumber);
             floorsRepository.delete(floor);
+            return ResponseEntity.ok("Floor " + floorNumber + " deleted successfully.");
+        }
+        else{
+            return ResponseEntity.status(400).body("Cannot delete floor " + floorNumber + " because it is not the last floor.");
         }
     }
     public void addCommonRoomToFloor(Long commonRoomId, Integer floorNumber) {

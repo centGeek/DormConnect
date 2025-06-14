@@ -19,7 +19,6 @@ import DormProblem from './DormProblems/DormProblems.tsx';
 import DormProblemCreate from './DormProblems/CreateProblem.tsx';
 import DormProblemManage from './DormProblems/ManageProblem.tsx';
 import DormProblemView from './DormProblems/ViewProblem.tsx';
-import 'leaflet/dist/leaflet.css';
 import CreateDormitory from "./DormitoryCreation/CreateDormiotory.tsx";
 import RoomDeletion from "./Rooms/components/RoomDeletion.tsx";
 import RoomDeleteTest from "./Rooms/RoomDeleteTest.tsx";
@@ -55,20 +54,17 @@ function App() {
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
-                        {userContext?.user?.roles.some(role => ['ADMIN', 'MANAGER'].includes(role)) && (
-                            <Route path="/events/admin/events" element={<AdminEvents />} />
+                        {(userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER')) && (
+                            <>
+                                <Route path="/dormitory" element={<CreateDormitory />} />
+                                <Route path="/events/admin/events" element={<AdminEvents />} />
+                                <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
+                                <Route path="/users/manage" element={<UserManagementPanel/>}/>
+                                <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
+                                <Route path="/users/manage/:id" element={<ManageUser/>}/>
+                                <Route path="/admin-panel" element={<AdminPanel/>}/>
+                            </>
                         )}
-                        {userContext?.user?.roles.includes('ADMIN') && (
-                            <Route path="/dormitory" element={<CreateDormitory />} />
-                        )}
-                        {userContext?.user?.roles.includes('ADMIN') && (
-                            <Route path="/dormitory/delete" element={<RoomDeletion roomId={4} />} />
-                        )}
-                        <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
-                        <Route path="/admin-panel" element={<AdminPanel/>}/>
-                        <Route path="/users/manage" element={<UserManagementPanel/>}/>
-                        <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
-                        <Route path="/users/manage/:id" element={<ManageUser/>}/>
 
                     </>
                 ) : (

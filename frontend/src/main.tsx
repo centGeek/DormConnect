@@ -5,6 +5,7 @@ import { StrictMode } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
 import { TemperatureProvider } from "./Context/TemperatureContext.tsx";
+import 'leaflet/dist/leaflet.css';
 
 
 

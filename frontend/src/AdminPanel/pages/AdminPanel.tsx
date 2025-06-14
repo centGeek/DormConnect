@@ -2,7 +2,6 @@ import {useContext, useEffect} from "react";
 import {UserContext} from "../../Context/UserContext";
 import Template from "../../Template/Template";
 import {useNavigate} from "react-router-dom";
-import {mainPageButtons} from "../interfaces/MainPageButtons.tsx"
 import userIcon from "../../assets/AdminPanelIcon/user.png"
 import dormIcon from "../../assets/AdminPanelIcon/dorm.png"
 import lockIcon from "../../assets/AdminPanelIcon/lock.png"
@@ -19,7 +18,13 @@ export default function AdminPanel() {
 
     return (
         <Template
-            buttons={mainPageButtons}>
+            buttons={[
+                {text: 'Chat', link: '/chat'},
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}
+            ]}>
             <div className="flex flex-col items-center justify-center space-y-6">
                 <h1 className="text-center text-gray-600 text-3xl font-bold">
                     Witaj w panelu administratora!

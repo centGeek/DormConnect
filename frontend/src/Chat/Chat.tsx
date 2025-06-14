@@ -44,11 +44,11 @@ function ChatPage() {
 
     return (
         <Template buttons={[
-            { text: 'Chat', link: '/chat' },
-            { text: 'Wydarzenia', link: '/events' },
-            { text: 'Pokoje wspólne', link: '/common-rooms' },
-            { text: 'Pokój', link: '/rooms' },
-            { text: 'Zgłoś problem', link: '/problems' },
+            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="chat-container flex flex-col flex-grow w-full h-full max-w-screen-lg mx-auto px-4 py-6 bg-gray-100 rounded-lg shadow-md">
                 <h1 className="text-center text-4xl font-extrabold text-gray-800 mb-4">Witaj</h1>

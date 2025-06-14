@@ -90,8 +90,8 @@ function DormProblems() {
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms'},
-            {text: 'Zgłoś problem', link: '/problems'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="relative p-6">
                 <div className="absolute top-5 left-5 z-10">

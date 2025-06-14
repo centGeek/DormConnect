@@ -21,8 +21,8 @@ function Home() {
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/form'},
-            {text: 'Zgłoś problem', link: '/problems'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="p-8 flex flex-col">
                 <div className="flex flex-col items-start gap-6 bg-white p-8 rounded-lg">

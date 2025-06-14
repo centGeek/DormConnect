@@ -49,11 +49,23 @@ function CreateDormitory() {
     const handleRoomAdd = (data: boolean) => {
         setIsPopUpRoomCreateOpen(data);
     };
-    const handleRemoveFloor = () => {
-        setIsPopUpRemoveDialogOpen(false);
-        alert("Na razie ta funkcjonalność jest niedostępna")
+const handleRemoveFloor = async () => {
+    setIsPopUpRemoveDialogOpen(false);
+    try {
+        const response = await fetch('/api/floors/delete-floor/{floorNumber}', {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${Cookies.get('token')}`,
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Failed to remove floor');
+        }
+    } catch (error) {
+        console.error('Error removing floor:', error);
     }
-
+};
     const handleClosePopup = () => {
         setIsPopupCRCreateOpen(false);
         setIsPopupCREditOpen(false);
@@ -127,8 +139,8 @@ function CreateDormitory() {
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms'},
-            {text: 'Zgłoś problem', link: '/problems'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <button
                 type="button"

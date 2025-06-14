@@ -7,26 +7,21 @@ interface PopupRemoveFloorProps {
 
 function PopUpRemoveFloor({onClose, floor}: PopupRemoveFloorProps) {
 
-    const handleDelete = async () => {
+    const handleRemoveFloor = async () => {
         try {
             const response = await fetch(`/api/floors/delete-floor/${floor}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${Cookies.get('token')}`,
-                },
-                credentials: 'include',
+                    "Authorization": `Bearer ${Cookies.get('token')}`,
+                }
             });
-
             if (!response.ok) {
-                throw new Error('Nie udało się usunąć piętra');
+                throw new Error('Failed to remove floor');
             }
-
-            console.log(`Pomyślnie usunięto piętro: ${floor}`);
+            console.log(`Floor ${floor} removed successfully`);
         } catch (error) {
-            console.error('Błąd podczas usuwania piętra:', error);
-        } finally {
-            onClose();
+            console.error('Error removing floor:', error);
         }
     };
     return (
@@ -38,7 +33,7 @@ function PopUpRemoveFloor({onClose, floor}: PopupRemoveFloorProps) {
                 </p>
                 <div className="flex justify-between">
                     <button
-                        onClick={handleDelete}
+                        onClick={() => handleRemoveFloor()}
                         className="bg-red-500 text-white border border-red-500 px-4 py-2 rounded hover:bg-white hover:text-red-600 transition"
                     >
                         Usuń

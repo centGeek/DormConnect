@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, {useEffect, useState, useCallback, useContext} from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
 import Template from '../Template/Template.tsx';
 import Pagination from './Pagination.tsx';
-import { UserContext } from '../Context/UserContext.tsx';
+import {UserContext} from '../Context/UserContext.tsx';
 
 interface Event {
     eventId: number;
@@ -19,7 +19,7 @@ interface Event {
 }
 
 function AdminEvents() {
-    const { state } = useLocation();
+    const {state} = useLocation();
     const successMessage = state?.successMessage;
     const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ function AdminEvents() {
     const [sortOption, setSortOption] = useState<'startDateTime' | 'eventName'>('startDateTime');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-    const  user  = useContext(UserContext);
+    const user = useContext(UserContext);
 
     useEffect(() => {
         const tokenFromCookie = document.cookie
@@ -65,7 +65,7 @@ function AdminEvents() {
 
             const response = await fetch(url, {
                 method: 'GET',
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
                 credentials: 'include',
             });
 
@@ -89,7 +89,7 @@ function AdminEvents() {
         if (!token) return;
         await fetch(`/api/event/administrate/${eventId}/approve`, {
             method: 'PUT',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {Authorization: `Bearer ${token}`},
             credentials: 'include',
         });
         fetchEvents();
@@ -99,7 +99,7 @@ function AdminEvents() {
         if (!token) return;
         await fetch(`/api/event/administrate/${eventId}/reject`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {Authorization: `Bearer ${token}`},
             credentials: 'include',
         });
         fetchEvents();
@@ -127,7 +127,11 @@ function AdminEvents() {
         });
 
     return (
-        <Template buttons={[]}>
+        <Template buttons={[            {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}]}>
             <div className="relative p-5 max-w-7xl mx-auto">
                 <div className="absolute top-5 left-5 z-10">
                     <button
