@@ -26,7 +26,7 @@ function DormProblems() {
     const [loading, setLoading] = useState<boolean>(true);
     const [filters, setFilters] = useState({
         searchTerm: '',
-        statusFilter: 'ALL'
+        statusFilter: 'SUBMITTED'
     });
 
     const handleButtonClick = () => navigate('/problems/create');
@@ -72,7 +72,7 @@ function DormProblems() {
 
     useEffect(() => {
         fetchDormProblems();
-        if (userContext?.user?.roles.includes('ADMIN')) {
+        if (userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER')) {
             setIsAdmin(true);
         } else {
             setIsAdmin(false);
@@ -177,7 +177,7 @@ function DormProblems() {
                                 <div className="flex flex-col space-y-2">
                                     {isAdmin  && (
                                         <button
-                                            className="w-full bg-red-300 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
+                                            className="w-full bg-red-400 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
                                             onClick={() => handleManageButtonClick(problem.id)}
                                         >
                                             Zarządzaj
