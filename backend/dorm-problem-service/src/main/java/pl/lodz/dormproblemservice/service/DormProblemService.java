@@ -72,7 +72,7 @@ public class DormProblemService {
         Long userId = jwtService.getIdFromToken(jwt);
         List<String> roles = jwtService.getRolesFromToken(jwt);
 
-        if (roles.contains("ADMIN")) {
+        if (roles.contains("ADMIN") || roles.contains("MANAGER")) {
             return dormProblemRepository.findAll().stream()
                     .map(dormProblem -> DormProblemMapper.mapToGetDTO(dormProblem, getUserNameById(dormProblem.getStudentId())))
                     .toList();

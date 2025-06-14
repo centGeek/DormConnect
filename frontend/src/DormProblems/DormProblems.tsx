@@ -13,9 +13,8 @@ interface DormProblem {
     description: string;
     answer: string| null;
     problemDate: string;
-    submittedDate: string|null;
+    submittedDate: string;
     problemStatus: string;
-
 }
 
 function DormProblems() {
@@ -49,26 +48,6 @@ function DormProblems() {
         navigate('/problems/manage/' + problemId);
     };
 
-    const fetchStudentData = async () => {
-        try {
-            setLoading(true);
-            console.log(isAdmin);
-            const response = await fetch(`/api/dorm-problem/get`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': "application/json",
-                    'Authorization': `Bearer ${userContext?.token}`
-                },
-                credentials: 'include'
-            });
-            const data = await response.json();
-            setDormProblems(data.content || data || []);
-        } catch (err) {
-            console.error('Error fetching dormitory problems');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchDormProblems = async () => {
         try {
@@ -83,6 +62,7 @@ function DormProblems() {
             });
             const data = await response.json();
             setDormProblems(data.content || data || []);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             console.error('Error fetching dormitory problems');
         } finally {
@@ -101,7 +81,7 @@ function DormProblems() {
 
     useEffect(() => {
         if (userContext?.user?.roles) {
-            setIsAdmin(userContext.user.roles.includes('ADMIN'));
+            setIsAdmin(userContext.user.roles.includes('ADMIN') || userContext.user.roles.includes('MANAGER'));
         }
     }, [userContext?.user?.roles]);
 
@@ -195,20 +175,21 @@ function DormProblems() {
                                 </p>
 
                                 <div className="flex flex-col space-y-2">
-                                    {isAdmin && problem.problemStatus != 'RESOLVED' && problem.problemStatus != 'REJECTED' && (
+                                    {isAdmin  && (
                                         <button
-                                            className="w-full bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
+                                            className="w-full bg-red-300 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
                                             onClick={() => handleManageButtonClick(problem.id)}
                                         >
                                             Zarządzaj
                                         </button>
                                     )}
-                                    <button
-                                        className="w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300"
-                                        onClick={() => handleViewDetails(problem.id)}
-                                    >
-                                        Zobacz szczegóły
-                                    </button>
+                                    {!isAdmin &&(
+                                        <button
+                                            className="w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300"
+                                            onClick={() => handleViewDetails(problem.id)}
+                                        >
+                                            Zobacz szczegóły
+                                        </button>)}
                                 </div>
                             </div>
                         ))}
