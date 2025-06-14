@@ -9,7 +9,6 @@ class AppController
 {
 private:
     uint8_t lockStatus;
-    NfcController nfcController;
     WebClientController webClientController;
     WebServerController webServerController;
     NetworkController networkController;
@@ -18,7 +17,6 @@ private:
 public:
     AppController();
     uint8_t run();
-
 };
 
 

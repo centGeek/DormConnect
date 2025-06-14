@@ -91,11 +91,11 @@ export default function ManageUser() {
                             <h2 className="text-lg">Status konta: aktywne</h2>}
                         {!currUser?.isActive &&
                             <h2 className="text-lg">Status konta: nieaktywne</h2>}
-                        <DeleteUserDialog/>
+                        <DeleteUserDialog />
                         <ChangeRoleDialog/>
                         <LockAccountDialog isLocked={currUser?.isActive}/>
                         <GenerateUUIDDialog/>
-                        <ChangeEmailDialog/>
+                        <ChangeEmailDialog user={currUser}/>
                         <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>
 

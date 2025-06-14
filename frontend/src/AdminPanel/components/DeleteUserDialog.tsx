@@ -1,7 +1,8 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useState } from 'react'
+import { UserDTO } from '../interfaces/UserDTO'
 
-export default function DeleteUserDialog() {
+export default function DeleteUserDialog({user}: {user: UserDTO}) {
   let [isOpen, setIsOpen] = useState(false)
 
   return (

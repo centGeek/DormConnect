@@ -2,17 +2,19 @@ import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../Context/UserContext';
 import ErrorAlert from './ErrorAlert';
+import { UserDTO } from '../interfaces/UserDTO';
+import axios from 'axios';
 
-export default function ChangEmailDialog() {
+export default function ChangEmailDialog({user}: {user: UserDTO}) {
   let [isOpen, setIsOpen] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
   const userContext = useContext(UserContext);
 
-  const handleChangeEmail = () => {
+  const handleChangeEmail = async () => {
     setIsOpen(false);
     setErrorAlert(true);
     
-  }
+  };
 
 
   return (
