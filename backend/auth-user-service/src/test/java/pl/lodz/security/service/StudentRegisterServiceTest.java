@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import pl.lodz.model.Student;
 import pl.lodz.repository.StudentRepository;
-import pl.lodz.security.config.TestApplication;
+import pl.lodz.security.AuthUserServiceApplicationTests;
 import pl.lodz.security.fixtures.StudentFixture;
 import pl.lodz.service.StudentRegisterService;
 
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 
 
 @SpringBootTest
-@Import(TestApplication.class)
+@Import(AuthUserServiceApplicationTests.class)
 @ActiveProfiles("test")
 class StudentRegisterServiceTest {
 
