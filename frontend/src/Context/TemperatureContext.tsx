@@ -16,7 +16,7 @@ export const TemperatureProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const fetchTemperature = async () => {
             try {
-                const res = await fetch('/api/weather/temperature');
+                const res = await fetch('http://localhost:8000/api/weather/temperature');
                 if (!res.ok) throw new Error();
                 const data = await res.json();
                 setTemperature(data);

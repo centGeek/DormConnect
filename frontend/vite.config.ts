@@ -6,28 +6,66 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      '/auth': {
-        target: 'http://localhost:8091',
+      '/api/auth': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-      '/login': {
-        target: 'http://localhost:8091',
+      '/api/event': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-
-      '/api': {
-        target: 'http://localhost:8081',
+      '/api/chat': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
       },
-      
-      '/register': {
-        target: 'http://localhost:8091',
+      '/api/dorm-problem': {
+        target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
-      }
+      },
+      '/api/common-room-assignment': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/common-room': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/floors': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/dorm/form': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/dorm/room/group': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/dorm': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/users': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/weather': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
     }
   },
 });

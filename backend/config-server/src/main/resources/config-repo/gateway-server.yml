@@ -1,0 +1,94 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  security:
+    user:
+      name: disabled
+      password: disabled
+  cloud:
+    gateway:
+      routes:
+        - id: auth-swagger
+          uri: lb://AUTH-USER-SERVICE
+          predicates:
+            - Path=/auth/v3/api-docs/**
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /${segment}
+        - id: event-swagger
+          uri: lb://EVENT-SERVICE
+          predicates:
+            - Path=/event/v3/api-docs/**
+          filters:
+            - RewritePath=/event/(?<segment>.*), /${segment}
+        - id: chat-swagger
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chat/v3/api-docs/**
+          filters:
+            - RewritePath=/chat/(?<segment>.*), /${segment}
+        - id: dorm-problem-swagger
+          uri: lb://DORM-PROBLEM-SERVICE
+          predicates:
+            - Path=/dormProblem/v3/api-docs/**
+          filters:
+            - RewritePath=/dormProblem/(?<segment>.*), /${segment}
+        - id: dorm-service-swagger
+          uri: lb://DORMITORY-SERVICE
+          predicates:
+            - Path=/dormService/v3/api-docs/**
+          filters:
+            - RewritePath=/dormService/(?<segment>.*), /${segment}
+
+
+        # API gateway
+        - id: auth-api
+          uri: lb://AUTH-USER-SERVICE
+          predicates:
+            - Path=/api/auth/**, /register/**, /api/weather/**, /api/users/**
+        - id: event-api
+          uri: lb://EVENT-SERVICE
+          predicates:
+            - Path=/api/event/**
+        - id: chat-api
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/chat/**
+        - id: dorm-problem-api
+          uri: lb://DORM-PROBLEM-SERVICE
+          predicates:
+            - Path=/api/dorm-problem/**
+        - id: dorm-service-api
+          uri: lb://DORMITORY-SERVICE
+          predicates:
+            - Path=/api/common-room-assignment/**, /api/common-room/**, /api/floors/**, /api/dorm/form/**, /api/dorm/room/group/**, /api/dorm/**
+
+springdoc:
+  api-docs:
+    gateway:
+      enabled: true
+      locations:
+        - http://localhost:8081/v3/api-docs
+        - http://localhost:8082/v3/api-docs
+        - http://localhost:8083/v3/api-docs
+        - http://localhost:8084/v3/api-docs
+        - http://localhost:8091/v3/api-docs
+
+  swagger-ui:
+    urls:
+      - name: AUTH-USER-SERVICE
+        url: /auth/v3/api-docs
+      - name: EVENT-SERVICE
+        url: /event/v3/api-docs
+      - name: CHAT-SERVICE
+        url: /chat/v3/api-docs
+      - name: DORM-PROBLEM-SERVICE
+        url: /dormProblem/v3/api-docs
+      - name: DORMITORY-SERVICE
+        url: /dormService/v3/api-docs
+

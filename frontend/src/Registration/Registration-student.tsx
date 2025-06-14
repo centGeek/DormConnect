@@ -36,7 +36,7 @@ function RegistrationStudent() {
                 }
             };
             
-            const response = await fetch('/register/student', {
+            const response = await fetch('/auth/register/student', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(student)
