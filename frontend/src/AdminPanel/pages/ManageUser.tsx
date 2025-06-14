@@ -115,7 +115,10 @@ export default function ManageUser() {
                         onSuccess={handleDialogChangeSuccess} />}
                         {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
                         <LockAccountDialog isLocked={currUser?.isActive} />
-                        <GenerateUUIDDialog />
+                        {currUser && <GenerateUUIDDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
                         {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
                         <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>

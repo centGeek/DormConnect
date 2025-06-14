@@ -12,6 +12,8 @@ import pl.lodz.users.exceptions.UserException;
 import pl.lodz.users.mappers.UserMapper;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -63,6 +65,19 @@ public class UserService {
     public void deleteUser(Long id) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserException("User not found") );
         userRepository.delete(userEntity);    
+    }
+
+    public GetUserDTO updateUserUuid(UpdateUserDTO entity) {
+        if (entity == null || entity.uuid() == null) {
+            throw new IllegalArgumentException("Invalid input: entity or uuid cannot be null");
+        }
+        UserEntity userEntity = userRepository.findByUuid(entity.uuid())
+            .orElseThrow(() -> new UserException("User not found with uuid: " + entity.uuid()));
+
+        UUID newUuid = UUID.randomUUID();
+        userEntity.setUuid(newUuid.toString());
+        UserEntity saved = userRepository.save(userEntity);
+        return UserMapper.mapToGetUserDTO(saved);
     }
     
 }

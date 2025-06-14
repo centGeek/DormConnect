@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -51,6 +52,21 @@ public class UserController {
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             throw new UserException("Error updating user: " + e.getMessage(), e);
+        }
+    }
+
+    @PostMapping("/update-uuid")
+    @Transactional
+    public ResponseEntity<GetUserDTO> updateUserUuid(@RequestBody UpdateUserDTO entity) {
+        try {
+            if (entity == null || entity.uuid() == null) {
+                throw new UserException("Invalid input: entity or uuid cannot be null");
+            }
+
+            GetUserDTO updatedUser = userService.updateUserUuid(entity);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            throw new UserException("Error updating user UUID: " + e.getMessage(), e);
         }
     }
 
