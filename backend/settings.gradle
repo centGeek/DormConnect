@@ -1,7 +1,2 @@
-rootProject.name = 'dormConnect'
-include(':app-logic')
-include(':eureka-server')
-include 'security-service'
-include 'jwt-common'
-include 'dorm-connect-modules'
-include 'drm-connect-commons'
+rootProject.name = 'backend'
+include 'auth-user-service', 'chat-service', 'config-server', 'dormitory-service', 'dorm-problem-service', 'eureka-server', 'event-service', 'gateway-server'
