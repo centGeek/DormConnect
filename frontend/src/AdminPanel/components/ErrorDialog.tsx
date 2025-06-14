@@ -10,9 +10,6 @@ export default function ErrorDialog({
   message: string
 }) {
 
-    const handleClose = () => {
-        window.location.reload();
-    }
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">

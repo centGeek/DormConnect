@@ -40,7 +40,7 @@ public class UserService {
         }
         UserEntity userEntity = userRepository.findByUuid(entity.uuid())
             .orElseThrow(() -> new IllegalArgumentException("User not found with uuid: " + entity.uuid()));
-        RoleEntity roleEntity = roleJpaRepository.findByRole(userEntity.getRole().getRoleName());
+        RoleEntity roleEntity = roleJpaRepository.findByRole(entity.role());
         userEntity.setUuid(entity.uuid());
         userEntity.setUserName(entity.userName());
         userEntity.setEmail(entity.email());
