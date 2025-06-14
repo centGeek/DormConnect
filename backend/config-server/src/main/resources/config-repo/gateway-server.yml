@@ -92,3 +92,11 @@ springdoc:
       - name: DORMITORY-SERVICE
         url: /dormService/v3/api-docs
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
