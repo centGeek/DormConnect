@@ -1,6 +1,7 @@
 package pl.lodz.weather.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,14 +18,17 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping("/temperature")
-    public double getTemperature() {
+    public ResponseEntity<String> getTemperature() {
         List<WeatherResponse> weatherResponses = weatherService.getCurrentWeather();
 
         if (weatherResponses != null && !weatherResponses.isEmpty()) {
-            WeatherResponse currentLocation = weatherResponses.get(0);
-            return currentLocation.current_weather().temperature();
+            WeatherResponse currentLocation = weatherResponses.getFirst();
+            double temperature = currentLocation.current_weather().temperature();
+            return ResponseEntity.ok(String.valueOf(temperature));
         } else {
-            throw new RuntimeException("No weather data available");
+            return ResponseEntity
+                    .status(500)
+                    .body("No weather data available");
         }
     }
 }

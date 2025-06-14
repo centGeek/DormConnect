@@ -32,7 +32,6 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-
                         .anyRequest().permitAll()
                 )
                 .httpBasic().disable()

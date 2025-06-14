@@ -36,7 +36,8 @@ public class ReactiveSecurityConfig {
                                 "/auth/v3/api-docs/**",
                                 "/event/v3/api-docs/**",
                                 "/chat/v3/api-docs/**",
-                                "/dormProblem/v3/api-docs/**"
+                                "/dormProblem/v3/api-docs/**",
+                                "/dormService/v3/api-docs/**"
                         ).permitAll()
                         // Users and Auth
                         .pathMatchers(
