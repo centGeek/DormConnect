@@ -58,5 +58,11 @@ public class UserService {
         }
         return UserMapper.mapToGetUserDTO(currUser);
     }
+
+    public String getUsernameById(Long id) {
+        UserEntity user = userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        return user.getUserName();
+    }
     
 }

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import pl.lodz.dormproblemservice.ProblemStatus;
 import pl.lodz.dormproblemservice.dto.CreateDormProblemDTO;
 import pl.lodz.dormproblemservice.dto.GetDormProblemDTO;
@@ -23,6 +24,7 @@ public class DormProblemService {
 
     private final DormProblemRepository dormProblemRepository;
     private final JwtService jwtService;
+    private final RestTemplate restTemplate;
 
     public GetDormProblemDTO createDormProblem(@NotNull CreateDormProblemDTO dto, String jwt) {
         Long userId = jwtService.getIdFromToken(jwt);
@@ -34,7 +36,7 @@ public class DormProblemService {
         entity.setSubmittedDate(LocalDate.now());
 
         DormProblemEntity saved = dormProblemRepository.save(entity);
-        return DormProblemMapper.mapToGetDTO(saved);
+        return DormProblemMapper.mapToGetDTO(saved, getUserNameById(userId));
     }
 
     @Transactional
@@ -51,7 +53,7 @@ public class DormProblemService {
         entity.setProblemStatus(dto.problemStatus());
 
         DormProblemEntity saved = dormProblemRepository.save(entity);
-        return DormProblemMapper.mapToGetDTO(saved);
+        return DormProblemMapper.mapToGetDTO(saved, getUserNameById(dto.studentId()));
     }
 
     @Transactional
@@ -68,11 +70,11 @@ public class DormProblemService {
 
         if (roles.contains("ADMIN")) {
             return dormProblemRepository.findAll().stream()
-                    .map(DormProblemMapper::mapToGetDTO)
+                    .map(dormProblem -> DormProblemMapper.mapToGetDTO(dormProblem, getUserNameById(dormProblem.getStudentId())))
                     .toList();
         } else {
             return dormProblemRepository.findByUserId(userId).stream()
-                    .map(DormProblemMapper::mapToGetDTO)
+                    .map(dormProblem -> DormProblemMapper.mapToGetDTO(dormProblem, getUserNameById(dormProblem.getStudentId())))
                     .toList();
         }
     }
@@ -80,13 +82,13 @@ public class DormProblemService {
     public GetDormProblemDTO getDormProblemById(@NotNull Long id) {
         DormProblemEntity entity = dormProblemRepository.findById(id)
                 .orElseThrow(() -> new DormProblemNotFoundException("DormProblem with id " + id + " not found"));
-        return DormProblemMapper.mapToGetDTO(entity);
+        return DormProblemMapper.mapToGetDTO(entity, getUserNameById(entity.getStudentId()));
     }
 
     @Transactional
     public List<GetDormProblemDTO> getDormProblemByStatus(@NotNull ProblemStatus status) {
         return dormProblemRepository.findByProblemStatus(status).stream()
-                .map(DormProblemMapper::mapToGetDTO)
+                .map(dormProblem -> DormProblemMapper.mapToGetDTO(dormProblem, getUserNameById(dormProblem.getStudentId())))
                 .toList();
     }
 
@@ -105,5 +107,10 @@ public class DormProblemService {
             case REJECTED -> List.of(ProblemStatus.RESOLVED, ProblemStatus.IN_PROGRESS, ProblemStatus.SUBMITTED).contains(newStatus);
             default -> false;
         };
+    }
+
+    private String getUserNameById(Long userId) {
+        String url = "http://localhost:8091/api/users/get/username/" + userId;
+        return restTemplate.getForObject(url, String.class);
     }
 }

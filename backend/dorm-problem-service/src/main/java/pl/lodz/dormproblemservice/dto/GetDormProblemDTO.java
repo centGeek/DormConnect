@@ -11,6 +11,7 @@ public record GetDormProblemDTO(
         Long id,
         @NotBlank
         Long studentId,
+        String userName,
         String name,
         String description,
         String answer,

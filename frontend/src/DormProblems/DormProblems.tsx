@@ -8,6 +8,7 @@ import translateStatus from "./components/TranslateProblemStatus.tsx";
 interface DormProblem {
     id: number;
     studentId: number;
+    userName: string;
     name: string;
     description: string;
     problemDate: string;
@@ -161,7 +162,7 @@ function DormProblems() {
                                 className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                             >
                                 <h3 className="text-xl font-bold text-gray-800 mb-2">{problem.name}</h3>
-                                <p className="text-gray-600 mb-1 font-semibold">Id Studenta: {problem.studentId}</p>
+                                <p className="text-gray-600 mb-1 font-semibold">Student: {problem.userName}</p>
                                 <div className="flex items-center mb-2">
                                     <span className="font-semibold mr-2">Status:</span>
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
