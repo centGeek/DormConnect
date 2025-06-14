@@ -1,8 +1,13 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../../Context/UserContext";
 
 export default function ConfirmationDialog() {
     const [isOpen, setIsOpen] = useState(true);
+    const userContext = useContext(UserContext);
+
+
+
 
     return (
     <>

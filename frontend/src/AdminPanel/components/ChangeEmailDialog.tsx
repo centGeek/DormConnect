@@ -1,8 +1,19 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { UserContext } from '../../Context/UserContext';
+import ErrorAlert from './ErrorAlert';
 
 export default function ChangEmailDialog() {
   let [isOpen, setIsOpen] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(false);
+  const userContext = useContext(UserContext);
+
+  const handleChangeEmail = () => {
+    setIsOpen(false);
+    setErrorAlert(true);
+    
+  }
+
 
   return (
     <>
@@ -19,7 +30,7 @@ export default function ChangEmailDialog() {
 
             </Description>
             <div className="flex gap-4">
-              <button className='bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition' onClick={() => setIsOpen(false)}>Zmień</button>
+              <button className='bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition' onClick={handleChangeEmail}>Zmień</button>
               <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
 
             </div>  
@@ -27,6 +38,9 @@ export default function ChangEmailDialog() {
         </div>
         </form>
       </Dialog>
+      {errorAlert && (
+      <ErrorAlert message="Wystąpił błąd podczas zmiany adresu e-mail. Proszę spróbować ponownie." />
+      )}
     </>
   )
 }

@@ -1,5 +1,14 @@
 #include "NfcController.h"
 
+/**
+ * @brief Converts a hexadecimal string to its uint8_t value.
+ *
+ * This function takes a String representing a hexadecimal number (e.g., "1A"),
+ * converts it to a C-style string, and parses it as a base-16 (hexadecimal) integer.
+ *
+ * @param input The hexadecimal string to convert.
+ * @return The uint8_t value corresponding to the hexadecimal input.
+ */
 uint8_t NfcController::stringToHex(String input)
 {
     char charInput[input.length() + 1];
@@ -7,6 +16,17 @@ uint8_t NfcController::stringToHex(String input)
     return (uint8_t) strtol(charInput, 0, 16);
 }
 
+/**
+ * @brief Inserts a character at the specified index in the given String.
+ *
+ * This method creates a new String by inserting the specified character at the given index
+ * of the base String. The original String is not modified.
+ *
+ * @param base The original String where the character will be inserted.
+ * @param index The position at which to insert the character (0-based).
+ * @param charToInsert The character to insert into the String.
+ * @return A new String with the character inserted at the specified index.
+ */
 String NfcController::insertCharAt(String base, uint8_t index, char charToInsert)
 {
     char previousChar = base.charAt(index);
