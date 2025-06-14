@@ -46,8 +46,11 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
     useEffect(() => {
         const updateHeaderTemperature = () => {
+            const btn = document.querySelector('a[href="/problems"]');
+            if (!btn) return;
+
             const tempText = loading
-                ? 'Ładowanie...'
+                ? 'Loading...'
                 : error
                     ? '--°C'
                     : `${temperature}°C`;
@@ -56,21 +59,25 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                 !loading && !error && temperature !== null
                     ? temperature > 10
                         ? 'Dobra pogoda na Flanki!'
-                        : 'Zła pogoda na Flanki'
+                        : 'Zła pogoda do Flanek'
                     : '';
 
             let el = document.querySelector('.header-temperature') as HTMLElement;
             if (!el) {
                 el = document.createElement('span');
-                el.className = 'header-temperature text-black font-bold ml-auto mr-4';
-                const logoutButton = document.querySelector('button.bg-white.text-red-600');
-                logoutButton?.parentNode?.insertBefore(el, logoutButton);
+                el.className = 'header-temperature text-gray-800 font-bold mr-auto';
+                btn.parentNode?.insertBefore(el, btn.nextSibling); // Poprawiono błąd
             }
 
             el.innerHTML = tempText;
             el.title = tooltip;
         };
 
+        updateHeaderTemperature();
+        const intervalId = setInterval(updateHeaderTemperature, 30000);
+        return () => clearInterval(intervalId);
+    }, [temperature, loading, error]);
+    useEffect(() => {
         const handleDropdownButtonProps = () => {
             if (userContext?.user?.roles.includes("ADMIN")) {
                 setDropdownButtonProps([
@@ -86,10 +93,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
             }
         }
 
-        updateHeaderTemperature();
+
         handleDropdownButtonProps();
-        const intervalId = setInterval(updateHeaderTemperature, 30000);
-        return () => clearInterval(intervalId);
     }, [temperature, loading, error, userContext?.user?.roles]);
 
     return (
