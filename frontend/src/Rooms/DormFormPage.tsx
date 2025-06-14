@@ -2,14 +2,25 @@ import React, {useState} from 'react';
 import Template from '../Template/Template';
 import {parseJwt} from '../JWT/JWTDecoder';
 import {MapContainer, TileLayer, Marker, useMapEvents} from 'react-leaflet';
-import L from 'leaflet';
+import L, {LatLng} from 'leaflet';
+import {useMap} from 'react-leaflet';
 
-function LocationPicker({onLocationSelect}: { onLocationSelect: (latlng: L.LatLng) => void }) {
+function LocationPicker({onLocationSelect}: { onLocationSelect: (latlng: LatLng) => void }) {
     useMapEvents({
         click(e) {
             onLocationSelect(e.latlng);
         },
     });
+    return null;
+}
+
+function MapCenterer({latlng}: { latlng: LatLng }) {
+    const map = useMap();
+    React.useEffect(() => {
+        if (latlng) {
+            map.setView(latlng, map.getZoom());
+        }
+    }, [latlng, map]);
     return null;
 }
 
@@ -19,27 +30,24 @@ function DormFormPage() {
     const [comments, setComments] = useState('');
     const [income, setIncome] = useState<number | ''>('');
     const [priorityScore, setPriorityScore] = useState<number | ''>('');
-    const [selectedLatLng, setSelectedLatLng] = useState<L.LatLng | null>(null);
+    const [selectedLatLng, setSelectedLatLng] = useState<LatLng | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const poliCorrinates = L.latLng(51.74899574307592, 19.45339553079945);
 
-    const calculatePriority = (latlng: L.LatLng, income: number): number => {
-        const distance = latlng.distanceTo(poliCorrinates) / 1000; // w km
+    const today = new Date().toISOString().split('T')[0]; // dzisiejsza data YYYY-MM-DD
+
+    const calculatePriority = (latlng: LatLng, income: number): number => {
+        const distance = latlng.distanceTo(poliCorrinates) / 1000;
         const incomePoints = (Math.max(0, Math.min(3500, (2500 / (income * 0.001))) - 600) / 100 * 3);
         const distancePoints = Math.max(0, distance - 40);
-        let distancePointsAdjusted;
-        if (distancePoints > 100) {
-            distancePointsAdjusted = 100 + Math.sqrt(distancePoints);
-        } else distancePointsAdjusted = distancePoints;
-
-        const priorityScore = Math.round((incomePoints + distancePointsAdjusted) / 2);
-        console.log(priorityScore, distance, distancePoints, incomePoints);
-        return priorityScore;
+        const adjusted = distancePoints > 100 ? 100 + Math.sqrt(distancePoints) : distancePoints;
+        return Math.round((incomePoints + adjusted) / 2);
     };
 
-    const handleLocationSelect = (latlng: L.LatLng) => {
+    const handleLocationSelect = (latlng: LatLng) => {
         setSelectedLatLng(latlng);
         if (income && income > 0) {
             setPriorityScore(calculatePriority(latlng, income));
@@ -59,39 +67,32 @@ function DormFormPage() {
         }
     };
 
+    const geocodeLocation = async (query: string): Promise<LatLng | null> => {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.length > 0) {
+            setError(null);
+            return L.latLng(parseFloat(data[0].lat), parseFloat(data[0].lon));
+        }
+        return null;
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         setError(null);
         setSuccessMessage(null);
 
-        const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('token='))
-            ?.split('=')[1];
-
-        if (!token) {
-            setError('Brak tokena autoryzacyjnego');
-            return;
-        }
+        const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+        if (!token) return setError('Brak tokena autoryzacyjnego');
 
         const user = parseJwt(token);
         const userId = user?.id;
+        if (!income) return setError('Ustaw wartość dochodu!');
+        if (!userId) return setError('Nieprawidłowy token użytkownika');
+        if (!selectedLatLng) return setError('Zaznacz lokalizację na mapie!');
 
-        if (!income) {
-            setError('Ustaw wartość dochodu!');
-            return;
-        }
-
-        if (!userId) {
-            setError('Nieprawidłowy token użytkownika');
-            return;
-        }
-
-        if (!selectedLatLng) {
-            setError('Zaznacz lokalizację na mapie!');
-            return;
-        }
+        if (endDate && endDate < startDate) return setError('Data zakończenia musi być po dacie rozpoczęcia');
 
         const dormForm = {
             startDate,
@@ -112,10 +113,7 @@ function DormFormPage() {
                 credentials: 'include'
             });
 
-            if (!response.ok) {
-                console.error(response);
-                throw new Error('Posiadasz już formularz w podanym zakresie dat!');
-            }
+            if (!response.ok) throw new Error('Posiadasz już formularz w podanym zakresie dat!');
 
             setSuccessMessage('Formularz został pomyślnie złożony! Otrzymany wynik rekrutacji to: ' + priorityScore);
             setStartDate('');
@@ -130,9 +128,7 @@ function DormFormPage() {
     };
 
     return (
-        <Template
-
-        >
+        <Template>
             <div className="flex-1 flex justify-center items-start p-5">
                 <button
                     type="button"
@@ -160,7 +156,14 @@ function DormFormPage() {
                                 type="date"
                                 id="startDate"
                                 value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                min={today}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setStartDate(value);
+                                    if (endDate && endDate < value) {
+                                        setEndDate('');
+                                    }
+                                }}
                                 required
                                 className="w-full p-2 border border-gray-300 rounded-lg"
                             />
@@ -173,14 +176,16 @@ function DormFormPage() {
                                 type="date"
                                 id="endDate"
                                 value={endDate}
+                                min={startDate || today}
                                 onChange={(e) => setEndDate(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded-lg"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="income" className="block text-gray-700 mb-1">Dochód miesięczny (netto) na
-                                osobę w gospodarstwie <br/> domowym (PLN)</label>
+                            <label htmlFor="income" className="block text-gray-700 mb-1">
+                                Dochód miesięczny (netto) na osobę w gospodarstwie domowym (PLN)
+                            </label>
                             <input
                                 type="number"
                                 id="income"
@@ -190,6 +195,37 @@ function DormFormPage() {
                                 className="w-full p-2 border border-gray-300 rounded-lg"
                             />
                         </div>
+
+                        <div className="mb-4">
+                            <label htmlFor="locationSearch" className="block text-gray-700 mb-1">
+                                Wpisz lokalizację (miasto, adres, kod pocztowy):
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    id="locationSearch"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="min-w-0 flex-1 p-2 border border-gray-300 rounded-lg"
+                                    placeholder="np. Piotrkowska 123, Łódź"
+                                />
+                                <button
+                                    type="button"
+                                    className="whitespace-nowrap bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition"
+                                    onClick={async () => {
+                                        const result = await geocodeLocation(searchQuery);
+                                        if (result) {
+                                            handleLocationSelect(result);
+                                        } else {
+                                            setError('Nie znaleziono lokalizacji');
+                                        }
+                                    }}
+                                >
+                                    Szukaj
+                                </button>
+                            </div>
+                        </div>
+
 
                         <div>
                             <label className="block text-gray-700 mb-1">Zaznacz dokładnie swoje miejsce
@@ -204,8 +240,8 @@ function DormFormPage() {
                                     attribution='&copy; <a href="https://carto.com/">CARTO</a>'
                                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                                 />
-
                                 {selectedLatLng && <Marker position={selectedLatLng}/>}
+                                {selectedLatLng && <MapCenterer latlng={selectedLatLng}/>}
                                 <LocationPicker onLocationSelect={handleLocationSelect}/>
                             </MapContainer>
                         </div>

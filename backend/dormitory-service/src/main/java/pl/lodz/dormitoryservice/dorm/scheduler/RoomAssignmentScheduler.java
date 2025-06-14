@@ -35,14 +35,29 @@ public class RoomAssignmentScheduler {
     private static final Logger logger = LoggerFactory.getLogger(RoomAssignmentScheduler.class);
 
     @Transactional
-       @Scheduled(fixedRate = 60000) // co minutę
+    @Scheduled(fixedRate = 60000) // co minutę
     public void assignRooms() {
 
         RoomAssignmentLock.LOCK.lock(); // czekaj na swoją kolej
 
+        LocalDate today = LocalDate.now();
+
+
         try {
             List<DormFormEntity> forms = dormFormRepository.findByIsProcessedFalseOrderByPriorityScoreDesc();
             List<RoomEntity> allRooms = roomRepository.findAll();
+
+            forms = forms.stream().filter(form -> {
+                        if (form.getEndDate() != null && form.getEndDate().isBefore(today)) {
+                            dormFormRepository.delete(form);
+                            return false;
+                        }
+                        LocalDate effectiveStart = form.getStartDate() != null && form.getStartDate().isAfter(today)
+                                ? form.getStartDate()
+                                : today;
+                        return form.getEndDate() == null || !form.getEndDate().isBefore(effectiveStart);
+                    })
+                    .toList();
 
             for (DormFormEntity form : forms) {
                 Optional<RoomEntity> availableRoom = allRooms.stream()
@@ -60,7 +75,7 @@ public class RoomAssignmentScheduler {
                     form.setProcessed(true);
                     dormFormRepository.save(form);
                 } else {
-                    // Brak dostępnych pokoi, można dodać logowanie lub wysyłkę powiadomień
+                    logger.warn("No more space for student from " + form.getStartDate() + " to " + form.getEndDate());
                 }
             }
         } finally {
@@ -108,9 +123,9 @@ public class RoomAssignmentScheduler {
     }
 
     /**
-    Use with caution as this truly creates new Assignments!
-    **/
-    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms,boolean isOngoing) {
+     * Use with caution as this truly creates new Assignments!
+     **/
+    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms, boolean isOngoing) {
         RoomAssignmentLock.LOCK.lock();
 
         try {
@@ -131,7 +146,7 @@ public class RoomAssignmentScheduler {
                     newAssign.setRoom(targetRoom);
                     if (isOngoing) {
                         newAssign.setFromDate(LocalDate.now());
-                    }else newAssign.setFromDate(oldAssign.getFromDate());
+                    } else newAssign.setFromDate(oldAssign.getFromDate());
                     newAssign.setToDate(oldAssign.getToDate());
 
                     // Aktualizujemy obie strony relacji
@@ -189,7 +204,6 @@ public class RoomAssignmentScheduler {
             RoomAssignmentLock.LOCK.unlock();
         }
     }
-
 
 
     private boolean isRoomAvailable(RoomEntity room, LocalDate start, LocalDate end) {
