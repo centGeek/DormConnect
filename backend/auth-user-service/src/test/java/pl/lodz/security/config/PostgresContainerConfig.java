@@ -13,8 +13,8 @@ public class PostgresContainerConfig {
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:17"))
                     .withDatabaseName("testdb")
-                    .withUsername("testuser")
-                    .withPassword("testpass");
+                    .withUsername("test")
+                    .withPassword("test");
 
     static {
         POSTGRES_CONTAINER.start();
@@ -31,5 +31,7 @@ public class PostgresContainerConfig {
         registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
         registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
         registry.add("spring.datasource.driver-class-name", POSTGRES_CONTAINER::getDriverClassName);
+
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 }

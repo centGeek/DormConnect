@@ -1,24 +1,21 @@
 package pl.lodz.security.jpa;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.entity.RoleEntity;
 import pl.lodz.repository.jpa.RoleJpaRepository;
 import pl.lodz.repository.jpa.StudentJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
-import pl.lodz.security.config.TestApplication;
 import pl.lodz.security.fixtures.StudentFixture;
 
-
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = TestApplication.class)
+@SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 class StudentJpaRepositoryTest {
 
     @Autowired
@@ -29,19 +26,29 @@ class StudentJpaRepositoryTest {
 
     @Autowired
     private RoleJpaRepository roleJpaRepository;
+
     @Test
-    void thatStudentIsSavedAndRetrievedCorrectly(){
-        //given
-        var studentEntity = StudentFixture.anyStudentEntity();
+    void thatStudentIsSavedAndRetrievedCorrectly() {
+        // given
+        RoleEntity studentRole = new RoleEntity("STUDENT");
+        roleJpaRepository.saveAndFlush(studentRole);
+
+        var studentEntity = StudentFixture.anyStudentEntity(studentRole);
         var userEntity = studentEntity.getUser();
-        roleJpaRepository.saveAndFlush(userEntity.getRole());
         userRepository.saveAndFlush(userEntity);
 
-        //when
-        var actualStudentEntity = studentJpaRepository.saveAndFlush(studentEntity);
+        // when
+        var savedStudentEntity = studentJpaRepository.saveAndFlush(studentEntity);
 
-        //then
-        Assertions.assertEquals(studentEntity, actualStudentEntity);
+        // then
+        Assertions.assertEquals(studentEntity.getName(), savedStudentEntity.getName());
+        Assertions.assertEquals(studentEntity.getSurname(), savedStudentEntity.getSurname());
+        Assertions.assertEquals(studentEntity.getUser(), savedStudentEntity.getUser());
+        Assertions.assertNotNull(savedStudentEntity.getId());
+
+        // dodatkowo możesz sprawdzić, czy student jest faktycznie w bazie:
+        var foundStudentOpt = studentJpaRepository.findById(savedStudentEntity.getId());
+        Assertions.assertTrue(foundStudentOpt.isPresent());
+        Assertions.assertEquals(savedStudentEntity, foundStudentOpt.get());
     }
-
 }
