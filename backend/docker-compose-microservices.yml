@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   config-server:
     build: ./config-server
@@ -9,8 +7,6 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
       interval: 10s
       retries: 10
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   eureka-server:
     build: ./eureka-server
@@ -21,8 +17,6 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
       interval: 10s
       retries: 10
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   gateway-server:
     build: ./gateway-server
@@ -31,45 +25,33 @@ services:
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   auth-user-service:
     build: ./auth-user-service
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   chat-service:
     build: ./chat-service
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   dorm-problem-service:
     build: ./dorm-problem-service
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   dormitory-service:
     build: ./dormitory-service
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
 
   event-service:
     build: ./event-service
     depends_on:
       eureka-server:
         condition: service_healthy
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
