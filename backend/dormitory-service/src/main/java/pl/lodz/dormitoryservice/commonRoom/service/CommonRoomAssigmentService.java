@@ -17,20 +17,17 @@ public class CommonRoomAssigmentService {
 
     private final CommonRoomAssignmentRepository repository;
     private final CommonRoomRepository commonRoomRepository;
-    private final CommonRoomAssignmentsMapper mapper;
 
     public CommonRoomAssigmentService(CommonRoomAssignmentRepository repository,
-                                      CommonRoomRepository commonRoomRepository,
-                                      CommonRoomAssignmentsMapper mapper) {
+                                      CommonRoomRepository commonRoomRepository) {
         this.repository = repository;
         this.commonRoomRepository = commonRoomRepository;
-        this.mapper = mapper;
     }
 
 
     public ResponseEntity<List<CommonRoomAssignmentGetDTO>> getCommonRoomAssignmentsByCommonRoomId(Long commonRoomId, Long userId) {
         List<CommonRoomAssignmentEntity> commonRoomAssigmentEntities = repository.getAssignmentsByCommonRoomId(commonRoomId);
-        List<CommonRoomAssignmentGetDTO> dtos = mapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, userId);
+        List<CommonRoomAssignmentGetDTO> dtos = CommonRoomAssignmentsMapper.toCommonRoomAssignmentGetDTOs(commonRoomAssigmentEntities, userId);
         return ResponseEntity.ok(dtos);
     }
 

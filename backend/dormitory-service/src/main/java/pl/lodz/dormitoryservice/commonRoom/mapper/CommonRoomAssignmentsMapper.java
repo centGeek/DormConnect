@@ -1,16 +1,13 @@
 package pl.lodz.dormitoryservice.commonRoom.mapper;
 
-import org.springframework.stereotype.Service;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomAssignmentGetDTO;
 import pl.lodz.dormitoryservice.entity.CommonRoomAssignmentEntity;
-
 
 import java.util.List;
 
 
-@Service
 public class CommonRoomAssignmentsMapper {
-    public CommonRoomAssignmentGetDTO toCommonRoomAssignmentGetDTO(CommonRoomAssignmentEntity commonRoomAssignmentEntity, Long userId) {
+    public static CommonRoomAssignmentGetDTO toCommonRoomAssignmentGetDTO(CommonRoomAssignmentEntity commonRoomAssignmentEntity, Long userId) {
         boolean isAssigned = commonRoomAssignmentEntity.getUsersId().contains(userId);
         boolean isFull = commonRoomAssignmentEntity.getUsersId().size() >= commonRoomAssignmentEntity.getCommonRoom().getCapacity();
         return new CommonRoomAssignmentGetDTO(
@@ -23,9 +20,9 @@ public class CommonRoomAssignmentsMapper {
                 commonRoomAssignmentEntity.isArchived()
         );
     }
-    public List<CommonRoomAssignmentGetDTO> toCommonRoomAssignmentGetDTOs(List<CommonRoomAssignmentEntity> commonRoomAssignmentEntities, Long userId) {
+    public static List<CommonRoomAssignmentGetDTO> toCommonRoomAssignmentGetDTOs(List<CommonRoomAssignmentEntity> commonRoomAssignmentEntities, Long userId) {
         return commonRoomAssignmentEntities.stream()
-                .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate())) // Sortowanie po dacie rozpoczęcia
+                .sorted((a, b) -> a.getStartDate().compareTo(b.getStartDate()))
                 .map(entity -> toCommonRoomAssignmentGetDTO(entity, userId))
                 .toList();
     }
