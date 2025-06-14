@@ -30,15 +30,18 @@ export default function ManageUser() {
     const [errorDialogMsg, setErrorDialogMsg] = useState("");
     const [successDialogOpen, setSuccessDialogOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
+    const [dialogUrl, setDialogUrl] = useState("");
 
-    const handleEmailChangeSuccess = (message: string) => {
+    const handleDialogChangeSuccess = (message: string) => {
         setSuccessMessage(message);
         setSuccessDialogOpen(true);
+        setDialogUrl('/users/manage');
     }
-    const handleEmailChangeError = (msg: string) => {
+    const handleDialogChangeError = (msg: string) => {
         setErrorDialogMsg(msg);
         setErrorDialogOpen(true);
     };
+
 
     const handleDialogClose = () => {
         setDeleteUserDialogOpen(false);
@@ -106,11 +109,14 @@ export default function ManageUser() {
                             <h2 className="text-lg">Status konta: aktywne</h2>}
                         {!currUser?.isActive &&
                             <h2 className="text-lg">Status konta: nieaktywne</h2>}
-                        <DeleteUserDialog />
-                        {currUser && <ChangeRoleDialog user={currUser} onError={handleEmailChangeError} onSuccess={handleEmailChangeSuccess} />}
+                        {currUser && <DeleteUserDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
+                        {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
                         <LockAccountDialog isLocked={currUser?.isActive} />
                         <GenerateUUIDDialog />
-                        {currUser && <ChangeEmailDialog user={currUser} onError={handleEmailChangeError} onSuccess={handleEmailChangeSuccess} />}
+                        {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
                         <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>
 

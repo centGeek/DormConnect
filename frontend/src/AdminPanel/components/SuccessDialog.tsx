@@ -1,16 +1,25 @@
 import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { useNavigate } from 'react-router-dom';
 
 export default function SuccessDialog({
   open,
   message,
+  url
 }: {
   open: boolean,
   onClose: () => void,
-  message: string
+  message: string,
+  url?: string;
 }) {
+  const navigate  = useNavigate();
 
     const handleClose = () => {
+      if (url) {
+        navigate(url)
+      } else {
         window.location.reload();
+      }
+
     }
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">

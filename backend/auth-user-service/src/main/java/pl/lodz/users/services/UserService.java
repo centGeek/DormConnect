@@ -8,6 +8,7 @@ import pl.lodz.repository.jpa.RoleJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
 import pl.lodz.users.dto.GetUserDTO;
 import pl.lodz.users.dto.UpdateUserDTO;
+import pl.lodz.users.exceptions.UserException;
 import pl.lodz.users.mappers.UserMapper;
 
 import java.util.List;
@@ -57,6 +58,11 @@ public class UserService {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
         return UserMapper.mapToGetUserDTO(currUser);
+    }
+
+    public void deleteUser(Long id) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserException("User not found") );
+        userRepository.delete(userEntity);    
     }
     
 }

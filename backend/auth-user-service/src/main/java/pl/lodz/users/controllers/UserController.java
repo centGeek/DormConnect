@@ -53,5 +53,16 @@ public class UserController {
             throw new UserException("Error updating user: " + e.getMessage(), e);
         }
     }
-    
+
+
+    @DeleteMapping("/delete/{id}")
+    @Transactional
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().body("User deleted successfully");
+        } catch (Exception e) {
+            throw new UserException("Error deleting user: " + e.getMessage(), e);
+        }
+    }
 }
