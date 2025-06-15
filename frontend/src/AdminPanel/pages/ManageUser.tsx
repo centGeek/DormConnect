@@ -10,6 +10,8 @@ import GenerateUUIDDialog from "../components/GenerateUUIDDialog";
 import ChangeRoleDialog from "../components/ChangeRoleDialog";
 import ChangeEmailDialog from "../components/ChangeEmailDialog";
 import LockAccountDialog from "../components/LockAccountDialog";
+import ErrorDialog from "../components/ErrorDialog";
+import SuccessDialog from "../components/SuccessDialog";
 
 
 
@@ -24,6 +26,22 @@ export default function ManageUser() {
     const [unblockAccountDialogOpen, setUnblockAccountDialogOpen] = useState(false);
     const [generateUuidDialogOpen, setGenerateUuidDialogOpen] = useState(false);
     const [changeEmailDialogOpen, setChangeEmailDialogOpen] = useState(false);
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [errorDialogMsg, setErrorDialogMsg] = useState("");
+    const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [dialogUrl, setDialogUrl] = useState("");
+
+    const handleDialogChangeSuccess = (message: string) => {
+        setSuccessMessage(message);
+        setSuccessDialogOpen(true);
+        setDialogUrl('/users/manage');
+    }
+    const handleDialogChangeError = (msg: string) => {
+        setErrorDialogMsg(msg);
+        setErrorDialogOpen(true);
+    };
+
 
     const handleDialogClose = () => {
         setDeleteUserDialogOpen(false);
@@ -97,11 +115,20 @@ export default function ManageUser() {
                             <h2 className="text-lg">Status konta: aktywne</h2>}
                         {!currUser?.isActive &&
                             <h2 className="text-lg">Status konta: nieaktywne</h2>}
-                        <DeleteUserDialog/>
-                        <ChangeRoleDialog/>
-                        <LockAccountDialog isLocked={currUser?.isActive}/>
-                        <GenerateUUIDDialog/>
-                        <ChangeEmailDialog/>
+                        {currUser && <DeleteUserDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
+                        {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
+                        {currUser && <LockAccountDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
+                        {currUser && <GenerateUUIDDialog 
+                        user={currUser}
+                        onError={handleDialogChangeError} 
+                        onSuccess={handleDialogChangeSuccess} />}
+                        {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
                         <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>
 
@@ -109,7 +136,16 @@ export default function ManageUser() {
 
 
             </Template>
-
+            <ErrorDialog
+                open={errorDialogOpen}
+                onClose={() => setErrorDialogOpen(false)}
+                message={errorDialogMsg}
+            />
+            <SuccessDialog
+                open={successDialogOpen}
+                onClose={() => setSuccessDialogOpen(false)}
+                message={successMessage}
+            />
         </>
 
     )

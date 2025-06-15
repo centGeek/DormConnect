@@ -8,9 +8,12 @@ import pl.lodz.repository.jpa.RoleJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
 import pl.lodz.users.dto.GetUserDTO;
 import pl.lodz.users.dto.UpdateUserDTO;
+import pl.lodz.users.exceptions.UserException;
 import pl.lodz.users.mappers.UserMapper;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -40,7 +43,7 @@ public class UserService {
         }
         UserEntity userEntity = userRepository.findByUuid(entity.uuid())
             .orElseThrow(() -> new IllegalArgumentException("User not found with uuid: " + entity.uuid()));
-        RoleEntity roleEntity = roleJpaRepository.findByRole(userEntity.getRole().getRoleName());
+        RoleEntity roleEntity = roleJpaRepository.findByRole(entity.role());
         userEntity.setUuid(entity.uuid());
         userEntity.setUserName(entity.userName());
         userEntity.setEmail(entity.email());
@@ -64,5 +67,23 @@ public class UserService {
             .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         return user.getUserName();
     }
-    
+
+    public void deleteUser(Long id) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserException("User not found") );
+        userRepository.delete(userEntity);
+    }
+
+    public GetUserDTO updateUserUuid(UpdateUserDTO entity) {
+        if (entity == null || entity.uuid() == null) {
+            throw new IllegalArgumentException("Invalid input: entity or uuid cannot be null");
+        }
+        UserEntity userEntity = userRepository.findByUuid(entity.uuid())
+            .orElseThrow(() -> new UserException("User not found with uuid: " + entity.uuid()));
+
+        UUID newUuid = UUID.randomUUID();
+        userEntity.setUuid(newUuid.toString());
+        UserEntity saved = userRepository.save(userEntity);
+        return UserMapper.mapToGetUserDTO(saved);
+    }
+
 }
