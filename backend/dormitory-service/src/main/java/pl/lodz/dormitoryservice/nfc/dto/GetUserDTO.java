@@ -1,4 +1,4 @@
-package pl.lodz.users.dto;
+package pl.lodz.dormitoryservice.nfc.dto;
 
 public record GetUserDTO(
         long id,
@@ -6,8 +6,7 @@ public record GetUserDTO(
         String userName,
         String email,
         String role,
-        boolean isActive,
-        String cardUuid
+        boolean isActive
 ) {
     
 }

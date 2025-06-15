@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.lodz.dormitoryservice.entity.NfcDeviceEntity;
 import pl.lodz.dormitoryservice.nfc.dto.GetNfcDeviceDTO;
+import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcAccessRequestDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcDeviceRegisterDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcDeviceUpdateDTO;
@@ -20,27 +21,30 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+
 @Service
 public class NfcDeviceService {
 
    private final NfcDeviceRepository nfcDeviceRepository;
    private final RoomAssignmentRepository roomAssignmentRepository;
-   private final UserRepository userRepository;
    private final CommonRoomRepository commonRoomRepository;
    private final CommonRoomAssignmentRepository commonRoomAssignmentRepository;
+
+   @Autowired
+   private final RestTemplate restTemplate;
 
 
    @Autowired
    public NfcDeviceService(NfcDeviceRepository nfcDeviceRepository,
                            RoomAssignmentRepository roomAssignmentRepository,
-                           UserRepository userRepository,
                            CommonRoomAssignmentRepository commonRoomAssignmentRepository,
-                           CommonRoomRepository commonRoomRepository) {
+                           CommonRoomRepository commonRoomRepository,
+                           RestTemplate restTemplate) {
        this.nfcDeviceRepository = nfcDeviceRepository;
        this.roomAssignmentRepository = roomAssignmentRepository;
-       this.userRepository = userRepository;
        this.commonRoomAssignmentRepository = commonRoomAssignmentRepository;
        this.commonRoomRepository = commonRoomRepository;
+       this.restTemplate = restTemplate;    
    }
 
    public NfcDeviceRegisterDTO registerDevice(NfcDeviceRegisterDTO nfcDeviceDTO) {
@@ -66,13 +70,13 @@ public class NfcDeviceService {
 
    public boolean checkAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
 
-       UserEntity currentUser = userRepository.findByUuid(nfcAccessRequestDTO.user_uuid()).orElse(null);
+       GetUserDTO currentUser = this.getUserByUuid(nfcAccessRequestDTO.user_uuid());
        if (currentUser == null) {
            throw new RuntimeException("Validation failed");
        }
 
        // check if the user card uuid and the one from the request match
-       if (currentUser.getCardUuid() != nfcAccessRequestDTO.card_uid()) {
+       if (currentUser.() != nfcAccessRequestDTO.card_uid()) {
            throw new UserException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
            + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
        }
@@ -99,7 +103,7 @@ public class NfcDeviceService {
    // still does not work, model need refactoting
    public boolean checkCommonRoomAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
        // TODO Auto-generated method stub
-       UserEntity currentUser = userRepository.findByUuid(nfcAccessRequestDTO.user_uuid()).orElse(null);
+       GetUserDTO currentUser = getUserByUuid(nfcAccessRequestDTO.user_uuid()); 
        if (currentUser == null) {
            throw new UserException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
        }
@@ -120,6 +124,12 @@ public class NfcDeviceService {
            throw new DeviceNotFoundException("Error while fetching NFC devices");
        }
        return nfcDevices;
+   }
+
+   private GetUserDTO getUserByUuid(String uuid) {
+        String url = "http://localhost:8091/api/users/get/by-uuid/" + uuid;
+        GetUserDTO userEntity = restTemplate.getForObject(url, GetUserDTO.class);
+        return userEntity;
    }
 
 }
