@@ -9,6 +9,9 @@ import pl.lodz.users.exceptions.UserException;
 import pl.lodz.users.services.UserService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -36,6 +39,19 @@ public class UserController {
             throw new UserException("Error fetching user by ID: " + e.getMessage(), e);
         }
     }
+
+    @GetMapping("/get/by-uuid/{uuid}")
+    public ResponseEntity<GetUserDTO> getUserByUuid(@PathVariable String uuid) {
+        try {
+            return ResponseEntity.ok(userService.getUserByUuid(uuid));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by UUID: " + e.getMessage(), e);
+        }
+    }
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
     
 
     @PutMapping("/update")

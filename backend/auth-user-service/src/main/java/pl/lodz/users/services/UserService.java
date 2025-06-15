@@ -58,5 +58,15 @@ public class UserService {
         }
         return UserMapper.mapToGetUserDTO(currUser);
     }
+
+    public GetUserDTO getUserByUuid(String uuid) {
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException("Invalid input: uuid cannot be null or empty");
+        }
+        UserEntity userEntity = userRepository.findByUuid(uuid)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with uuid: " + uuid));
+        // TODO Auto-generated method stub
+        return UserMapper.mapToGetUserDTO(userEntity);
+    }
     
 }
