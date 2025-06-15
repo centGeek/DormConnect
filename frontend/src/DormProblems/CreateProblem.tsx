@@ -12,7 +12,6 @@ function DormProblemCreate() {
     const [problemDesc, setProblemDesc] = useState('');
     const [problemDate, setProblemDate] = useState('');
     const [problemName, setProblemName] = useState('');
-    const handleButtonClick = () => navigate('/problems');
     const userContext = useContext(UserContext);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,15 +53,15 @@ function DormProblemCreate() {
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <button
-            className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center"
-            onClick={handleButtonClick}
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
-            Powrót
-        </button>
+        <div className="w-full md:w-1/4 flex justify-center items-start p-5">
+            <button
+                type="button"
+                className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                onClick={() => navigate(-1)}
+            >
+                ← Powrót
+            </button>
+        </div>
 
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Zgłoś Problem</h2>
 
