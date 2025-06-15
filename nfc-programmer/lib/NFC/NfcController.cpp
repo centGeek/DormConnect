@@ -1,4 +1,5 @@
 #include "NfcController.h"
+#include <esp_task_wdt.h>
 
 /**
  * @brief Converts a hexadecimal string to its uint8_t value.
@@ -62,15 +63,46 @@ uint8_t NfcController::reset_nfc()
 }
 
 
-uint8_t* NfcController::listen()
+uint8_t* NfcController::listen(uint16_t timeout)
 {
     uint8_t found;
-    uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
+    static uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
     uint8_t uid_length;
 
-    found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length);
-    if (found)
+    uint8_t retryCount = 10;
+    while(retryCount > 0) {
+        found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length, 1000);
+        if (found) {
+            Serial.println("NFC tag found!");
+            Serial.print("UID Length: ");
+            Serial.print(uid_length);
+            Serial.println(" bytes");
+            Serial.print("UID Value: ");
+            for (size_t i = 0; i < uid_length; i++)
+            {
+                Serial.print(uid[i], HEX);
+                Serial.print(" ");
+            }
+            Serial.println();
+            break;
+        } else {
+            Serial.println("No NFC tag found, retrying...");
+        }
+        esp_task_wdt_reset();
+        retryCount--;
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+
+    Serial.println(found);
+    for(size_t i = 0; i < NTAG216_UID_SIZE; i++)
     {
+        Serial.print(uid[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.println();
+    if (found == 1)
+    {
+        Serial.println("returning uid");
         return uid;
     } 
     else {
