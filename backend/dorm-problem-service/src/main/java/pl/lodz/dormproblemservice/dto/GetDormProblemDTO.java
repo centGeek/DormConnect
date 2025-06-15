@@ -11,12 +11,12 @@ public record GetDormProblemDTO(
         Long id,
         @NotBlank
         Long studentId,
+        String userName,
         String name,
         String description,
         String answer,
         @NotNull
         LocalDate problemDate,
-        @NotNull
         LocalDate submittedDate,
         @NotNull
         ProblemStatus problemStatus

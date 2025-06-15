@@ -106,7 +106,11 @@ function EventsCreate() {
 
     return (
         <Template
-            buttons={[]}
+            buttons={[                {text: 'Chat', link: '/chat'},
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}]}
         >
             <div className="flex w-full min-h-screen">
                 {/* Lewa kolumna */}

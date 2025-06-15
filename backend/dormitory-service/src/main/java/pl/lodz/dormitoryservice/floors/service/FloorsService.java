@@ -3,6 +3,7 @@ package pl.lodz.dormitoryservice.floors.service;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormitoryservice.commonRoom.service.CommonRoomService;
@@ -48,20 +49,31 @@ public class FloorsService {
     @Transactional
     public void deleteAllRooms(Integer floorNumber){
         FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
-        for(Long commonRoomId : floor.getCommonRooms()){
-            commonRoomService.deleteCommonRoom(commonRoomId);
+        if (floor.getCommonRooms() != null) {
+            for(Long commonRoomId : floor.getCommonRooms()){
+                commonRoomService.deleteCommonRoom(commonRoomId);
+            }
         }
-        for(Long roomId : floor.getRooms()){
-            roomService.deleteRoomById(roomId);
+        if (floor.getRooms() != null) {
+            for(Long roomId : floor.getRooms()){
+                roomService.deleteRoomById(roomId);
+            }
         }
     }
 
     @Transactional
-    public void deleteFloor(Integer floorNumber) {
+    public ResponseEntity<String> deleteFloor(Integer floorNumber) {
         FloorEntity floor = floorsRepository.findByFloorNumber(floorNumber);
-        if (floor != null) {
+        if (floor == null) {
+            return ResponseEntity.status(404).body("Floor " + floorNumber + " not found.");
+        }
+        if(floor.getFloorNumber() == getFloors().stream().max(Integer::compare).orElse(-1)){
             deleteAllRooms(floorNumber);
             floorsRepository.delete(floor);
+            return ResponseEntity.ok("Floor " + floorNumber + " deleted successfully.");
+        }
+        else{
+            return ResponseEntity.status(400).body("Cannot delete floor " + floorNumber + " because it is not the last floor.");
         }
     }
     public void addCommonRoomToFloor(Long commonRoomId, Integer floorNumber) {
