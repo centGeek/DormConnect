@@ -27,6 +27,9 @@ public class CommonRoomEntity {
     @Column (name = "common_room_type")
     private CommonRoomType commonRoomType;
 
+    @Column (name = "name", unique = true, nullable = true)
+    private String name;
+
     @Column (name = "capacity")
     private int capacity;
 
