@@ -94,14 +94,6 @@ function DormProblems() {
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="relative p-6">
-                <div className="absolute top-5 left-5 z-10">
-                    <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                        onClick={() => navigate(-1)}
-                    >
-                        Powrót
-                    </button>
-                </div>
 
                 <div className="text-center mb-8">
                     <h2 className="text-4xl font-bold text-gray-800">Zgłoszenia</h2>

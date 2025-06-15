@@ -99,9 +99,11 @@ const MyDormRoomsInfo: React.FC = () => {
     return (
         <Template
             buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Formularz', link: '/rooms/form' }
+                {text: 'Chat', link: '/chat'},
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}
             ]}
             footerContent={<p></p>}
         >
