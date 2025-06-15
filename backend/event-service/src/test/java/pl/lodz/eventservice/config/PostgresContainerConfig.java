@@ -1,4 +1,4 @@
-package pl.lodz.security.config;
+package pl.lodz.eventservice.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ public class PostgresContainerConfig {
 
     static {
         POSTGRES_CONTAINER.setPortBindings(
-                java.util.Collections.singletonList("5435:5432")
+                java.util.Collections.singletonList("5439:5432")
         );
         POSTGRES_CONTAINER.start();
     }
@@ -34,7 +34,7 @@ public class PostgresContainerConfig {
     @DynamicPropertySource
     static void overrideProps(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", () ->
-                "jdbc:postgresql://localhost:5435/" + POSTGRES_CONTAINER.getDatabaseName());
+                "jdbc:postgresql://localhost:5439/" + POSTGRES_CONTAINER.getDatabaseName());
         registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
         registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
         registry.add("spring.datasource.driver-class-name", POSTGRES_CONTAINER::getDriverClassName);
