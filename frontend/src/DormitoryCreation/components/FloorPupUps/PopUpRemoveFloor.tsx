@@ -4,9 +4,10 @@ interface PopupRemoveFloorProps {
     onClose: () => void,
     floor: number,
     onSucess: () => void,
+    failed: () => void
 }
 
-function PopUpRemoveFloor({onClose, floor, onSucess}: PopupRemoveFloorProps) {
+function PopUpRemoveFloor({onClose, floor, onSucess, failed}: PopupRemoveFloorProps) {
 
     const handleRemoveFloor = async () => {
         console.log(floor);
@@ -19,11 +20,14 @@ function PopUpRemoveFloor({onClose, floor, onSucess}: PopupRemoveFloorProps) {
                 }
             });
             if (!response.ok) {
-                throw new Error('Failed to remove floor');
+                console.error(response.text());
+                failed();
             }
-            console.log(`Floor ${floor} removed successfully`);
-            onClose();
-            onSucess();
+            if (response.ok) {
+                console.log(`Floor ${floor} removed successfully`);
+                onClose();
+                onSucess();
+            }
         } catch (error) {
             console.error('Error removing floor:', error);
         }

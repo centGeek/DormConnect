@@ -10,6 +10,7 @@ import RoomCanva from "./components/RoomCanva.tsx";
 import PopUpRoomCreate from "./components/RoomPupUps/PopUpRoomCreate.tsx";
 import PopUpRoomDelete from "./components/RoomPupUps/PopUpRoomDelete.tsx";
 import OperationSuccedPopUp from "./components/OperationSuccedPopUp.tsx";
+import PopUpRemoveFailed from "./components/FloorPupUps/PopUpRemoveFailed.tsx";
 import Cookies from "js-cookie";
 import {useNavigate} from 'react-router-dom';
 
@@ -30,6 +31,7 @@ function CreateDormitory() {
     const [isPopUpRoomCreateOpen, setIsPopUpRoomCreateOpen] = useState<boolean>(false);
     const [isPopUpRemoveRoomOpen, setIsPopUpRemoveRoomOpen] = useState<boolean>(false);
     const [isPopUpSuccedOpen, setIsPopUpSuccedOpen] = useState<boolean>(false);
+    const [isPopUpRemoveFailedOpen, setIsPopUpRemoveFailedOpen] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const floorsContainerRef = useRef<HTMLDivElement>(null);
@@ -62,6 +64,7 @@ function CreateDormitory() {
         setIsPopUpRoomCreateOpen(false);
         setIsPopUpRemoveRoomOpen(false);
         setIsPopUpSuccedOpen(false);
+        setIsPopUpRemoveFailedOpen(false);
         setRefresh_rooms_value(refresh_rooms_value + 1)
         setRefresh_floors_value(refresh_rooms_value + 1)
     };
@@ -212,7 +215,7 @@ function CreateDormitory() {
                                    onRemoveRooms={handleRemoveRooms}/>
             )}
             {isPopUpRemoveFloorsOpen && (
-                <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor} onSucess={() => setIsPopUpSuccedOpen(true)}/>
+                <PopUpRemoveFloor onClose={handleClosePopup} floor={activeFloor} onSucess={() => setIsPopUpSuccedOpen(true)} failed={() => setIsPopUpRemoveFailedOpen(true)}/>
             )}
             {isPopUpRemoveRoomsOpen && (
                 <PopUpRemoveAllRooms onClose={handleClosePopup} floor={activeFloor}/>
@@ -226,6 +229,9 @@ function CreateDormitory() {
             )}
             {isPopUpSuccedOpen && (
                 <OperationSuccedPopUp onClose={handleClosePopup}/>
+            )}
+            {isPopUpRemoveFailedOpen && (
+                <PopUpRemoveFailed onClose={() =>setIsPopUpRemoveFailedOpen(false)}/>
             )}
         </Template>
     );
