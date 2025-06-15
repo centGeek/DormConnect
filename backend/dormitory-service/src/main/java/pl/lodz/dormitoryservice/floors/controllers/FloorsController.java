@@ -39,14 +39,15 @@ public class FloorsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-    @DeleteMapping("/delete-floor/{floorNumber}")
-    public ResponseEntity<Void> deleteFloor(@PathVariable Integer floorNumber) {
+    @DeleteMapping("/delete-floor/{floor}")
+    public ResponseEntity<String> deleteFloor(@PathVariable Integer floor) {
+        System.out.println("Deleting floor");
         try {
-            floorsService.deleteFloor(floorNumber);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return floorsService.deleteFloor(floor);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting floor: " + e.getMessage());
         }
+
     }
     @PostMapping("/add-common-room/{commonRoomId}/{floorNumber}")
     public ResponseEntity<Void> addCommonRoomToFloor(@PathVariable Long commonRoomId, @PathVariable Integer floorNumber) {

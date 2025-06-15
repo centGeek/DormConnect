@@ -20,25 +20,17 @@ public class DormProblemMapper {
                 getDormProblemDTO.problemStatus());
     }
 
-    public static GetDormProblemDTO mapToGetDTO(DormProblemEntity dormProblemEntity) {
+    public static GetDormProblemDTO mapToGetDTO(DormProblemEntity dormProblemEntity, String username) {
         return new GetDormProblemDTO(
                 dormProblemEntity.getId(),
                 dormProblemEntity.getStudentId(),
+                username,
                 dormProblemEntity.getName(),
                 dormProblemEntity.getDescription(),
                 dormProblemEntity.getAnswer(),
                 dormProblemEntity.getProblemDate(),
                 dormProblemEntity.getSubmittedDate(),
                 dormProblemEntity.getProblemStatus()
-        );
-    }
-
-    public static CreateDormProblemDTO mapToCreateDTO(DormProblemEntity dormProblemEntity) {
-        return new CreateDormProblemDTO(
-                dormProblemEntity.getStudentId(),
-                dormProblemEntity.getName(),
-                dormProblemEntity.getDescription(),
-                dormProblemEntity.getProblemDate()
         );
     }
 
@@ -68,10 +60,11 @@ public class DormProblemMapper {
         );
     }
 
-    public static UpdateDormProblemDTO mapToUpdateDTO(DormProblemEntity dormProblemEntity) {
+    public static UpdateDormProblemDTO mapToUpdateDTO(DormProblemEntity dormProblemEntity, String username) {
         return new UpdateDormProblemDTO(
                 dormProblemEntity.getId(),
                 dormProblemEntity.getStudentId(),
+                username,
                 dormProblemEntity.getName(),
                 dormProblemEntity.getDescription(),
                 dormProblemEntity.getAnswer(),

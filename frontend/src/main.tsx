@@ -5,12 +5,12 @@ import { StrictMode } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
 import { TemperatureProvider } from "./Context/TemperatureContext.tsx";
+import 'leaflet/dist/leaflet.css';
 
 
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-
         <Router>
             <UserProvider>
                 <TemperatureProvider>
@@ -18,6 +18,5 @@ createRoot(document.getElementById('root')!).render(
                 </TemperatureProvider>
             </UserProvider>
         </Router>
-
     </StrictMode>
 )

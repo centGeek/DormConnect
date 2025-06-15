@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -69,5 +70,41 @@ public class UserController {
             throw new UserException("Error updating user: " + e.getMessage(), e);
         }
     }
-    
+
+    @GetMapping("get/username/{id}")
+    public ResponseEntity<String> getUserByUsername(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.getUsernameById(id));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by username: " + e.getMessage(), e);
+        }
+    }
+
+
+    @PostMapping("/update-uuid")
+    @Transactional
+    public ResponseEntity<GetUserDTO> updateUserUuid(@RequestBody UpdateUserDTO entity) {
+        try {
+            if (entity == null || entity.uuid() == null) {
+                throw new UserException("Invalid input: entity or uuid cannot be null");
+            }
+
+            GetUserDTO updatedUser = userService.updateUserUuid(entity);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            throw new UserException("Error updating user UUID: " + e.getMessage(), e);
+        }
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    @Transactional
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().body("User deleted successfully");
+        } catch (Exception e) {
+            throw new UserException("Error deleting user: " + e.getMessage(), e);
+        }
+    }
 }
