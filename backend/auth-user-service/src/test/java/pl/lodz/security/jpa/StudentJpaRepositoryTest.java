@@ -5,17 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.entity.RoleEntity;
 import pl.lodz.repository.jpa.RoleJpaRepository;
 import pl.lodz.repository.jpa.StudentJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
+import pl.lodz.security.config.PostgresContainerConfig;
 import pl.lodz.security.fixtures.StudentFixture;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@Import(PostgresContainerConfig.class)
 class StudentJpaRepositoryTest {
 
     @Autowired

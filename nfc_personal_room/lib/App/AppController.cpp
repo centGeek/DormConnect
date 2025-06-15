@@ -70,9 +70,9 @@ void AppController::mainLoopTask()
             Serial.println("Sending http request...");
 
             JsonDocument json;
-            json["device_uuid"] = DEVICE_UUID;
-            json["card_uid"] = nfcTagString;
-            json["user_uuid"] = "3cd1be9e-e9a6-4aa4-b97b-1a8934bb828a"; //nfcController.uuidToString(userUUID, USER_UUID_SIZE_BYTES);
+            json["deviceUuid"] = DEVICE_UUID;
+            json["cardUid"] = nfcTagString;
+            json["userUid"] = "3cd1be9e-e9a6-4aa4-b97b-1a8934bb828a"; //nfcController.uuidToString(userUUID, USER_UUID_SIZE_BYTES);
             json["roomNumber"] = ROOM_NUMBER;
             json["lockStatus"] = "UNKNOWN";
             uint8_t response = webClientController.sendHttpPostRequest(json);

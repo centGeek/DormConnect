@@ -45,7 +45,7 @@ public class AuthController {
         String token = jwtService.generateToken(
             userByEmail.get().getId(), 
             user.getUsername(), // its actually email - user principal is email
-//            userByEmail.get().getUserName(), // username
+            userByEmail.get().getUserName(), // username
             user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

@@ -1,197 +1,134 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useLocation, useParams, redirect } from 'react-router-dom';
-import { parseJwt } from '../JWT/JWTDecoder';
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from '../Context/UserContext';
 import Template from '../Template/Template';
-import TokenJwtPayload from './TokenJwtPayload';
-import getToken from './GetToken';
-import { jwtDecode } from 'jwt-decode';
-
-import { HttpStatusCode } from 'axios';
-import { set } from 'react-hook-form';
-
+import translate from './components/TranslateProblemStatus.tsx'
 interface DormProblem {
     id: number;
     studentId: number;
+    userName: string;
     name: string;
     description: string;
-    answer: string,
+    answer: string | null;
     problemDate: string;
     submittedDate: string;
-    problemStatus: string
-
+    problemStatus: string;
 }
 
 function DormProblemView() {
-    const { state } = useLocation();
-    const pageData = useParams();
+    const { problemId } = useParams();
     const navigate = useNavigate();
-    const [problemAnswer, setProblemAnswer] = useState('');
-    const [problemStatus, setProblemStatus] = useState('');
     const context = useContext(UserContext);
 
-    const [dormProblemStatuses, setDormProblemStatuses] = useState<string[]>([]);
-    const handleButtonClick = () => navigate('/problems');
-    const [dormProblem, setDormProblem] = useState<DormProblem>(
-        {
-            id: 0,
-            description: '',
-            studentId: 0,
-            name: '',
-            answer: '',
-            problemDate: '',
-            submittedDate: '',
-            problemStatus: ''
-        });
-
-    const fetchProblemStatuses = async () => {
-        try {
-            console.log(context?.token);
-            const fetchUrl = '/api/dorm-problem/problem-statuses';
-            const response = await fetch(fetchUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': "application/json",
-                    'Authorization': `Bearer ${context?.token}`
-                },
-                credentials: 'include'
-            });
-            const data = await response.json();
-            console.log(data)
-
-            setDormProblemStatuses(data || [])
-            console.log(dormProblemStatuses);
-
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    const [dormProblem, setDormProblem] = useState<DormProblem | null>(null);
 
     const fetchDormProblem = async () => {
         try {
-            console.log(pageData.problemId);
-            const fetchUrl = '/api/dorm-problem/get/' + pageData.problemId;
-            console.log(fetchUrl);
-
+            const fetchUrl = `/api/dorm-problem/get/${problemId}`;
             const response = await fetch(fetchUrl, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': "application/json",
-                    'Authorization': `Bearer ${context?.token}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${context?.token}`,
                 },
-                credentials: 'include'
+                credentials: 'include',
             });
-            console.log(response);
-            if (response.status == HttpStatusCode.InternalServerError) {
-                //navigate("/problems")
+
+            if (response.ok) {
+                const data = await response.json();
+                setDormProblem(data);
+            } else {
+                console.error('Błąd podczas pobierania szczegółów problemu');
+                navigate('/problems');
             }
-            const data = await response.json();
-            console.log(data);
-            setDormProblem(data);
-            return response;
-
-
         } catch (err) {
-            console.log(err);
+            console.error(err);
+            navigate('/problems');
         }
-    }
+    };
 
     useEffect(() => {
-        event?.preventDefault();
         fetchDormProblem();
+    }, []);
 
-        fetchProblemStatuses();
-    }, [])
+    if (!dormProblem) {
+        return (
+            <Template buttons={[]}>
+                <div className="text-center text-gray-500 py-8">Ładowanie szczegółów problemu...</div>
+            </Template>
+        );
+    }
 
     return (
         <Template buttons={[
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
             {text: 'Zgłoś problem', link: '/problems'},
         ]}>
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
-        <button
-            className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-300 flex items-center"
-            onClick={handleButtonClick}
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
-            Back
-        </button>
+            <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-gray-200">
+                <button
+                    className="mb-6 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 flex items-center"
+                    onClick={() => navigate(-1)}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    </svg>
+                    Powrót
+                </button>
 
-        <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-800 border-b pb-2">Problem Details</h3>
+                <h3 className="text-3xl font-bold text-gray-800 border-b pb-4 mb-6">Szczegóły problemu</h3>
 
-            <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-gray-700">{dormProblem.name}</h4>
-                
-                <div className="space-y-2">
-                    <label className="block text-gray-700 font-medium">Description:</label>
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                        value={dormProblem.description}
-                        readOnly
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <label className="block text-gray-700 font-medium">Problem ID:</label>
-                        <div className="px-4 py-2 bg-gray-100 rounded-lg">{dormProblem.id}</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Nazwa problemu:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{dormProblem.name}</p>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="block text-gray-700 font-medium">Student ID:</label>
-                        <div className="px-4 py-2 bg-gray-100 rounded-lg">{dormProblem.studentId}</div>
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Opis:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{dormProblem.description}</p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Nazwa użytkownika:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{dormProblem.userName}</p>
+                    </div>
+
+
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Odpowiedź:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{dormProblem.answer || 'Brak odpowiedzi'}</p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Data wystąpienia problemu:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{new Date(dormProblem.problemDate).toLocaleDateString()}</p>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Data zgłoszenia:</h4>
+                        <p className="text-gray-800 bg-gray-100 p-3 rounded-md">{new Date(dormProblem.submittedDate).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                        <h4 className="text-lg font-semibold text-gray-700">Status:</h4>
+                        <p className={`text-white p-3 rounded-md ${
+                            dormProblem.problemStatus === 'SUBMITTED'
+                                ? 'bg-yellow-500'
+                                : dormProblem.problemStatus === 'RESOLVED'
+                                    ? 'bg-green-500'
+                                    : 'bg-red-500'
+                        }`}>
+                            {translate(dormProblem.problemStatus)}
+                        </p>
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <label className="block text-gray-700 font-medium">Status:</label>
-                    <select
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
-                        value={dormProblem.problemStatus}
-                        disabled
-                    >
-                        <option value={dormProblem.problemStatus}>{dormProblem.problemStatus}</option>
-                    </select>
-                </div>
-
-                <div className="space-y-2">
-                    <label className="block text-gray-700 font-medium">Answer:</label>
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                        value={dormProblem.answer || ''}
-                        readOnly
-                        placeholder='No answer provided...'
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div className="space-y-2">
-                        <label className="block text-gray-700 font-medium">Problem Date:</label>
-                        <div className="px-4 py-2 bg-gray-100 rounded-lg">
-                            {new Date(dormProblem.problemDate).toLocaleDateString()}
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-gray-700 font-medium">Submitted on:</label>
-                        <div className="px-4 py-2 bg-gray-100 rounded-lg">
-                            {new Date(dormProblem.submittedDate).toLocaleDateString()}
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
-</Template>
-    )
+        </Template>
+    );
 }
 
 export default DormProblemView;
