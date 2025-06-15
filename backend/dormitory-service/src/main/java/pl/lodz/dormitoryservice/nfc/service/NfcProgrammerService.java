@@ -4,6 +4,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
+import java.util.UUID;
 
 import javax.print.attribute.standard.Media;
 
@@ -69,7 +70,16 @@ public class NfcProgrammerService {
     @Transactional
     public ProgrammedCardDTO programCard(NfcProgramCardDTO entity, String authorizationHeader) {
 
-        NfcProgrammerEntity nfcProgrammer = nfcProgrammerRepository.findByUuid(entity.deviceUuid());
+        //NfcProgrammerEntity nfcProgrammer = nfcProgrammerRepository.findByUuid(entity.deviceUuid());
+
+        NfcProgrammerEntity nfcProgrammer = new NfcProgrammerEntity();
+
+        nfcProgrammer.setUuid(UUID.fromString("e7c560a3-8b7b-49bb-bcf9-cca125571cf5"));
+        nfcProgrammer.setPort(9999);
+        nfcProgrammer.setIpAddress("127.0.0.1");
+        nfcProgrammer.setDeviceStatus("ONLINE");
+        nfcProgrammer.setMacAddress("AA:BB:CC:DD:EE:FF");
+
         if (nfcProgrammer == null) {
             throw new DeviceNotFoundException("Device with UUID " + entity.deviceUuid() + " not found");
         }

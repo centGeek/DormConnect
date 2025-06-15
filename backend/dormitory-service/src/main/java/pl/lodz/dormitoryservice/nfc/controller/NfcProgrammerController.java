@@ -53,7 +53,7 @@ public class NfcProgrammerController {
            if (nfcProgramCardDTO == null || nfcProgramCardDTO.deviceUuid() == null) {
                throw new IllegalArgumentException("Invalid input: nfcProgramCardDTO or deviceUuid cannot be null");
            }
-           ProgrammedCardDTO programmedCard = nfcProgrammerService.programCard(nfcProgramCardDTO);
+           ProgrammedCardDTO programmedCard = nfcProgrammerService.programCard(nfcProgramCardDTO, authorizationHeader);
 
            return ResponseEntity.ok(programmedCard);
        } catch (Exception e) {
