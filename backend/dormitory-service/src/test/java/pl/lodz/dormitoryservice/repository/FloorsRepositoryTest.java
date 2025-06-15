@@ -4,13 +4,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.dormitoryservice.config.PostgresContainerConfig;
 import pl.lodz.dormitoryservice.entity.FloorEntity;
 import pl.lodz.dormitoryservice.fixtures.FloorFixtures;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(PostgresContainerConfig.class)
 @Transactional
 class FloorsRepositoryTest {
 

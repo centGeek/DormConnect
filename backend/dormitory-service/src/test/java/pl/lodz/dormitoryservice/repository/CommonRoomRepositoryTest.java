@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import pl.lodz.dormitoryservice.config.PostgresContainerConfig;
 import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
 import pl.lodz.dormitoryservice.fixtures.CommonRoomFixtures;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(PostgresContainerConfig.class)
 class CommonRoomRepositoryTest {
 
 

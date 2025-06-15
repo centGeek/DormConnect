@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.dormitoryservice.config.PostgresContainerConfig;
 import pl.lodz.dormitoryservice.entity.CommonRoomAssignmentEntity;
 import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
 import pl.lodz.dormitoryservice.fixtures.CommonRoomAssignmentsFixture;
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(PostgresContainerConfig.class)
 class CommonRoomAssignmentRepositoryTest {
 
     @Autowired
