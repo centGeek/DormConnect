@@ -25,6 +25,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
     const { temperature, loading, error } = useTemperature();
     const navigate = useNavigate();
     const [dropdownButtonProps, setDropdownButtonProps] = useState<DropdownButtonProps[]>([])
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleLogout = async () => {
@@ -99,7 +100,6 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
 
     return (
         <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
-
             <header className="bg-gray-200 text-white py-2 shadow-md border-gray-700 rounded-t-lg">
                 <div className="container mx-auto flex items-center justify-between px-4">
                     <a href="/home" className="flex items-center">
@@ -110,7 +110,19 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         />
                     </a>
 
-                    <div className="flex justify-center items-center space-x-4">
+                    {/* Hamburger na mobile */}
+                    <button
+                        className="md:hidden flex flex-col justify-center items-center"
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Otwórz menu"
+                    >
+                        <span className="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                        <span className="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                        <span className="block w-6 h-0.5 bg-gray-600"></span>
+                    </button>
+
+                    {/* Menu na desktop */}
+                    <div className="hidden md:flex justify-center items-center space-x-4">
                         {buttons?.map((button: Button, index: number) => (
                             <a
                                 key={index}
@@ -122,8 +134,8 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                         ))}
                     </div>
 
-                    <div className="relative">
-                        {/* Dropdown Button */}
+                    {/* Dropdown i user */}
+                    <div className="relative hidden md:block">
                         <button
                             id="dropdownDefaultButton"
                             onClick={() => setIsOpen(!isOpen)}
@@ -131,49 +143,48 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                             type="button"
                         >
                             {userContext?.user?.username}
-                            {isOpen ? (<svg
-                                className="w-2.5 h-2.5 ms-3"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 10 6"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m1 5 4-4 4 4"
-                                />
-                            </svg>):(<svg
-                                className="w-2.5 h-2.5 ms-3"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 10 6"
-                            >
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m1 1 4 4 4-4"
-                                />
-                            </svg>)}
+                            {isOpen ? (
+                                <svg
+                                    className="w-2.5 h-2.5 ms-3"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 10 6"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="m1 5 4-4 4 4"
+                                    />
+                                </svg>
+                            ) : (
+                                <svg
+                                    className="w-2.5 h-2.5 ms-3"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 10 6"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="m1 1 4 4 4-4"
+                                    />
+                                </svg>
+                            )}
                         </button>
-
-                        { }
                         {isOpen && (
                             <div
                                 id="dropdown"
-                                className="z-10 absolute border border-gray-600  bg-gray-500 divide-y  rounded-lg w-fit "
+                                className="hidden md:block z-10 absolute border border-gray-600  bg-gray-500 divide-y  rounded-lg w-fit "
                             >
-                                <ul
-                                    className="py-2 text-sm "
-
-                                >
+                                <ul className="py-2 text-sm ">
                                     {dropdownButtonProps.map(key => (
-                                        <li>
+                                        <li key={key.url}>
                                             <a
                                                 onClick={() => {
                                                     handleDropdownEvent(key.url);
@@ -187,16 +198,45 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
                                 </ul>
                             </div>
                         )}
-
                     </div>
                 </div>
-            </header>
 
+                {mobileMenuOpen && (
+                    <div
+                        className="md:hidden flex flex-col items-center bg-gray-200 py-2 space-y-2 shadow-lg rounded-b-lg transition-all duration-300 ease-in-out opacity-100 translate-y-0 animate-fade-in"
+                        style={{
+                            animation: "fadeSlideDown 0.3s ease"
+                        }}
+                    >
+                        {buttons?.map((button: Button, index: number) => (
+                            <a
+                                key={index}
+                                href={button.link}
+                                className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition w-11/12 text-center"
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                {button.text}
+                            </a>
+                        ))}
+                        {dropdownButtonProps.map((key) => (
+                            <a
+                                key={key.url}
+                                className="bg-white text-gray-600 px-4 py-2 rounded-lg shadow hover:bg-gray-600 hover:text-white transition w-11/12 text-center"
+                                onClick={() => {
+                                    handleDropdownEvent(key.url);
+                                    setMobileMenuOpen(false);
+                                }}
+                            >
+                                {key.name}
+                            </a>
+                        ))}
+                    </div>
+                )}
+            </header>
 
             <main className="flex-grow container mx-auto px-4 py-8">
                 {children}
             </main>
-
 
             <footer className="bg-gray-800 text-white py-4 rounded-b-lg">
                 <div className="container mx-auto text-center">
