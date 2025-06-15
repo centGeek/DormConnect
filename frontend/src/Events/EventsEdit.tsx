@@ -149,8 +149,8 @@ function EventsEdit() {
             {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms'},
-            {text: 'Zgłoś problem', link: '/problems'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="flex flex-col items-center w-full min-h-screen p-5 bg-gray-100">
                 <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-md">

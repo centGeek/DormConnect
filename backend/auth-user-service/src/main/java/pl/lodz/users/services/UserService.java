@@ -62,9 +62,15 @@ public class UserService {
         return UserMapper.mapToGetUserDTO(currUser);
     }
 
+    public String getUsernameById(Long id) {
+        UserEntity user = userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        return user.getUserName();
+    }
+
     public void deleteUser(Long id) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UserException("User not found") );
-        userRepository.delete(userEntity);    
+        userRepository.delete(userEntity);
     }
 
     public GetUserDTO updateUserUuid(UpdateUserDTO entity) {
@@ -79,5 +85,5 @@ public class UserService {
         UserEntity saved = userRepository.save(userEntity);
         return UserMapper.mapToGetUserDTO(saved);
     }
-    
+
 }

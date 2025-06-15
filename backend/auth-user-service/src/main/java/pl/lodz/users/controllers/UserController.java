@@ -55,6 +55,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("get/username/{id}")
+    public ResponseEntity<String> getUserByUsername(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.getUsernameById(id));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by username: " + e.getMessage(), e);
+        }
+    }
+
+
     @PostMapping("/update-uuid")
     @Transactional
     public ResponseEntity<GetUserDTO> updateUserUuid(@RequestBody UpdateUserDTO entity) {
