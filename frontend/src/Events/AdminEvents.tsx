@@ -147,65 +147,60 @@ function AdminEvents() {
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
             <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
-                <div className="w-full md:w-1/4 flex justify-center items-start p-5">
-                    <button
-                        type="button"
-                        className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
-                        onClick={() => navigate(-1)}
-                    >
-                        ← Powrót
-                    </button>
-                </div>
+                <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
+                    <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between items-center gap-2 sm:gap-3 p-5">
+                        <button
+                            type="button"
+                            className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                            onClick={() => navigate(-1)}
+                        >
+                            ← Powrót
+                        </button>
 
-                <div className="mt-16 sm:mt-20">
-                    {successMessage && (
-                        <div className="bg-gray-100 text-gray-700 p-3 rounded-lg mb-5 font-bold text-center">
-                            {successMessage}
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'waiting'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('waiting')}
+                            >
+                                Oczekujące
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'approved'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('approved')}
+                            >
+                                Zatwierdzone
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'declined'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('declined')}
+                            >
+                                Odrzucone
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'all'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('all')}
+                            >
+                                Wszystkie
+                            </button>
                         </div>
-                    )}
-
-                    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-5">
-                        <button
-                            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
-                                activeTab === 'waiting'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('waiting')}
-                        >
-                            Oczekujące
-                        </button>
-                        <button
-                            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
-                                activeTab === 'approved'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('approved')}
-                        >
-                            Zatwierdzone
-                        </button>
-                        <button
-                            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
-                                activeTab === 'declined'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('declined')}
-                        >
-                            Odrzucone
-                        </button>
-                        <button
-                            className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
-                                activeTab === 'all'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('all')}
-                        >
-                            Wszystkie
-                        </button>
                     </div>
+                </div>
 
                     {!loading && events.length > 0 && (
                         <div className="text-center mb-5">
@@ -299,7 +294,6 @@ function AdminEvents() {
                             onPageChange={setPage}
                         />
                     )}
-                </div>
             </div>
         </Template>
     );

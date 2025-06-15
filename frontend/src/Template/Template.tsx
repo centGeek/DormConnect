@@ -99,7 +99,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
     }, [temperature, loading, error, userContext?.user?.roles]);
 
     return (
-        <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg mt-1">
+        <div className="flex flex-col min-h-screen mx-auto max-w-screen-xl w-full min-w-8/12 border border-gray-300 shadow-md rounded-lg">
             <header className="bg-gray-200 text-white py-2 shadow-md border-gray-700 rounded-t-lg">
                 <div className="container mx-auto flex items-center justify-between px-4">
                     <a href="/home" className="flex items-center">

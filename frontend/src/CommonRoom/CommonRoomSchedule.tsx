@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import Template from "../Template/Template";
 import { UserContext } from "../Context/UserContext";
@@ -33,6 +33,7 @@ function CommonRoomSchedule() {
     const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
     const userContext = useContext(UserContext);
     const [isPopUpErrorOpen, setIsPopUpErrorOpen] = useState<boolean>(false);
+    const navigate = useNavigate();
     const token = document.cookie
         .split('; ')
         .find(row => row.startsWith('token='))?.split('=')[1];
@@ -183,7 +184,20 @@ function CommonRoomSchedule() {
 
     // @ts-ignore
     return (
-        <Template buttons={[{text: 'Powrót', link: '/common-rooms'}]}>
+        <Template buttons={[ {text: 'Chat', link: '/chat'},
+            {text: 'Wydarzenia', link: '/events'},
+            {text: 'Pokoje wspólne', link: '/common-rooms'},
+            {text: 'Pokój', link: '/rooms/myInfo'},
+            {text: 'Zgłoś problem', link: '/problems'}]}>
+            <div className="w-full md:w-1/4 flex justify-center items-start p-5">
+                <button
+                    type="button"
+                    className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                    onClick={() => navigate(-1)}
+                >
+                    ← Powrót
+                </button>
+            </div>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
                 {commonRoom && (
                     <div className="text-center text-gray-700">
