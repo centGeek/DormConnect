@@ -71,6 +71,23 @@ public class UserController {
         }
     }
 
+    // only for the NFC microservice
+    @PostMapping("/update-user")
+    @Transactional
+    public ResponseEntity<GetUserDTO> updateUserEntity(@RequestBody UpdateUserDTO entity) {
+        try {
+            if (entity == null) {
+                throw new UserException("Invalid input: id or entity cannot be null");
+            }
+
+            GetUserDTO updatedUser = userService.updateUser(entity);
+            
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            throw new UserException("Error updating user: " + e.getMessage(), e);
+        }
+    }
+
     @GetMapping("get/username/{id}")
     public ResponseEntity<String> getUserByUsername(@PathVariable Long id) {
         try {

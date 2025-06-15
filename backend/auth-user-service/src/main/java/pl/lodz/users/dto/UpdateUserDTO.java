@@ -5,7 +5,8 @@ public record UpdateUserDTO(
         String userName,
         String email,
         String role,
-        boolean isActive
+        boolean isActive,
+        String cardUuid
 ) {
     
 }

@@ -12,7 +12,9 @@ public class UserMapper {
                 userEntity.getUserName(),
                 userEntity.getEmail(),
                 userEntity.getRole().getRoleName(),
-                userEntity.isActive()
+                userEntity.isActive(),
+                userEntity.getCardUuid()
+
         );
     }
 }

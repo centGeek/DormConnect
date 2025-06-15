@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.ws.rs.NotFoundException;
 import pl.lodz.dormitoryservice.entity.NfcDeviceEntity;
 import pl.lodz.dormitoryservice.nfc.dto.GetNfcDeviceDTO;
 import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
@@ -76,13 +77,13 @@ public class NfcDeviceService {
        }
 
        // check if the user card uuid and the one from the request match
-       if (currentUser.() != nfcAccessRequestDTO.card_uid()) {
-           throw new UserException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
+       if (currentUser.cardUuid().toLowerCase() != nfcAccessRequestDTO.card_uid().toLowerCase()) {
+           throw new NotFoundException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
            + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
        }
 
        return roomAssignmentRepository.existsAssignmentAtDate(
-               currentUser.getId(),
+               currentUser.id(),
                LocalDate.now(),
                nfcAccessRequestDTO.roomNumber());
    }
@@ -105,7 +106,7 @@ public class NfcDeviceService {
        // TODO Auto-generated method stub
        GetUserDTO currentUser = getUserByUuid(nfcAccessRequestDTO.user_uuid()); 
        if (currentUser == null) {
-           throw new UserException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
+           throw new NotFoundException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
        }
        //long currentRoomId = commonRoomRepository.findCommonRoomByName()
        // TODO: Implement logic to fetch the current room ID based on the request

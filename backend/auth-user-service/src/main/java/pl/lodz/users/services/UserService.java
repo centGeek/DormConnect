@@ -48,6 +48,11 @@ public class UserService {
         userEntity.setEmail(entity.email());
         userEntity.setRole(roleEntity);
         userEntity.setActive(entity.isActive());
+        if (entity.cardUuid() != null && !entity.cardUuid().isEmpty()) {
+            userEntity.setCardUuid(entity.cardUuid());
+        } else {
+            userEntity.setCardUuid(null);
+        }
         UserEntity saved = userRepository.save(userEntity);
         return UserMapper.mapToGetUserDTO(saved);
     }

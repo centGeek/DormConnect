@@ -33,8 +33,10 @@ uint8_t WebServerController::startServer()
                         NULL, [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
                         {
                             AsyncResponseStream *response = request->beginResponseStream("application/json");
+                            Serial.println("Received request to program card");
                             if (request->contentType() != "application/json")
                             {
+                                Serial.println("Received request with wrong content type");
                                 request->send(500, "text", "bad format");
                             }
 
@@ -47,10 +49,10 @@ uint8_t WebServerController::startServer()
                             const char *userUUID;
                             const char *authorizationStatus;
 
-                            if (document.containsKey("userUUID"))
+                            if (document.containsKey("userUuid"))
                             {
 
-                                userUUID = document["userUUID"];
+                                userUUID = document["userUuid"];
                                 String uuidString = String(userUUID);
 
                                 Serial.print("received userUUID: ");
@@ -78,7 +80,7 @@ uint8_t WebServerController::startServer()
 
                                     JsonDocument responseJson;
                                     responseJson["deviceId"] = DEVICE_UUID;
-                                    responseJson["userUUID"] = userUUID;
+                                    responseJson["userUuid"] = userUUID;
                                     responseJson["cardUuid"] = this->nfcController.nfcTagToString(cardUid);
                                     Serial.println("ok");
                                     serializeJson(responseJson, *response);

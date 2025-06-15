@@ -1,8 +1,9 @@
 package pl.lodz.dormitoryservice.nfc.mapper;
 
 
+import pl.lodz.dormitoryservice.entity.NfcProgrammerEntity;
 import pl.lodz.dormitoryservice.nfc.dto.RegisterNfcProgrammerDTO;
-import pl.lodz.dormitoryservice.nfc.entity.NfcProgrammerEntity;
+
 
 public class NfcProgrammerMapper {
 

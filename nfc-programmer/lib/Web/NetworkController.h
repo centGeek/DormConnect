@@ -10,5 +10,8 @@ private:
     IPAddress localIpAddress;
 public:
     uint8_t connectToNetwork();
+    IPAddress getLocalIpAddress() const {
+        return localIpAddress;
+    }
 
 };
