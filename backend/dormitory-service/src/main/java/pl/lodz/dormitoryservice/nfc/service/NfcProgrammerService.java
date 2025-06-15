@@ -1,5 +1,6 @@
 package pl.lodz.dormitoryservice.nfc.service;
 
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -75,15 +76,21 @@ public class NfcProgrammerService {
         NfcProgrammerEntity nfcProgrammer = new NfcProgrammerEntity();
 
         nfcProgrammer.setUuid(UUID.fromString("e7c560a3-8b7b-49bb-bcf9-cca125571cf5"));
-        nfcProgrammer.setPort(9999);
-        nfcProgrammer.setIpAddress("127.0.0.1");
+        nfcProgrammer.setPort(4045);
+        nfcProgrammer.setIpAddress("192.168.166.187");
         nfcProgrammer.setDeviceStatus("ONLINE");
         nfcProgrammer.setMacAddress("AA:BB:CC:DD:EE:FF");
+
+
+
 
         if (nfcProgrammer == null) {
             throw new DeviceNotFoundException("Device with UUID " + entity.deviceUuid() + " not found");
         }
         try {
+
+
+
             String url = "http://" + nfcProgrammer.getIpAddress() + ":" + Integer.toString(nfcProgrammer.getPort()) + "/api/program-card";
             
             HttpHeaders headers = new HttpHeaders();
@@ -93,33 +100,47 @@ public class NfcProgrammerService {
 
             HttpEntity<NfcProgramCardDTO> requestEntity = new HttpEntity<>(entity, headers);
 
-            ProgrammedCardDTO response = restTemplate.postForObject(
-                url,
-                requestEntity,
-                ProgrammedCardDTO.class
-            );
-
-            // HttpClient client = HttpClient.newHttpClient();
-            // HttpRequest request = HttpRequest.newBuilder()
-            //         .uri(java.net.URI.create(url))
-            //         .header("Content-Type", "application/json")
-            //         .header("Accept", "application/json")
-            //         .header("Connection", "keep-alive")
-            //         .POST(HttpRequest.BodyPublishers.ofString(
-            //             "{\"userUuid\":\"" + entity.userUuid() + "\"}"))
-            //         .build();
-
-            // HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            //System.out.println("Response status code: " + response.statusCode());
-            System.out.println("Response: " + response );
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                    "{\"deviceUuid\":\"" + entity.deviceUuid() + "\", \"userUuid\":\"" + entity.userUuid() + "\"}"))
+                .build();
+            HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Response status code: " + resp.statusCode());
+            System.out.println("Response body: " + resp.body());
 
 
 
-            if (response == null) {
-                throw new DeviceConnectionException("No response from NFC device at " + nfcProgrammer.getIpAddress()
-                        + ":" + nfcProgrammer.getPort());
-            }
+            // ProgrammedCardDTO response = restTemplate.postForObject(
+            //     url,
+            //     requestEntity,
+            //     ProgrammedCardDTO.class
+
+            // );
+
+            // // HttpClient client = HttpClient.newHttpClient();
+            // // HttpRequest request = HttpRequest.newBuilder()
+            // //         .uri(java.net.URI.create(url))
+            // //         .header("Content-Type", "application/json")
+            // //         .header("Accept", "application/json")
+            // //         .header("Connection", "keep-alive")
+            // //         .POST(HttpRequest.BodyPublishers.ofString(
+            // //             "{\"userUuid\":\"" + entity.userUuid() + "\"}"))
+            // //         .build();
+
+            // // HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // //System.out.println("Response status code: " + response.statusCode());
+            // System.out.println("Response: " + response );
+
+
+
+            // if (response == null) {
+            //     throw new DeviceConnectionException("No response from NFC device at " + nfcProgrammer.getIpAddress()
+            //             + ":" + nfcProgrammer.getPort());
+            // }
 
             // GetUserDTO currentUser = getUserByUuid(response.userUuid());
             // if (currentUser == null) {
@@ -139,9 +160,13 @@ public class NfcProgrammerService {
             // GetUserDTO updatedUser = this.updateUser(userWithCard);
 
 
-            return response;
+            return new ProgrammedCardDTO(
+                nfcProgrammer.getUuid().toString(),
+                entity.userUuid(),
+                resp.body() // Assuming the response body contains the card UUID
+            );
 
-        } catch (RestClientException e) {
+        } catch (Exception  e) {
             throw new DeviceConnectionException(e.getMessage());
         }
 
