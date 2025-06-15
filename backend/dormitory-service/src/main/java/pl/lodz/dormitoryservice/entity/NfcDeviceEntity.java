@@ -1,4 +1,4 @@
-package pl.lodz.dormitoryservice.nfc.entity;
+package pl.lodz.dormitoryservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

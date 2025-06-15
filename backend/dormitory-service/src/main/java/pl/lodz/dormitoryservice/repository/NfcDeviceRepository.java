@@ -1,7 +1,8 @@
-package pl.lodz.dormitoryservice.nfc.repository;
+package pl.lodz.dormitoryservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.lodz.dormitoryservice.nfc.entity.NfcDeviceEntity;
+
+import pl.lodz.dormitoryservice.entity.NfcDeviceEntity;
 
 import java.util.UUID;
 
