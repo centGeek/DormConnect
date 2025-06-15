@@ -50,7 +50,7 @@ const Events = () => {
     };
 
     const handleAdminNavigation = () => {
-        navigate('/events/admin/AdminEvents');
+        navigate('/events/admin/events');
     };
 
     const fetchEvents = useCallback(async (tab: 'organized' | 'participating' | 'all', pageToFetch: number = 0) => {

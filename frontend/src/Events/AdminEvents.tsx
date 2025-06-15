@@ -54,6 +54,18 @@ function AdminEvents() {
         setToken(tokenFromCookie);
     }, [navigate, user]);
 
+    const translateApprovalStatus = (status: string) => {
+        switch (status) {
+            case 'WAITING':
+                return 'Oczekujące';
+            case 'APPROVED':
+                return 'Zatwierdzone';
+            case 'DECLINED':
+                return 'Odrzucone';
+            default:
+                return status;
+        }
+    }
     const fetchEvents = useCallback(async () => {
         if (!token) return;
 
@@ -127,77 +139,75 @@ function AdminEvents() {
         });
 
     return (
-        <Template buttons={[            {text: 'Chat', link: '/chat'},
+        <Template buttons={[
+            {text: 'Chat', link: '/chat'},
             {text: 'Wydarzenia', link: '/events'},
             {text: 'Pokoje wspólne', link: '/common-rooms'},
             {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}]}>
-            <div className="relative p-5 max-w-7xl mx-auto">
-                <div className="absolute top-5 left-5 z-10">
-                    <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
-                        onClick={() => navigate(-1)}
-                    >
-                        Powrót
-                    </button>
-                </div>
+            {text: 'Zgłoś problem', link: '/problems'}
+        ]}>
+            <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
+                <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
+                    <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between items-center gap-2 sm:gap-3 p-5">
+                        <button
+                            type="button"
+                            className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                            onClick={() => navigate(-1)}
+                        >
+                            ← Powrót
+                        </button>
 
-                <div className="mt-20">
-                    {successMessage && (
-                        <div className="bg-gray-100 text-gray-700 p-3 rounded-lg mb-5 font-bold">
-                            {successMessage}
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'waiting'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('waiting')}
+                            >
+                                Oczekujące
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'approved'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('approved')}
+                            >
+                                Zatwierdzone
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'declined'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('declined')}
+                            >
+                                Odrzucone
+                            </button>
+                            <button
+                                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold ${
+                                    activeTab === 'all'
+                                        ? 'bg-gray-500 text-white'
+                                        : 'bg-gray-200 text-gray-500 border border-gray-500'
+                                }`}
+                                onClick={() => handleTabChange('all')}
+                            >
+                                Wszystkie
+                            </button>
                         </div>
-                    )}
-
-                    <div className="flex justify-center gap-3 mb-5">
-                        <button
-                            className={`px-4 py-2 rounded-lg font-semibold ${
-                                activeTab === 'waiting'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('waiting')}
-                        >
-                            Oczekujące
-                        </button>
-                        <button
-                            className={`px-4 py-2 rounded-lg font-semibold ${
-                                activeTab === 'approved'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('approved')}
-                        >
-                            Zatwierdzone
-                        </button>
-                        <button
-                            className={`px-4 py-2 rounded-lg font-semibold ${
-                                activeTab === 'declined'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('declined')}
-                        >
-                            Odrzucone
-                        </button>
-                        <button
-                            className={`px-4 py-2 rounded-lg font-semibold ${
-                                activeTab === 'all'
-                                    ? 'bg-gray-500 text-white'
-                                    : 'bg-gray-200 text-gray-500 border border-gray-500'
-                            }`}
-                            onClick={() => handleTabChange('all')}
-                        >
-                            Wszystkie
-                        </button>
                     </div>
+                </div>
 
                     {!loading && events.length > 0 && (
                         <div className="text-center mb-5">
                             <select
                                 value={`${sortOption},${sortOrder}`}
                                 onChange={handleSortChange}
-                                className="p-2 border border-gray-300 rounded-lg"
+                                className="p-2 border border-gray-300 rounded-lg w-full max-w-xs"
                             >
                                 <option value="startDateTime,asc">Data (rosnąco)</option>
                                 <option value="startDateTime,desc">Data (malejąco)</option>
@@ -212,17 +222,17 @@ function AdminEvents() {
                     ) : error ? (
                         <p className="bg-red-100 text-red-600 p-3 rounded-lg">{error}</p>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {events.map(event => (
                                 <div
                                     key={event.eventId}
-                                    className="bg-white p-5 rounded-lg shadow-md flex flex-col gap-3 hover:translate-y-[-5px] transition"
+                                    className="bg-white p-4 sm:p-5 rounded-lg shadow-md flex flex-col gap-2 sm:gap-3 hover:translate-y-[-5px] transition"
                                 >
                                     {event.imageUrl && (
                                         <img
                                             src={event.imageUrl}
                                             alt={event.eventName}
-                                            className="w-full h-44 object-contain bg-gray-100 rounded-lg"
+                                            className="w-full h-40 sm:h-44 object-contain bg-gray-100 rounded-lg"
                                         />
                                     )}
                                     <h3 className="font-bold text-lg">{event.eventName}</h3>
@@ -254,11 +264,11 @@ function AdminEvents() {
                                                         : 'text-gray-400'
                                             }`}
                                         >
-                                            {event.approvalStatus}
+                                            {translateApprovalStatus(event.approvalStatus)}
                                         </span>
                                     </p>
 
-                                    <div className="flex gap-3 mt-auto">
+                                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto">
                                         <button
                                             className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition"
                                             onClick={() => handleApprove(event.eventId)}
@@ -284,7 +294,6 @@ function AdminEvents() {
                             onPageChange={setPage}
                         />
                     )}
-                </div>
             </div>
         </Template>
     );

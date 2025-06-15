@@ -140,8 +140,10 @@ const MyDormRoomsInfo: React.FC = () => {
         <Template
             buttons={[
                 {text: 'Chat', link: '/chat'},
-                {text: 'Events', link: '/events'},
-                {text: 'Formularz', link: '/rooms/form'}
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}
             ]}
             footerContent={<p></p>}
         >

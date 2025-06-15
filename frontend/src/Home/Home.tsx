@@ -14,8 +14,6 @@ function Home() {
         }
     }, [navigate]);
 
-
-
     return (
         <Template buttons={[
             {text: 'Chat', link: '/chat'},
@@ -24,13 +22,13 @@ function Home() {
             {text: 'Pokój', link: '/rooms/myInfo'},
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
-            <div className="p-8 flex flex-col">
-                <div className="flex flex-col items-start gap-6 bg-white p-8 rounded-lg">
-                    <h1 className="text-5xl font-extrabold text-gray-800 text-center w-full">
+            <div className="p-4 md:p-8 flex flex-col">
+                <div className="flex flex-col items-start gap-6 bg-white p-4 md:p-8 rounded-lg">
+                    <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 text-center w-full">
                         Witaj w <span className="text-black">Dorm Connect!</span>
                     </h1>
-                    <div className="flex flex-row items-center gap-6">
-                        <h3 className="text-2xl text-gray-700 leading-relaxed">
+                    <div className="flex flex-col md:flex-row items-center gap-6">
+                        <h3 className="text-lg md:text-2xl text-gray-700 leading-relaxed text-center md:text-left">
                             Twojej aplikacji do zarządzania domem studenckim. Dorm Connect pozwala na łatwe zarządzanie pokojami,
                             wydarzeniami. Dzięki naszej aplikacji możesz zgłaszać problemy,
                             rezerwować wspólne przestrzenie, czy interpretować regulamin studiów.
@@ -38,7 +36,7 @@ function Home() {
                         <img
                             src={homePageImage}
                             alt="Home Page"
-                            className="max-w-lg rounded-lg transform hover:scale-105 transition-transform duration-300"
+                            className="w-full md:max-w-lg rounded-lg transform hover:scale-105 transition-transform duration-300"
                         />
                     </div>
                 </div>
