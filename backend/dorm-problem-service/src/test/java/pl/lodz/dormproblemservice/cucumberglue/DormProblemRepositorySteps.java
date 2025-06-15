@@ -14,6 +14,7 @@ import pl.lodz.dormproblemservice.entity.DormProblemEntity;
 import pl.lodz.dormproblemservice.repository.DormProblemRepository;
 
 import java.util.List;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @CucumberContextConfiguration
@@ -26,23 +27,40 @@ public class DormProblemRepositorySteps {
     DormProblemEntity currentProblem;
 
     @Given("a dorm problem with status {string} and studentId {long}")
-    public void a_dorm_problem_with_status_and_studentId(String status, Long studentId) {
+    public void dormProblemWithStatusAndStudentId(String status, Long studentId) {
         currentProblem = new DormProblemEntity();
         currentProblem.setProblemStatus(ProblemStatus.valueOf(status));
         currentProblem.setStudentId(studentId);
     }
 
+    @Given("a user with user id {long}")
+    public void userWithUserId(Long userId) {
+        currentProblem = new DormProblemEntity();
+        currentProblem.setStudentId(userId);
+        ;
+    }
+
     @When("I save the dorm problem")
-    public void i_save_the_dorm_problem() {
+    public void saveDormProblem() {
+        repository.updateOrInsert(currentProblem);
+    }
+
+    @When("I save the dorm problem with user id")
+    public void saveDormProblemWithStudentId() {
         repository.updateOrInsert(currentProblem);
     }
 
     @Then("I should find {int} problem with status {string}")
-    public void i_should_find_problems_by_status(int count, String status) {
+    public void shouldFindProblemsByStatus(int count, String status) {
         ProblemStatus problemStatus = ProblemStatus.valueOf(status);
         List<DormProblemEntity> found = repository.findByProblemStatus(problemStatus);
         assertThat(found).hasSize(count);
     }
 
+    @Then("I should find {int} problem with user id {long}")
+    public void iShouldFindProblemWithUserId(int count, long userId) {
+        List<DormProblemEntity> found = repository.findByUserId(userId);
+        assertThat(found).hasSize(count);
 
+    }
 }

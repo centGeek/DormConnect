@@ -39,5 +39,15 @@ public class DormProblemEntity {
                 && !that.getProblemDate().equals(getProblemDate())
                 && !(that.getProblemStatus() == getProblemStatus());
     }
-    
+
+    public DormProblemEntity(long studentId, String name, String description, String answer, LocalDate problemDate,
+                             LocalDate submittedDate, ProblemStatus problemStatus) {
+        this.studentId = studentId;
+        this.name = name;
+        this.description = description;
+        this.answer = answer;
+        this.problemDate = problemDate;
+        this.submittedDate = submittedDate;
+        this.problemStatus = problemStatus;
+    }
 }
