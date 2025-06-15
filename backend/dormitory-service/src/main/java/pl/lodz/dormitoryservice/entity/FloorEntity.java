@@ -27,4 +27,9 @@ public class FloorEntity {
 
     private List<Long> commonRooms = new ArrayList<>();
 
+    public FloorEntity(int floorNumber, List<Long> rooms, List<Long> commonRooms) {
+        this.floorNumber = floorNumber;
+        this.rooms = rooms;
+        this.commonRooms = commonRooms;
+    }
 }
