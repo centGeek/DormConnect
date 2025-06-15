@@ -49,7 +49,6 @@ class StudentJpaRepositoryTest {
         Assertions.assertEquals(studentEntity.getUser(), savedStudentEntity.getUser());
         Assertions.assertNotNull(savedStudentEntity.getId());
 
-        // dodatkowo możesz sprawdzić, czy student jest faktycznie w bazie:
         var foundStudentOpt = studentJpaRepository.findById(savedStudentEntity.getId());
         Assertions.assertTrue(foundStudentOpt.isPresent());
         Assertions.assertEquals(savedStudentEntity, foundStudentOpt.get());

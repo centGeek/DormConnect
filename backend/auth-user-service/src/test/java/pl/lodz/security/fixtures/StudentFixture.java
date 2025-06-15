@@ -6,7 +6,6 @@ import pl.lodz.entity.RoleEntity;
 
 public class StudentFixture {
 
-    // Teraz wymaga podania roli, którą przekazujemy do tworzenia UserEntity
     public static StudentEntity anyStudentEntity(RoleEntity role) {
         return new StudentEntity(
                 "Bolesław",

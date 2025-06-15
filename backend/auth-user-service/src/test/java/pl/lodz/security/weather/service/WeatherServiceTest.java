@@ -23,8 +23,8 @@ class WeatherServiceTest {
 
     @Test
     void testWeatherApiReturnsRelevantResult() throws Exception {
+        //given
         WeatherService service = new WeatherService();
-
         Field field = WeatherService.class.getDeclaredField("restTemplate");
         field.setAccessible(true);
         RestTemplate mockRestTemplate = mock(RestTemplate.class);
@@ -33,6 +33,7 @@ class WeatherServiceTest {
         List<WeatherResponse> mockList = List.of(new WeatherResponse(3.0, 5.0, 3.2, "Europe",
                 new CurrentWeather("now", 5.0, 3.0, 2.0, 1)));
 
+        //when
         when(mockRestTemplate.exchange(
                 anyString(),
                 eq(HttpMethod.GET),
@@ -40,6 +41,7 @@ class WeatherServiceTest {
                 any(ParameterizedTypeReference.class)
         )).thenReturn(ResponseEntity.ok(mockList));
 
+        //then
         List<WeatherResponse> result = service.getCurrentWeather();
 
         assertEquals(1, result.size());

@@ -41,10 +41,21 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:postgresql'
     compileOnly 'org.projectlombok:lombok'
+    testImplementation("org.junit.vintage:junit-vintage-engine")
+
+    testImplementation("io.cucumber:cucumber-java:7.10.1")
+    testImplementation("io.cucumber:cucumber-spring:7.10.1")
+
+    testImplementation("io.cucumber:cucumber-junit:7.10.1")
+
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.10.1")
+
+    testImplementation 'org.junit.platform:junit-platform-suite:1.9.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.2'
 
     implementation 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -56,11 +67,10 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.ai:spring-ai-bom:1.0.0-M7"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
     }
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
 }

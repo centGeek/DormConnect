@@ -38,18 +38,4 @@ class FloorsControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void thatAddFloorWorksCorrectly() throws Exception {
-//        //given
-//        FloorEntity expectedFloor = FloorFixture.anyFloorEntity();
-//        when(floorsService.addFloor()).thenReturn(expectedFloor);
-//
-//        // when, then
-//        mockMvc.perform(post("/api/floors/add"))
-//                .andExpect(status().isCreated());
-//
-//        verify(floorsService, times(1)).addFloor();
-//    }
-
-
 }
