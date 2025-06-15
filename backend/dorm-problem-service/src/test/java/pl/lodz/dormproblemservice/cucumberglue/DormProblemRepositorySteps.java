@@ -37,7 +37,6 @@ public class DormProblemRepositorySteps {
     public void userWithUserId(Long userId) {
         currentProblem = new DormProblemEntity();
         currentProblem.setStudentId(userId);
-        ;
     }
 
     @When("I save the dorm problem")
@@ -58,7 +57,7 @@ public class DormProblemRepositorySteps {
     }
 
     @Then("I should find {int} problem with user id {long}")
-    public void iShouldFindProblemWithUserId(int count, long userId) {
+    public void shouldFindProblemWithUserId(int count, long userId) {
         List<DormProblemEntity> found = repository.findByUserId(userId);
         assertThat(found).hasSize(count);
 
