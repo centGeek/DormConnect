@@ -4,6 +4,7 @@ package pl.lodz.dormitoryservice.nfc.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.dormitoryservice.nfc.dto.NfcProgramCardDTO;
@@ -46,7 +47,8 @@ public class NfcProgrammerController {
    // 3. user uuid
    @PostMapping("/program-card")
    public ResponseEntity<ProgrammedCardDTO> programCard(
-           @RequestBody NfcProgramCardDTO nfcProgramCardDTO) {
+           @RequestBody NfcProgramCardDTO nfcProgramCardDTO,
+           @RequestHeader("Authorization") String authorizationHeader) {
        try {
            if (nfcProgramCardDTO == null || nfcProgramCardDTO.deviceUuid() == null) {
                throw new IllegalArgumentException("Invalid input: nfcProgramCardDTO or deviceUuid cannot be null");

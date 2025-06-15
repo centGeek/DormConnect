@@ -1,5 +1,10 @@
 package pl.lodz.dormitoryservice.nfc.service;
 
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Collections;
+
 import javax.print.attribute.standard.Media;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
 
 import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcProgramCardDTO;
@@ -29,10 +35,9 @@ public class NfcProgrammerService {
     private RestTemplate restTemplate;
 
     public NfcProgrammerService(
-            NfcProgrammerRepository nfcProgrammerRepository,
-            RestTemplate restTemplate) {
+            NfcProgrammerRepository nfcProgrammerRepository) {
         this.nfcProgrammerRepository = nfcProgrammerRepository;
-        this.restTemplate = restTemplate;
+
 
     }
 
@@ -62,7 +67,7 @@ public class NfcProgrammerService {
     }
 
     @Transactional
-    public ProgrammedCardDTO programCard(NfcProgramCardDTO entity) {
+    public ProgrammedCardDTO programCard(NfcProgramCardDTO entity, String authorizationHeader) {
 
         NfcProgrammerEntity nfcProgrammer = nfcProgrammerRepository.findByUuid(entity.deviceUuid());
         if (nfcProgrammer == null) {
@@ -72,19 +77,33 @@ public class NfcProgrammerService {
             String url = "http://" + nfcProgrammer.getIpAddress() + ":" + Integer.toString(nfcProgrammer.getPort()) + "/api/program-card";
             
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            System.out.println("Programming card with data: " + entity);
+            headers.setContentType(MediaType.APPLICATION_JSON);// or whatever curl uses
+            headers.set("Connection", "keep-alive");
+            headers.set("Accept", "*/*");
+
             HttpEntity<NfcProgramCardDTO> requestEntity = new HttpEntity<>(entity, headers);
 
-            System.out.println(requestEntity);
-            System.out.println(restTemplate);
-
-
             ProgrammedCardDTO response = restTemplate.postForObject(
-                    url,
-                    requestEntity,
-                    ProgrammedCardDTO.class
+                url,
+                requestEntity,
+                ProgrammedCardDTO.class
             );
+
+            // HttpClient client = HttpClient.newHttpClient();
+            // HttpRequest request = HttpRequest.newBuilder()
+            //         .uri(java.net.URI.create(url))
+            //         .header("Content-Type", "application/json")
+            //         .header("Accept", "application/json")
+            //         .header("Connection", "keep-alive")
+            //         .POST(HttpRequest.BodyPublishers.ofString(
+            //             "{\"userUuid\":\"" + entity.userUuid() + "\"}"))
+            //         .build();
+
+            // HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            //System.out.println("Response status code: " + response.statusCode());
+            System.out.println("Response: " + response );
+
 
 
             if (response == null) {
@@ -92,22 +111,22 @@ public class NfcProgrammerService {
                         + ":" + nfcProgrammer.getPort());
             }
 
-            GetUserDTO currentUser = getUserByUuid(response.userUuid());
-            if (currentUser == null) {
-                throw new DeviceConnectionException("User with UUID " + entity.userUuid() + " not found");
-            } 
-            GetUserDTO userWithCard = new GetUserDTO(
-                    currentUser.id(),
-                    currentUser.uuid(),
-                    currentUser.userName(),
-                    currentUser.email(),
-                    currentUser.role(),
-                    currentUser.isActive(),
-                    response.cardUuid()  // Update the card UUID with the one from the response
-            );
+            // GetUserDTO currentUser = getUserByUuid(response.userUuid());
+            // if (currentUser == null) {
+            //     throw new DeviceConnectionException("User with UUID " + entity.userUuid() + " not found");
+            // } 
+            // GetUserDTO userWithCard = new GetUserDTO(
+            //         currentUser.id(),
+            //         currentUser.uuid(),
+            //         currentUser.userName(),
+            //         currentUser.email(),
+            //         currentUser.role(),
+            //         currentUser.isActive(),
+            //         response.cardUuid()  // Update the card UUID with the one from the response
+            // );
 
             
-            GetUserDTO updatedUser = this.updateUser(userWithCard);
+            // GetUserDTO updatedUser = this.updateUser(userWithCard);
 
 
             return response;
@@ -119,7 +138,7 @@ public class NfcProgrammerService {
     }
 
     private GetUserDTO getUserByUuid(String uuid) {
-        String url = "http://localhost:8091/api/users/get/by-uuid/" + uuid;
+        String url = "http://localhost:8000/api/users/get/by-uuid/" + uuid;
         GetUserDTO userEntity = restTemplate.getForObject(url, GetUserDTO.class);
         return userEntity;
     }
