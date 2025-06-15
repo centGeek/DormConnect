@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.dormitoryservice.config.PostgresContainerConfig;
 import pl.lodz.dormitoryservice.entity.RoomEntity;
 import pl.lodz.dormitoryservice.fixtures.RoomFixtures;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@Import(PostgresContainerConfig.class)
 class RoomRepositoryTest {
 
     @Autowired

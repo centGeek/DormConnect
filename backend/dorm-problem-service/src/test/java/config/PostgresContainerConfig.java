@@ -1,4 +1,4 @@
-package pl.lodz.security.config;
+package config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ public class PostgresContainerConfig {
 
     static {
         POSTGRES_CONTAINER.setPortBindings(
-                java.util.Collections.singletonList("5435:5432")
+                java.util.Collections.singletonList("5437:5432")
         );
         POSTGRES_CONTAINER.start();
     }

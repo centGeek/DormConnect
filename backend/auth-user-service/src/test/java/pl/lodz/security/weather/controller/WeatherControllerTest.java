@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @WebMvcTest(value = WeatherController.class)
 @AutoConfigureMockMvc
 @WithMockUser(username = "admin@edu.p.lodz.pl", authorities = "ADMIN")
