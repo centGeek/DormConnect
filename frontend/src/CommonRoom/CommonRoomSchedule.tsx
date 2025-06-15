@@ -189,13 +189,13 @@ function CommonRoomSchedule() {
             {text: 'Pokoje wspólne', link: '/common-rooms'},
             {text: 'Pokój', link: '/rooms/myInfo'},
             {text: 'Zgłoś problem', link: '/problems'}]}>
-            <div className="w-full md:w-1/4 flex justify-center items-start p-5">
+            <div className="w-full flex justify-center items-center p-5">
                 <button
                     type="button"
-                    className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                    className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
                     onClick={() => navigate(-1)}
                 >
-                    ← Powrót
+                    Powrót
                 </button>
             </div>
             <header className="bg-gray-200 p-4 rounded-lg shadow-md mb-6">
