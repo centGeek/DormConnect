@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Template from '../Template/Template.tsx';
 import CommonRoomCanva from "./components/CommonRoomCanva.tsx";
 import PopUpCommonRoomCreate from './components/CommonRoomPopUps/PopUpCommonRoomCreate.tsx';
@@ -132,25 +132,29 @@ function CreateDormitory() {
             {text: 'Pokój', link: '/rooms/myInfo'},
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
-            <button
-                type="button"
-                className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
-                onClick={() => navigate('/admin-panel')}
-            >
-                ← Powrót
-            </button>
+            <div className="w-full md:w-1/4 flex justify-center items-start p-5">
+                <button
+                    type="button"
+                    className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                    onClick={() => navigate(-1)}
+                >
+                    ← Powrót
+                </button>
+            </div>
             <div className="relative min-h-fit">
                 <h1 className="text-4xl font-bold text-gray-600 mb-6 text-center">Kreator akademika</h1>
-                {!(activeFloor === -1) && (<button
-                    onClick={() => setIsPopUpRemoveDialogOpen(true)}
-                    className="absolute top-4 right-4 bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow hover:bg-red-600 transition"
-                >
-                    ×
-                </button>)}
+                {!(activeFloor === -1) && (
+                    <button
+                        onClick={() => setIsPopUpRemoveDialogOpen(true)}
+                        className="absolute top-4 right-4 bg-red-500 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shadow hover:bg-red-600 transition"
+                    >
+                        ×
+                    </button>
+                )}
             </div>
             {!loadingFloors && (
-                <div className="flex h-fit justify-start">
-                    <div className="w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center rounded-xl m-2">
+                <div className="flex flex-wrap md:flex-nowrap justify-start gap-4">
+                    <div className="w-full md:w-1/6 bg-gray-200 p-4 flex flex-col items-center justify-center rounded-xl">
                         <h1 className="mt-4 text-center text-2xl font-extrabold text-gray-700">Piętra</h1>
                         <button
                             onClick={handleAddFloor}
@@ -179,9 +183,9 @@ function CreateDormitory() {
                     </div>
 
                     {!(activeFloor === -1) && (
-                        <div>
+                        <div className="w-full md:w-5/6 flex flex-col gap-4">
                             <div>
-                                <h3>Pokoje</h3>
+                                <h3 className="text-lg font-bold mb-2">Pokoje</h3>
                                 <RoomCanva
                                     floor={activeFloor}
                                     onRoomAdd={handleRoomAdd}
@@ -190,7 +194,7 @@ function CreateDormitory() {
                                 />
                             </div>
                             <div>
-                                <h3>Pokoje wspólne</h3>
+                                <h3 className="text-lg font-bold mb-2">Pokoje wspólne</h3>
                                 <CommonRoomCanva
                                     floor={activeFloor}
                                     onCommonRoomAdd={handleCommonRoomAdd}
@@ -201,6 +205,7 @@ function CreateDormitory() {
                         </div>
                     )}
                 </div>
+
             )}
             {isPopupCRCreateOpen && (
                 <PopUpCommonRoomCreate onClose={handleClosePopup} floor={activeFloor}
