@@ -5,9 +5,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.web.client.RestTemplate;
 import pl.lodz.dormitoryservice.dorm.DTO.DeleteRoomImpactPreviewDTO;
 import pl.lodz.dormitoryservice.dorm.DTO.ResidentReassignmentPreview;
 import pl.lodz.dormitoryservice.dorm.DTO.SimulatedRollback;
@@ -31,11 +34,13 @@ public class RoomAssignmentScheduler {
     private final DormFormRepository dormFormRepository;
     private final RoomRepository roomRepository;
     private final RoomAssignmentRepository roomAssignRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(RoomAssignmentScheduler.class);
 
     @Transactional
-    @Scheduled(fixedRate = 60000) // co minutę
+    @Scheduled(fixedRate = 60000) // co minut
     public void assignRooms() {
 
         RoomAssignmentLock.LOCK.lock(); // czekaj na swoją kolej
@@ -87,7 +92,7 @@ public class RoomAssignmentScheduler {
 
 
     @org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void simulateRoomDeletion(Long roomId) {
+    public void simulateRoomDeletion(Long roomId, String authorizationHeader) {
 
         RoomEntity room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new EntityNotFoundException("Room not found"));
@@ -105,8 +110,8 @@ public class RoomAssignmentScheduler {
                 .filter(r -> !r.getId().equals(roomId))
                 .toList();
 
-        List<ResidentReassignmentPreview> nowResidents = simulateRelocation(current, otherRooms, true);
-        List<ResidentReassignmentPreview> futureResidents = simulateRelocation(future, otherRooms, false);
+        List<ResidentReassignmentPreview> nowResidents = simulateRelocation(current, otherRooms, true, authorizationHeader);
+        List<ResidentReassignmentPreview> futureResidents = simulateRelocation(future, otherRooms, false, authorizationHeader);
 
         LocalDate minDate = Stream.concat(nowResidents.stream(), futureResidents.stream())
                 .filter(ResidentReassignmentPreview::roomAvailable)
@@ -122,10 +127,11 @@ public class RoomAssignmentScheduler {
         throw new SimulatedRollback(new DeleteRoomImpactPreviewDTO(roomId, canDeleteNow, minDate, nowResidents, futureResidents));
     }
 
+
     /**
      * Use with caution as this truly creates new Assignments!
      **/
-    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms, boolean isOngoing) {
+    public List<ResidentReassignmentPreview> simulateRelocation(List<RoomAssignEntity> assignmentsToReassign, List<RoomEntity> allRooms, boolean isOngoing, String authorizationHeader) {
         RoomAssignmentLock.LOCK.lock();
 
         try {
@@ -136,6 +142,11 @@ public class RoomAssignmentScheduler {
                         .filter(room -> !room.getId().equals(oldAssign.getRoom().getId()))
                         .filter(room -> isRoomAvailable(room, oldAssign.getFromDate(), oldAssign.getToDate()))
                         .findFirst();
+
+
+                Long residentId = oldAssign.getResidentId();
+
+                String fullName = getUserFullName(residentId,authorizationHeader);
 
                 if (replacementRoom.isPresent()) {
                     RoomEntity targetRoom = replacementRoom.get();
@@ -155,7 +166,7 @@ public class RoomAssignmentScheduler {
 
                     previews.add(new ResidentReassignmentPreview(
                             oldAssign.getResidentId(),
-                            "N/A", // TODO tutaj pobrać z resta
+                            fullName,
                             oldAssign.getFromDate(),
                             oldAssign.getToDate(),
                             oldAssign.getFromDate(),
@@ -164,7 +175,7 @@ public class RoomAssignmentScheduler {
                 } else {
                     previews.add(new ResidentReassignmentPreview(
                             oldAssign.getResidentId(),
-                            "N/A",
+                            fullName,
                             oldAssign.getFromDate(),
                             oldAssign.getToDate(),
                             null,
@@ -218,4 +229,28 @@ public class RoomAssignmentScheduler {
         LocalDate bE = bEnd != null ? bEnd : LocalDate.MAX;
         return !(aE.isBefore(bStart) || bE.isBefore(aStart));
     }
+
+
+    public String getUserFullName(Long userId, String authorizationHeader) {
+        String url = "http://localhost:8091/api/users/get/fullname/" + userId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authorizationHeader);
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                String.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Failed to get user full name, status: " + response.getStatusCode());
+        }
+    }
+
 }

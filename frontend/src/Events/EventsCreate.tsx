@@ -111,7 +111,7 @@ function EventsCreate() {
                 {text: 'Zgłoś problem', link: '/problems'}
             ]}
         >
-            <div className="flex flex-col md:flex-row w-full min-h-screen">
+            <div className="flex flex-col md:flex-row w-full ">
                 {/* Lewa kolumna */}
                 <div className="w-full md:w-1/4 flex justify-center items-start p-5">
                     <button
@@ -222,6 +222,7 @@ function EventsCreate() {
                                     type="text"
                                     id="imageUrl"
                                     value={imageUrl}
+                                    placeholder={"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8..."}
                                     onChange={(e) => setImageUrl(e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                                 />

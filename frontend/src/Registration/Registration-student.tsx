@@ -41,7 +41,12 @@ function RegistrationStudent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(student)
             });
-            
+            if (response.status === 409) {
+                const errorData = await response.text();
+                throw new Error(errorData);
+            }
+
+
             if (!response.ok) {
                 let errorMessage = `Registration failed with status: ${response.status}`;
                 try {

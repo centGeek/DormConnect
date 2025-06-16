@@ -17,4 +17,6 @@ public interface StudentJpaRepository extends JpaRepository<StudentEntity, Long>
             where u.email = :email
             """)
     Optional<StudentEntity> findByEmail(@Param("email") String email);
+
+    Optional<StudentEntity> findByUserId(Long studentId);
 }

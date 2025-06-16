@@ -150,15 +150,17 @@ function EventsEdit() {
             {text: 'Pokój', link: '/rooms/myInfo'},
             {text: 'Zgłoś problem', link: '/problems'}
         ]}>
-            <div className="flex flex-col items-center w-full min-h-screen p-4 bg-gray-100">
-                <div className="w-full max-w-2xl bg-white p-6 md:p-8 rounded-lg shadow-md">
-                    <button
-                        type="button"
-                        className="mb-4 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
-                        onClick={() => navigate('/events')}
-                    >
-                        ← Powrót do wydarzeń
-                    </button>
+            <div className="flex flex-col items-center w-full  p-4 ">
+
+                <button
+                    type="button"
+                    className="mb-4  bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition w-full md:w-auto"
+                    onClick={() => navigate('/events')}
+                >
+                    ← Powrót do wydarzeń
+                </button>
+                <div className="w-full max-w-2xl  bg-gray-100 p-6 md:p-8 rounded-lg shadow-md">
+
 
                     <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Edytuj wydarzenie</h2>
 

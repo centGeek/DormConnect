@@ -99,7 +99,6 @@ const MyDormRoomsInfo: React.FC = () => {
     const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
 
-
     const handleClick = (id: number) => {
         if (confirmingId === id) {
             handleDeleteForm(id);
@@ -122,8 +121,8 @@ const MyDormRoomsInfo: React.FC = () => {
                 return;
             }
 
-            await axios.put(`/api/dorm/form/${formId}/deactivate`,null, {
-                headers: { Authorization: `Bearer ${token}` }
+            await axios.put(`/api/dorm/form/${formId}/deactivate`, null, {
+                headers: {Authorization: `Bearer ${token}`}
             });
 
             // Usuń formularz z widoku
@@ -133,7 +132,6 @@ const MyDormRoomsInfo: React.FC = () => {
             setError("Nie udało się usunąć formularza.");
         }
     };
-
 
 
     return (
@@ -180,7 +178,12 @@ const MyDormRoomsInfo: React.FC = () => {
                         </ul>
                     )}
                 </section>
-
+                <button
+                    className="bg-gray-500 text-white border  px-4 py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
+                    onClick={() => navigate("/rooms/form")}
+                >
+                    Zgłoś wniosek
+                </button>
                 <section>
                     <h2 className="text-2xl font-bold mb-4">Twoje przydziały</h2>
                     <div className="mb-4 flex items-center justify-center gap-4">

@@ -138,7 +138,7 @@ const Events = () => {
             <div className="p-6">
                 {successMessage && <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4 justify-center">{successMessage}</div>}
 
-                <h2 className="text-4xl font-bold text-gray-800 mb-6 text-center">Events</h2>
+                <h2 className="text-4xl font-bold text-gray-800 mb-6 text-center">Wydarzenia</h2>
 
                 <div className="flex flex-wrap gap-4 mb-6 justify-center">
                     <button
@@ -157,7 +157,7 @@ const Events = () => {
                     )}
                 </div>
 
-                <div className="flex gap-4 mb-6 justify-center  bg-gray-100">
+                <div className="flex gap-4 mb-6 justify-center  ">
                     <button
                         className={`px-4 py-2 rounded-lg shadow transition ${
                             activeTab === 'organized' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-400 hover:text-white'
