@@ -43,6 +43,7 @@ public class RoomController {
     public List<RoomInGroupDTO> getRooms() {
         return roomService.getAllRooms().stream().map(GroupedRoomsMapper::toRoomDto).toList();
     }
+
     @GetMapping("/room/floor/{floor}")
     public List<RoomInGroupDTO> getRoomsByFloor(@PathVariable Integer floor) {
         return roomService.getRoomsByFloor(floor).stream().map(GroupedRoomsMapper::toRoomDto).toList();
@@ -136,12 +137,13 @@ public class RoomController {
     @DeleteMapping("/rooms/{roomId}")
     public ResponseEntity<?> deleteRoom(
             @PathVariable Long roomId,
-            @RequestParam(defaultValue = "false") boolean areYouSure
+            @RequestParam(defaultValue = "false") boolean areYouSure,
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
         if (!areYouSure) {
             // symulacja – kto będzie przeniesiony i czy się da
             DeleteRoomImpactPreviewDTO simulation =
-                    roomService.simulateRoomDeletionImpact(roomId);
+                    roomService.simulateRoomDeletionImpact(roomId, authorizationHeader);
             return ResponseEntity.status(266)
                     .body(simulation);
         } else {

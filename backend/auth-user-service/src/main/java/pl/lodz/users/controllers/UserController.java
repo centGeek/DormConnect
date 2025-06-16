@@ -37,7 +37,16 @@ public class UserController {
             throw new UserException("Error fetching user by ID: " + e.getMessage(), e);
         }
     }
-    
+
+
+    @GetMapping("/get/fullname/{id}")
+    public ResponseEntity<String> getFullNameUserById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.getFullNameUserById(id));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by ID: " + e.getMessage(), e);
+        }
+    }
 
     @PutMapping("/update")
     @Transactional

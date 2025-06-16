@@ -1,12 +1,10 @@
 package pl.lodz.dormitoryservice.dorm.services;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.server.ResponseStatusException;
 import pl.lodz.dormitoryservice.dorm.DTO.AssignmentsDTO;
 import pl.lodz.dormitoryservice.dorm.DTO.DeleteRoomImpactPreviewDTO;
@@ -24,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class RoomService {
@@ -219,9 +216,9 @@ public class RoomService {
     }
 
 
-    public DeleteRoomImpactPreviewDTO simulateRoomDeletionImpact(Long roomId) {
+    public DeleteRoomImpactPreviewDTO simulateRoomDeletionImpact(Long roomId, String authorizationHeader) {
         try {
-            roomAssignmentScheduler.simulateRoomDeletion(roomId);
+            roomAssignmentScheduler.simulateRoomDeletion(roomId,authorizationHeader);
         } catch (SimulatedRollback rollback) {
             return rollback.getPreviewDTO(); // zwracamy "wynik" symulacji
         }
