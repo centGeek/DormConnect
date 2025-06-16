@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Template from "../../Template/Template.tsx";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 interface DormFormDTO {
     id: number;
@@ -47,10 +47,10 @@ const MyDormRoomsInfo: React.FC = () => {
 
                 const [formResponse, assignResponse] = await Promise.all([
                     axios.get<DormFormDTO[]>("/api/dorm/form/me", {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: {Authorization: `Bearer ${token}`}
                     }),
                     axios.get<AssignmentsDTO[]>("/api/dorm/assign/myAssigns", {
-                        headers: { Authorization: `Bearer ${token}` }
+                        headers: {Authorization: `Bearer ${token}`}
                     })
                 ]);
 
@@ -86,7 +86,7 @@ const MyDormRoomsInfo: React.FC = () => {
                 ?.split("=")[1];
 
             await axios.put(`/api/dorm/assign/${id}/shorten?newEndDate=${newEndDate}`, null, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {Authorization: `Bearer ${token}`}
             });
 
             window.location.reload();
@@ -96,12 +96,52 @@ const MyDormRoomsInfo: React.FC = () => {
         }
     };
 
+    const [confirmingId, setConfirmingId] = useState<number | null>(null);
+
+
+    const handleClick = (id: number) => {
+        if (confirmingId === id) {
+            handleDeleteForm(id);
+        } else {
+            setConfirmingId(id);
+            setTimeout(() => {
+                setConfirmingId(null);
+            }, 2000);
+        }
+    };
+    const handleDeleteForm = async (formId: number) => {
+        try {
+            const token = document.cookie
+                .split("; ")
+                .find(row => row.startsWith("token="))
+                ?.split("=")[1];
+
+            if (!token) {
+                setError("Brak autoryzacji.");
+                return;
+            }
+
+            await axios.put(`/api/dorm/form/${formId}/deactivate`, null, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+
+            // Usuń formularz z widoku
+            setForms(prev => prev.filter(f => f.id !== formId));
+        } catch (e) {
+            console.error("Nie udało się usunąć formularza", e);
+            setError("Nie udało się usunąć formularza.");
+        }
+    };
+
+
     return (
         <Template
             buttons={[
-                { text: 'Chat', link: '/chat' },
-                { text: 'Events', link: '/events' },
-                { text: 'Formularz', link: '/rooms/form' }
+                {text: 'Chat', link: '/chat'},
+                {text: 'Wydarzenia', link: '/events'},
+                {text: 'Pokoje wspólne', link: '/common-rooms'},
+                {text: 'Pokój', link: '/rooms/myInfo'},
+                {text: 'Zgłoś problem', link: '/problems'}
             ]}
             footerContent={<p></p>}
         >
@@ -116,19 +156,39 @@ const MyDormRoomsInfo: React.FC = () => {
                                 <li key={form.id} className="border rounded p-4 shadow">
                                     <p><strong>Od:</strong> {form.startDate}</p>
                                     <p><strong>Do:</strong> {form.endDate}</p>
-                                    <p><strong>Status:</strong> {form.processed ? "Rozpatrzono" : "Oczekujący na rozpatrzenie"}</p>
+                                    <p>
+                                        <strong>Status:</strong> {form.processed ? "Rozpatrzono" : "Oczekujący na rozpatrzenie"}
+                                    </p>
                                     {form.comments && <p><strong>Komentarz:</strong> {form.comments}</p>}
                                     <p><strong>Wynik:</strong> {form.priorityScore}</p>
+
+                                    {!form.processed && (
+                                        <button
+                                            key={form.id}
+                                            onClick={() => handleClick(form.id)}
+                                            className={`px-4 py-2 rounded text-white transition-colors duration-300
+            ${confirmingId === form.id ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 hover:bg-gray-500'}`}
+                                        >
+                                            {confirmingId === form.id ? "Na pewno?" : "Usuń"}
+                                        </button>
+                                    )}
                                 </li>
                             ))}
+
                         </ul>
                     )}
                 </section>
-
+                <button
+                    className="bg-gray-500 text-white border  px-4 py-2 rounded-lg shadow hover:bg-white hover:text-gray-500 transition"
+                    onClick={() => navigate("/rooms/form")}
+                >
+                    Zgłoś wniosek
+                </button>
                 <section>
                     <h2 className="text-2xl font-bold mb-4">Twoje przydziały</h2>
                     <div className="mb-4 flex items-center justify-center gap-4">
-                        <span className={`font-medium ${view === 'current' ? 'text-gray-600' : 'text-gray-300'}`}>Aktualne</span>
+                        <span
+                            className={`font-medium ${view === 'current' ? 'text-gray-600' : 'text-gray-300'}`}>Aktualne</span>
                         <button
                             onClick={() => setView(view === 'current' ? 'historical' : 'current')}
                             className={`w-14 h-8 flex items-center bg-gray-400 rounded-full p-1 transition-colors duration-300 ${
@@ -141,11 +201,15 @@ const MyDormRoomsInfo: React.FC = () => {
                                 }`}
                             ></div>
                         </button>
-                        <span className={`font-medium ${view === 'historical' ? 'text-gray-600' : 'text-gray-300'}`}>Historyczne</span>
+                        <span
+                            className={`font-medium ${view === 'historical' ? 'text-gray-600' : 'text-gray-300'}`}>Historyczne</span>
                     </div>
                     <ul className="space-y-4">
                         {filteredAssignments.map(a => (
-                            <li key={a.id} className="border rounded p-4 shadow bg-white">
+                            <li
+                                key={a.id}
+                                className="border rounded p-4 shadow bg-white hover:bg-gray-100 hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                            >
                                 <p><strong>Pokój:</strong> {a.roomNumber} (Piętro {a.roomFloor})</p>
                                 <p><strong>Okres:</strong> {a.startDate} – {a.endDate ?? 'trwa'}</p>
                                 {isOngoing(a) && (
@@ -156,6 +220,7 @@ const MyDormRoomsInfo: React.FC = () => {
                                                     type="date"
                                                     value={newEndDate}
                                                     min={new Date().toISOString().split('T')[0]}
+                                                    max={new Date(a.endDate).toISOString().split('T')[0]}
                                                     onChange={e => setNewEndDate(e.target.value)}
                                                     className="border rounded px-3 py-1"
                                                 />

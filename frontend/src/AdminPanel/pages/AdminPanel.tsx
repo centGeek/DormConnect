@@ -7,6 +7,7 @@ import dormIcon from "../../assets/AdminPanelIcon/dorm.png"
 import lockIcon from "../../assets/AdminPanelIcon/lock.png"
 import eventIcon from "../../assets/AdminPanelIcon/event.png"
 import problemIcon from "../../assets/AdminPanelIcon/problem.png"
+import documentationIcon from "../../assets/AdminPanelIcon/documentation.png";
 
 export default function AdminPanel() {
     const userContext = useContext(UserContext);
@@ -64,6 +65,13 @@ export default function AdminPanel() {
                     >
                         <p>Zarządzanie problemami</p>
                         <img src={problemIcon} alt="Problem icon" className="h-20 mt-4"/>
+                    </button>
+                    <button
+                        onClick={() => window.open("http://localhost:8000/swagger-ui/index.html", "_blank")}
+                        className="bg-gray-500 text-white text-xl px-6 py-3 rounded-lg shadow hover:bg-gray-400 transition flex flex-col items-center justify-center"
+                    >
+                        <p>Dokumentacja techniczna</p>
+                        <img src={documentationIcon} alt="Documentation API icon" className="h-20 mt-4"/>
                     </button>
                 </div>
             </div>

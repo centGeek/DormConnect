@@ -28,14 +28,17 @@ class UserRepositoryTest {
 
     @Test
     void thatUserIsCorrectlyRetrievedByEmail() {
+        //given
         RoleEntity savedRole = roleJpaRepository.saveAndFlush(SecurityFixture.adminRole());
 
         UserEntity userEntity = SecurityFixture.adminEntity(savedRole);
 
         userRepository.saveAndFlush(userEntity);
 
+        //when
         var actualUserEntity = userRepository.findByEmail(userEntity.getEmail()).orElseThrow();
 
+        //then
         Assertions.assertEquals(userEntity.getEmail(), actualUserEntity.getEmail());
         Assertions.assertEquals(userEntity.getUserName(), actualUserEntity.getUserName());
         Assertions.assertEquals(userEntity.getRole().getRoleName(), actualUserEntity.getRole().getRoleName());
