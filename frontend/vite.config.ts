@@ -66,6 +66,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/register': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+      },
       "/api/nfc-programmer": {
         target: 'http://localhost:8000',
         changeOrigin: true,

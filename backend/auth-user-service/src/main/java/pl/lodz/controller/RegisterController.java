@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.lodz.UserAlreadyExistsException;
 import pl.lodz.model.Manager;
 import pl.lodz.model.Student;
 import pl.lodz.service.ManagerRegisterService;
 import pl.lodz.service.StudentRegisterService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/register")
@@ -32,8 +35,12 @@ public class RegisterController {
     }
 
     @PostMapping("/student")
-    public ResponseEntity<Void> registerStudent(@Validated @RequestBody Student student) {
-        studentRegisterService.registerStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<?> registerStudent(@Validated @RequestBody Student student) {
+        try {
+            studentRegisterService.registerStudent(student);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Użytkownik o podanym mailu już istnieje"));
+        }
     }
 }

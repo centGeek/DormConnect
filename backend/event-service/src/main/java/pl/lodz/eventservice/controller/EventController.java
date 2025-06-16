@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.eventservice.dto.EventCreateDTO;
 import pl.lodz.eventservice.dto.EventDTO;
 import pl.lodz.eventservice.service.EventService;
-import pl.lodz.eventservice.service.JwtService;
 
 
 @RestController
@@ -21,16 +20,13 @@ import pl.lodz.eventservice.service.JwtService;
 public class EventController {
 
     private final EventService eventService;
-    private final JwtService jwtService;
     private static final Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
-    public EventController(EventService eventService, JwtService jwtService) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.jwtService = jwtService;
     }
 
-    // To przyjmuje prostego JSON bez id
     @PostMapping("/create")
     public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventCreateDTO eventCreateDTO) {
         try {

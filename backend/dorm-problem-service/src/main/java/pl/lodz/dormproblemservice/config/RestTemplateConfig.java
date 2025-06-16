@@ -1,4 +1,3 @@
-// pl/lodz/dormproblemservice/config/RestTemplateConfig.java
 package pl.lodz.dormproblemservice.config;
 
 import org.springframework.context.annotation.Bean;

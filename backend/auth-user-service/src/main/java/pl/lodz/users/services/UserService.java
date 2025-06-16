@@ -3,8 +3,10 @@ package pl.lodz.users.services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.entity.RoleEntity;
+import pl.lodz.entity.StudentEntity;
 import pl.lodz.entity.UserEntity;
 import pl.lodz.repository.jpa.RoleJpaRepository;
+import pl.lodz.repository.jpa.StudentJpaRepository;
 import pl.lodz.repository.jpa.UserRepository;
 import pl.lodz.users.dto.GetUserDTO;
 import pl.lodz.users.dto.UpdateUserDTO;
@@ -19,10 +21,12 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleJpaRepository roleJpaRepository;
+    private final StudentJpaRepository studentJpaRepository;
 
-    public UserService(UserRepository userRepository, RoleJpaRepository roleJpaRepository) {
+    public UserService(UserRepository userRepository, RoleJpaRepository roleJpaRepository, StudentJpaRepository studentJpaRepository) {
         this.userRepository = userRepository;
         this.roleJpaRepository = roleJpaRepository;
+        this.studentJpaRepository = studentJpaRepository;
     }
 
     public List<GetUserDTO> getAllUsers() {
@@ -64,6 +68,17 @@ public class UserService {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
         return UserMapper.mapToGetUserDTO(currUser);
+    }
+
+    public String getFullNameUserById(Long id) {
+
+        Optional<StudentEntity> optionalStudentEntity = studentJpaRepository.findByUserId(id);
+        if (optionalStudentEntity.isEmpty()) {
+            return "Brak danych";
+        }
+        StudentEntity studentEntity = optionalStudentEntity.get();
+
+        return studentEntity.getName()+" "+studentEntity.getSurname();
     }
 
     public String getUsernameById(Long id) {
