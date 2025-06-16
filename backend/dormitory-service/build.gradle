@@ -36,7 +36,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.testcontainers:postgresql:1.19.3'
 
@@ -54,6 +53,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation("io.cucumber:cucumber-java:7.23.0")
 
+    testImplementation "io.rest-assured:rest-assured:5.5.5"
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
 }
 
