@@ -14,6 +14,7 @@ import pl.lodz.repository.jpa.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -29,6 +30,7 @@ public class StudentRepository {
         conditionsToNotCreateStudent(student);
         studentEntity.getUser().setRole(new RoleEntity(3L, "STUDENT"));
         studentEntity.getUser().setActive(true);
+        studentEntity.getUser().setUuid(UUID.randomUUID().toString());
         studentJpaRepository.saveAndFlush(studentEntity);
     }
 

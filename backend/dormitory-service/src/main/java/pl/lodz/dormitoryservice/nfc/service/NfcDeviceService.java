@@ -142,9 +142,6 @@ public class NfcDeviceService {
                .stream()
                .map(NfcDeviceMapper::entityToGetDTO)
                .toList();
-       if (nfcDevices == null) {
-           throw new DeviceNotFoundException("Error while fetching NFC devices");
-       }
        return nfcDevices;
    }
 

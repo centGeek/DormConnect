@@ -14,6 +14,7 @@ import pl.lodz.repository.jpa.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @AllArgsConstructor
@@ -28,6 +29,7 @@ public class ManagerRepository {
         conditionsToNotCreateManager(manager);
         managerEntity.getUser().setRole(new RoleEntity(2L, "MANAGER"));
         managerEntity.getUser().setActive(true);
+        managerEntity.getUser().setUuid(UUID.randomUUID().toString());
         managerJpaRepository.saveAndFlush(managerEntity);
     }
 

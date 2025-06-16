@@ -14,7 +14,7 @@ public class CorsGlobalConfiguration {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("0.0.0.0", "http://localhost:5173", "192.168.166.187"));
+        config.setAllowedOrigins(List.of("0.0.0.0", "http://localhost:5173", "192.168.166.0/24"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

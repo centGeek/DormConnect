@@ -9,7 +9,7 @@
 #define USER_UUID_STOP_NUMBER 0xFF
 #define USER_UUID_CONTROL_BYTE_NUMBER 2
 #define USER_UUID_TOTAL_BYTES 
-#define SERVER_REQUEST_ADDRESS "http://192.168.206.74:8091/api/nfc/check-access"
+#define SERVER_REQUEST_ADDRESS "http://192.168.206.74:8000/api/nfc/room/check-access"
 
 #define DEVICE_UUID "773c4f56-e9a0-4f94-9cd2-403e7342fc29"
-#define ROOM_NUMBER 222
+#define ROOM_NUMBER "07"

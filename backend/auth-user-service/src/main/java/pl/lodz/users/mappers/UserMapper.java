@@ -8,7 +8,7 @@ public class UserMapper {
     public static GetUserDTO mapToGetUserDTO(UserEntity userEntity) {
         return new GetUserDTO(
                 userEntity.getId(),
-                userEntity.getUuid().toString(),
+                userEntity.getUuid(),
                 userEntity.getUserName(),
                 userEntity.getEmail(),
                 userEntity.getRole().getRoleName(),

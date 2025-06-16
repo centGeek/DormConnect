@@ -1,6 +1,7 @@
-#include "../Web/WebServerController.h"
 #include <NetworkController.h>
 #include <LiquidCrystal_I2C.h>
+#include <NfcController.h>
+#include <WebClientController.h>
 
 #define LCD_COLS 16
 #define LCD_ROWS 2
@@ -11,7 +12,6 @@ private:
     uint8_t lockStatus;
     NfcController nfcController;
     WebClientController webClientController;
-    WebServerController webServerController;
     NetworkController networkController;
     LiquidCrystal_I2C lcd;
 
