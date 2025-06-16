@@ -5,10 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomCreateDTO;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomGetDTO;
+import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomWithNameDTO;
 import pl.lodz.dormitoryservice.commonRoom.service.CommonRoomService;
 import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/common-room")
@@ -24,7 +27,6 @@ class CommonRoomController {
         CommonRoomEntity newRoom = service.addCommonRoom(commonRoomCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newRoom);
     }
-
 
     @GetMapping("/show")
     public List<CommonRoomGetDTO> showCommonRooms() {
@@ -54,6 +56,7 @@ class CommonRoomController {
     public List<CommonRoomEntity> showCommonRoomsByFloor(@PathVariable Long floor) {
         return service.getRoomByFloor(floor.intValue());
     }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<CommonRoomGetDTO> showCommonRoom(@PathVariable Long id) {
         CommonRoomGetDTO commonRoom = service.getCommonRoomById(id);
@@ -63,11 +66,13 @@ class CommonRoomController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @GetMapping("/get/enum")
     public ResponseEntity<List<String>> getCommonRoomTypes() {
         List<String> commonRoomTypes = service.getCommonRoomTypes();
         return ResponseEntity.ok(commonRoomTypes);
     }
+
     @GetMapping("/floors")
     public ResponseEntity<List<Integer>> getFloors() {
         List<Integer> floors = service.getFloors();
@@ -81,7 +86,22 @@ class CommonRoomController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Common room not found");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error resetting assignments: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error resetting assignments: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/find/by-name")
+    public ResponseEntity<?> getMethodName(@RequestParam String name) {
+        try {
+            CommonRoomWithNameDTO room =  service.findCommonRoomByName(name);
+            return ResponseEntity.ok(room);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Common room not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error finding common room by name: " + e.getMessage());
         }
     }
 

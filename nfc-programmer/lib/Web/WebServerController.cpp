@@ -32,9 +32,15 @@ uint8_t WebServerController::startServer()
     },
                         NULL, [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
                         {
+                            Serial.println("Received request to program card");
+                            digitalWrite(WORKING_OUTPUT_PIN, HIGH);
                             AsyncResponseStream *response = request->beginResponseStream("application/json");
+                            response->addHeader("Connection", "keep-alive");
+
                             if (request->contentType() != "application/json")
                             {
+                                Serial.println("Received request with wrong content type");
+                                digitalWrite(WORKING_OUTPUT_PIN, LOW);
                                 request->send(500, "text", "bad format");
                             }
 
@@ -47,10 +53,10 @@ uint8_t WebServerController::startServer()
                             const char *userUUID;
                             const char *authorizationStatus;
 
-                            if (document.containsKey("userUUID"))
+                            if (document.containsKey("userUuid"))
                             {
 
-                                userUUID = document["userUUID"];
+                                userUUID = document["userUuid"];
                                 String uuidString = String(userUUID);
 
                                 Serial.print("received userUUID: ");
@@ -60,29 +66,37 @@ uint8_t WebServerController::startServer()
 
                                 uint8_t *cardUid;
 
-                                esp_task_wdt_add(NULL);
                                 cardUid = this->nfcController.listen();
-     
 
                                 if (cardUid == nullptr)
                                 {
                                     esp_task_wdt_reset();
                                     Serial.println("Timeout while listening for NFC card");
+                                    digitalWrite(WORKING_OUTPUT_PIN, LOW);
                                     request->send(500, "Could not read nfc card");
 
                                 }
                                 else
                                 {
-                                    this->nfcController.writeNfcUserUUID(uuidString);
+                                    uint8_t success = this->nfcController.writeNfcUserUUID(uuidString);
+                                    if (success != 0)
+                                    {
+                                        Serial.println("Error while writing NFC card");
+                                        digitalWrite(WORKING_OUTPUT_PIN, LOW);
+                                        request->send(500, "Could not write nfc card");
+                                        return;
+                                    }
+
                                     Serial.println("Card programmed");
 
                                     JsonDocument responseJson;
                                     responseJson["deviceId"] = DEVICE_UUID;
-                                    responseJson["userUUID"] = userUUID;
+                                    responseJson["userUuid"] = userUUID;
                                     responseJson["cardUuid"] = this->nfcController.nfcTagToString(cardUid);
                                     Serial.println("ok");
                                     serializeJson(responseJson, *response);
                                     response->setCode(200);
+                                    digitalWrite(WORKING_OUTPUT_PIN, LOW);
                                     request->send(response);
                                 }
                             }
@@ -90,6 +104,7 @@ uint8_t WebServerController::startServer()
                             else
                             {
                                 Serial.println("Cannot find all json keys");
+                                digitalWrite(WORKING_OUTPUT_PIN, LOW);
                                 request->send(500, "text", "cannot find all json keys");
                             }
                         });

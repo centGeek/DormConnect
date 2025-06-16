@@ -71,7 +71,9 @@ public class ReactiveSecurityConfig {
                                 "/api/floors/**",
                                 "/api/dorm/form/**",
                                 "/api/dorm/room/group/**",
-                                "/api/dorm/**"
+                                "/api/dorm/**", 
+                                "/api/nfc/**",
+                                "/api/nfc-programmer/**"
                         ).permitAll()
                 )
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)

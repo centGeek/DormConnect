@@ -1,5 +1,6 @@
 server:
   port: 8000
+  address: 0.0.0.0
 
 eureka:
   client:
@@ -66,7 +67,7 @@ spring:
         - id: dorm-service-api
           uri: lb://DORMITORY-SERVICE
           predicates:
-            - Path=/api/common-room-assignment/**, /api/common-room/**, /api/floors/**, /api/dorm/form/**, /api/dorm/room/group/**, /api/dorm/**
+            - Path=/api/common-room-assignment/**, /api/common-room/**, /api/floors/**, /api/dorm/form/**, /api/dorm/room/group/**, /api/dorm/**, /api/nfc/**, /api/nfc-programmer/**
 
 springdoc:
   api-docs:

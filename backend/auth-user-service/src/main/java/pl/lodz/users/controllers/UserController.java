@@ -11,6 +11,9 @@ import pl.lodz.config.JwtService;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -42,6 +45,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get/by-uuid/{uuid}")
+    public ResponseEntity<GetUserDTO> getUserByUuid(@PathVariable String uuid) {
+        try {
+            return ResponseEntity.ok(userService.getUserByUuid(uuid));
+        } catch (Exception e) {
+            throw new UserException("Error fetching user by UUID: " + e.getMessage(), e);
+        }
+    }
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+
+
 
     @GetMapping("/get/fullname/{id}")
     public ResponseEntity<String> getFullNameUserById(@PathVariable Long id) {
@@ -62,6 +78,23 @@ public class UserController {
 
             GetUserDTO updatedUser = userService.updateUser(entity);
 
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            throw new UserException("Error updating user: " + e.getMessage(), e);
+        }
+    }
+
+    // only for the NFC microservice
+    @PostMapping("/update-user")
+    @Transactional
+    public ResponseEntity<GetUserDTO> updateUserEntity(@RequestBody UpdateUserDTO entity) {
+        try {
+            if (entity == null) {
+                throw new UserException("Invalid input: id or entity cannot be null");
+            }
+
+            GetUserDTO updatedUser = userService.updateUser(entity);
+            
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             throw new UserException("Error updating user: " + e.getMessage(), e);

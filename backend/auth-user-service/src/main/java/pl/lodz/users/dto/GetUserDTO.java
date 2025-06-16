@@ -6,7 +6,8 @@ public record GetUserDTO(
         String userName,
         String email,
         String role,
-        boolean isActive
+        boolean isActive,
+        String cardUuid
 ) {
     
 }

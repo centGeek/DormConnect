@@ -1,4 +1,4 @@
-package pl.lodz.dormitoryservice.nfc.entity;
+package pl.lodz.dormitoryservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,15 +13,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "nfc_programmer")
-public class NfcProgrammerEntity {
+@Table(name = "nfc_device")
+public class NfcDeviceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private UUID uuid;
-    private int port;
-    private String ipAddress;
+    private String roomNumber;
+    private String lockStatus;
     private String deviceStatus;
+    private String ipAddress;
     private String macAddress;
-
 }
+

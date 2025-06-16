@@ -5,7 +5,7 @@ package pl.lodz.dormitoryservice.nfc.mapper;
 import pl.lodz.dormitoryservice.nfc.dto.GetNfcDeviceDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcDeviceRegisterDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcDeviceUpdateDTO;
-import pl.lodz.dormitoryservice.nfc.entity.NfcDeviceEntity;
+import pl.lodz.dormitoryservice.entity.NfcDeviceEntity;
 
 import java.util.UUID;
 

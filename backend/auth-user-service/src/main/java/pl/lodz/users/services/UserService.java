@@ -62,6 +62,11 @@ public class UserService {
         userEntity.setEmail(entity.email());
         userEntity.setRole(roleEntity);
         userEntity.setActive(entity.isActive());
+        if (entity.cardUuid() != null && !entity.cardUuid().isEmpty()) {
+            userEntity.setCardUuid(entity.cardUuid());
+        } else {
+            userEntity.setCardUuid(null);
+        }
         UserEntity saved = userRepository.save(userEntity);
         return UserMapper.mapToGetUserDTO(saved);
     }
@@ -88,7 +93,7 @@ public class UserService {
 
     public String getUsernameById(Long id) {
         UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         return user.getUserName();
     }
 
@@ -149,6 +154,16 @@ public class UserService {
         }
         userEntity.setUserName(newUsername);
         userRepository.save(userEntity);
+    }
+
+    public GetUserDTO getUserByUuid(String uuid) {
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException("Invalid input: uuid cannot be null or empty");
+        }
+        UserEntity userEntity = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with uuid: " + uuid));
+        // TODO Auto-generated method stub
+        return UserMapper.mapToGetUserDTO(userEntity);
     }
 
 }

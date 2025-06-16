@@ -69,7 +69,7 @@ uint8_t* NfcController::listen(uint16_t timeout)
     static uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
     uint8_t uid_length;
 
-    uint8_t retryCount = 10;
+    uint8_t retryCount = 8;
     while(retryCount > 0) {
         found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length, 1000);
         if (found) {

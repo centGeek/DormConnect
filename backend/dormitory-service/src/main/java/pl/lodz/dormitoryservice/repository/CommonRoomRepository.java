@@ -22,4 +22,6 @@ public interface CommonRoomRepository extends JpaRepository<CommonRoomEntity, Lo
     void deleteCommonRoomById(Long id);
 
     List<CommonRoomEntity> findByFloor(int floor);
+
+    CommonRoomEntity findByName(String name);
 }
