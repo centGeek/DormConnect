@@ -26,3 +26,6 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+jwt:
+  secret: tajny_klucz_tajny_klucz_tajny_klucz

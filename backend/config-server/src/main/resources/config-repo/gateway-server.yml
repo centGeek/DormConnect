@@ -93,3 +93,5 @@ springdoc:
       - name: DORMITORY-SERVICE
         url: /dormService/v3/api-docs
 
+jwt:
+  secret: tajny_klucz_tajny_klucz_tajny_klucz

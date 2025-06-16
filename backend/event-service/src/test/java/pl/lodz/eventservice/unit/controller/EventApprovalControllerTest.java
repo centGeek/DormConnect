@@ -1,4 +1,4 @@
-package pl.lodz.eventservice.integration.controller;
+package pl.lodz.eventservice.unit.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
