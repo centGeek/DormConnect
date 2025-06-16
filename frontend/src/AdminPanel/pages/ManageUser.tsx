@@ -12,6 +12,7 @@ import ChangeEmailDialog from "../components/ChangeEmailDialog";
 import LockAccountDialog from "../components/LockAccountDialog";
 import ErrorDialog from "../components/ErrorDialog";
 import SuccessDialog from "../components/SuccessDialog";
+import {buttons} from "../../ReusableComponents/buttons.ts";
 import ProgramCardDialog from "../components/ProgramCardDialog";
 
 
@@ -90,13 +91,7 @@ export default function ManageUser() {
     return (
         <>
             <Template
-                buttons={[
-                    {text: 'Chat', link: '/chat'},
-                    {text: 'Wydarzenia', link: '/events'},
-                    {text: 'Pokoje wspólne', link: '/common-rooms'},
-                    {text: 'Pokój', link: '/rooms/myInfo'},
-                    {text: 'Zgłoś problem', link: '/problems'}
-                ]}>
+                buttons={buttons}>
                 <button
                     type="button"
                     className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"

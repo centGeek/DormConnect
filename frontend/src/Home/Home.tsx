@@ -3,6 +3,7 @@ import Template from '../Template/Template.tsx';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import homePageImage from '../assets/homePageImage.png';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function Home() {
     const navigate = useNavigate();
@@ -15,13 +16,7 @@ function Home() {
     }, [navigate]);
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="p-4 md:p-8 flex flex-col">
                 <div className="flex flex-col items-start gap-6 bg-white p-4 md:p-8 rounded-lg">
                     <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 text-center w-full">

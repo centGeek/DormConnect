@@ -17,5 +17,6 @@ public interface ManagerJpaRepository extends JpaRepository<ManagerEntity, Long>
             where u.email = :email
             """)
     Optional<ManagerEntity> findByEmail(@Param("email") String email);
+    Optional<ManagerEntity> findByUserId(Long managerId);
 }
 

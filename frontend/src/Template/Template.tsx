@@ -80,7 +80,7 @@ function Template({ children, footerContent, buttons }: TemplateProps) {
     }, [temperature, loading, error]);
     useEffect(() => {
         const handleDropdownButtonProps = () => {
-            if (userContext?.user?.roles.includes("ADMIN")) {
+            if ((userContext?.user?.roles.includes("ADMIN")|| userContext?.user?.roles.includes("MANAGER"))) {
                 setDropdownButtonProps([
                     { name: 'Panel administratora', url: '/admin-panel' },
                     { name: 'Ustawienia konta', url: '/account-settings' },
