@@ -1,16 +1,22 @@
 package pl.lodz.dormitoryservice.nfc.controller;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.dormitoryservice.nfc.dto.NfcProgramCardDTO;
+import pl.lodz.dormitoryservice.nfc.dto.NfcProgrammerDTO;
 import pl.lodz.dormitoryservice.nfc.dto.ProgrammedCardDTO;
 import pl.lodz.dormitoryservice.nfc.dto.RegisterNfcProgrammerDTO;
 import pl.lodz.dormitoryservice.nfc.service.NfcProgrammerService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -60,4 +66,20 @@ public class NfcProgrammerController {
            throw new RuntimeException("Error programming NFC card: " + e.getMessage(), e);
        }
    }
+
+   @GetMapping("/get-all")
+   public ResponseEntity<List<NfcProgrammerDTO>> getAllNfcProgrammers() {
+         try {
+              List<NfcProgrammerDTO> nfcProgrammers = nfcProgrammerService.getAllNfcProgrammers();
+              return ResponseEntity.ok(nfcProgrammers);
+         } catch (Exception e) {
+              throw new RuntimeException("Error retrieving NFC programmers: " + e.getMessage(), e);
+         }
+   }
+
+   @GetMapping("/get-info")
+   public String getInfo() {
+       return "info";
+   }
+
 }

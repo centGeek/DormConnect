@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import javax.print.attribute.standard.Media;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
 import pl.lodz.dormitoryservice.nfc.dto.NfcProgramCardDTO;
+import pl.lodz.dormitoryservice.nfc.dto.NfcProgrammerDTO;
 import pl.lodz.dormitoryservice.nfc.dto.ProgrammedCardDTO;
 import pl.lodz.dormitoryservice.nfc.dto.RegisterNfcProgrammerDTO;
 import pl.lodz.dormitoryservice.entity.NfcProgrammerEntity;
@@ -149,4 +151,11 @@ public class NfcProgrammerService {
         }
         return updatedUser;
    }
+
+    public List<NfcProgrammerDTO> getAllNfcProgrammers() {
+        // TODO Auto-generated method stub
+        return nfcProgrammerRepository.findAll().stream()
+                .map(NfcProgrammerMapper::entityToNfcProgrammerDTO)
+                .toList();
+    }
 }
