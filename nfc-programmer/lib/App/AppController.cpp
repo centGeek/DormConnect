@@ -6,7 +6,7 @@ AppController::AppController() :
 {
     Serial.begin(9600);
     Wire.begin();
-
+    pinMode(WORKING_OUTPUT_PIN, OUTPUT);
 
 }
 
