@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'pl.lodz'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'io.cucumber:cucumber-java:7.15.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.15.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.0'
+
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+}
+
+test {
+    useJUnitPlatform()
+}
