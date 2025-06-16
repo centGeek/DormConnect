@@ -4,6 +4,7 @@ import { mainPageButtons } from "../interfaces/MainPageButtons";
 import { UserContext } from "../../Context/UserContext";
 import { useContext } from "react";
 import axios from "axios";
+import {buttons} from "../../ReusableComponents/buttons.ts";
 
 
 export default function NfcManagementPanel() {
@@ -19,13 +20,7 @@ export default function NfcManagementPanel() {
     }
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <button
                 type="button"
                 className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"

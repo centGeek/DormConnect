@@ -36,7 +36,6 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register/student" element={<RegistrationStudent/>} />
-                <Route path="/register/manager" element={<RegistrationManager/>} />
                 {userContext?.token ? (
                     <>
                         <Route path="/home" element={<Home />} />
@@ -50,17 +49,18 @@ function App() {
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
                         <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
-                        <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
+                        <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         {(userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER')) && (
                             <>
                                 <Route path="/dormitory" element={<CreateDormitory />} />
                                 <Route path="/events/admin/events" element={<AdminEvents />} />
-                                <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                                 <Route path="/users/manage" element={<UserManagementPanel/>}/>
                                 <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
                                 <Route path="/users/manage/:id" element={<ManageUser/>}/>
                                 <Route path="/admin-panel" element={<AdminPanel/>}/>
+                                <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
+                                <Route path="/register/user" element={<RegistrationManager/>} />
                             </>
                         )}
 

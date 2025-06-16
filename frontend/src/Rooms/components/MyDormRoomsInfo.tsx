@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Template from "../../Template/Template.tsx";
 import {useNavigate} from "react-router-dom";
+import {buttons} from "../../ReusableComponents/buttons.ts";
 
 interface DormFormDTO {
     id: number;
@@ -136,13 +137,7 @@ const MyDormRoomsInfo: React.FC = () => {
 
     return (
         <Template
-            buttons={[
-                {text: 'Chat', link: '/chat'},
-                {text: 'Wydarzenia', link: '/events'},
-                {text: 'Pokoje wspólne', link: '/common-rooms'},
-                {text: 'Pokój', link: '/rooms/myInfo'},
-                {text: 'Zgłoś problem', link: '/problems'}
-            ]}
+            buttons={buttons}
             footerContent={<p></p>}
         >
             <div className="p-6 max-w-4xl mx-auto space-y-10 text-center">

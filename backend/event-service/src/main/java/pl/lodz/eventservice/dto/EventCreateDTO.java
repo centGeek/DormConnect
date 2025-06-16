@@ -16,7 +16,7 @@ public record EventCreateDTO(
         String description,
 
         @NotNull(message = "Start date must be provided.")
-        @Future(message = "Start date must be in the future.")
+        @Future(message = "Dzień startu musi być w przyszłości")
         LocalDateTime startDateTime,
 
         @NotNull(message = "End date must be provided.")

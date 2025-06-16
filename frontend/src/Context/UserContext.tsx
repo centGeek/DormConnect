@@ -94,7 +94,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 username: decodedToken.username
             });
         }
-    }, [token]);
+    }, []);
 
 
 

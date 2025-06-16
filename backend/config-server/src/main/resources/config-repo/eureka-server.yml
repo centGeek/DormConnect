@@ -9,3 +9,7 @@ eureka:
 spring:
   application:
     name: eureka-server
+
+jwt:
+  secret: tajny_klucz_tajny_klucz_tajny_klucz
+

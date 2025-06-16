@@ -1,4 +1,4 @@
-package pl.lodz.eventservice.integration.controller;
+package pl.lodz.eventservice.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

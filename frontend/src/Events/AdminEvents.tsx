@@ -3,6 +3,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import Template from '../Template/Template.tsx';
 import Pagination from './Pagination.tsx';
 import {UserContext} from '../Context/UserContext.tsx';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface Event {
     eventId: number;
@@ -139,13 +140,7 @@ function AdminEvents() {
         });
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
                 <div className="relative p-2 sm:p-5 max-w-7xl mx-auto">
                     <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between items-center gap-2 sm:gap-3 p-5">

@@ -13,6 +13,7 @@ import OperationSuccedPopUp from "./components/OperationSuccedPopUp.tsx";
 import PopUpRemoveFailed from "./components/FloorPupUps/PopUpRemoveFailed.tsx";
 import Cookies from "js-cookie";
 import {useNavigate} from 'react-router-dom';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function CreateDormitory() {
     const [floors, setFloors] = useState<number[]>([]);
@@ -125,13 +126,7 @@ function CreateDormitory() {
     };
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="w-full md:w-1/4 flex justify-center items-start p-5">
                 <button
                     type="button"

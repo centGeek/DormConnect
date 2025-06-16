@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Template from "../Template/Template.tsx";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 import getRoomIcon from "../ReusableComponents/CommonRoomIcon.tsx";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface CommonRoom {
     id: number;
@@ -51,13 +52,7 @@ function CommonRoomShow() {
     }, []);
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="common-room-show-container flex flex-wrap justify-center gap-6 p-6 bg-gray-200 rounded-lg shadow-lg">
                 {loading ? (
                     <p className="text-gray-500">Ładowanie...</p>
