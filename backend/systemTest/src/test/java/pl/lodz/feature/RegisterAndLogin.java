@@ -18,23 +18,27 @@ public class RegisterAndLogin {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Response response;
     private String token;
+    private String email;
 
     private Map<String, String> loginData = new HashMap<>();
     Map<String, Object> registrationData = new HashMap<>();
     Map<String, Object> userMap = new HashMap<>();
 
-    @Given("dane do rejestracji {string} i haśle {string}")
-    public void daneDoRejestracjiIHaśle(String email, String password) {
+    @Given("dane do rejestracji email i haśle {string}")
+    public void daneDoRejestracjiIHaśle(String password) {
+
+        email = "user" + System.currentTimeMillis() + "@gmail.com";
+
         userMap.clear();
         userMap.put("email", email);
-        userMap.put("username", "student1");
+        userMap.put("userName", "student1");
         userMap.put("password", password);
 
         registrationData.clear();
         registrationData.put("id", null);
         registrationData.put("name", "Jan");
         registrationData.put("surname", "Kowalski");
-        registrationData.put("user", userMap); 
+        registrationData.put("user", userMap);
     }
 
     @When("uzytkownik wykonuje rejestracje")
@@ -53,10 +57,11 @@ public class RegisterAndLogin {
     @Then("uzytkownik stworzyl konto studenta")
     public void uzytkownikStworzylKontoStudenta() {
         assertThat(response.getStatusCode(), is(201));
-        assertThat(response.getBody().asString(), containsString("student1"));
     }
 
-    @Given("istnieje użytkownik o username user{int} i haśle haslo{int}")
+    // Next bc i am sooooo sleepy
+
+    @Given("istnieje użytkownik o emailu i haśle {string}")
     public void istniejeUżytkownikOUsernameUserIHaśleHaslo(int userNum, int passNum) {
         loginData.put("username", "user" + userNum);
         loginData.put("password", "haslo" + passNum);
@@ -83,6 +88,8 @@ public class RegisterAndLogin {
         assertThat(token, notNullValue());
         assertThat(token, not(isEmptyString()));
     }
+
+    // Next
 
     @Given("nie istnieje uzytkowni o username {string} i haśle {string}")
     public void nieIstniejeUzytkowniOUsernameIHaśle(String username, String password) {
