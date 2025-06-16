@@ -28,19 +28,14 @@ class UserRepositoryTest {
 
     @Test
     void thatUserIsCorrectlyRetrievedByEmail() {
-        // Zapisz rolę do bazy
         RoleEntity savedRole = roleJpaRepository.saveAndFlush(SecurityFixture.adminRole());
 
-        // Utwórz użytkownika z tą rolą
         UserEntity userEntity = SecurityFixture.adminEntity(savedRole);
 
-        // Zapisz użytkownika
         userRepository.saveAndFlush(userEntity);
 
-        // Pobierz użytkownika z bazy po emailu
         var actualUserEntity = userRepository.findByEmail(userEntity.getEmail()).orElseThrow();
 
-        // Porównaj po emailu (ID może być inne, bo baza generuje)
         Assertions.assertEquals(userEntity.getEmail(), actualUserEntity.getEmail());
         Assertions.assertEquals(userEntity.getUserName(), actualUserEntity.getUserName());
         Assertions.assertEquals(userEntity.getRole().getRoleName(), actualUserEntity.getRole().getRoleName());
