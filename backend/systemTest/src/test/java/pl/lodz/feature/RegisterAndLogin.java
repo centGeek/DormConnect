@@ -17,15 +17,14 @@ public class RegisterAndLogin {
     private final String baseUrl = "http://localhost:8000";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Response response;
-    private String token;
+
     private String email;
 
-    private Map<String, String> loginData = new HashMap<>();
-    Map<String, Object> registrationData = new HashMap<>();
-    Map<String, Object> userMap = new HashMap<>();
+    private Map<String, Object> registrationData = new HashMap<>();
+    private Map<String, Object> userMap = new HashMap<>();
 
     @Given("dane do rejestracji email i haśle {string}")
-    public void daneDoRejestracjiIHaśle(String password) {
+    public void daneDoRejestracjiIHasle(String password) {
 
         email = "user" + System.currentTimeMillis() + "@gmail.com";
 
@@ -59,16 +58,69 @@ public class RegisterAndLogin {
         assertThat(response.getStatusCode(), is(201));
     }
 
-    // Next bc i am sooooo sleepy
+    // Next
 
-    @Given("istnieje użytkownik o emailu i haśle {string}")
-    public void istniejeUżytkownikOUsernameUserIHaśleHaslo(int userNum, int passNum) {
-        loginData.put("username", "user" + userNum);
-        loginData.put("password", "haslo" + passNum);
+    private Map<String, Object> registrationData2 = new HashMap<>();
+    private Map<String, Object> userMap2 = new HashMap<>();
+
+    @Given("dane do rejestracji {string} i haśle {string}")
+    public void istniejeUzytkownikOUsernameUserIHasleHaslo(String _email, String _password) {
+
+        userMap2.clear();
+        userMap2.put("email", _email);
+        userMap2.put("userName", "student1");
+        userMap2.put("password", _password);
+
+        registrationData2.clear();
+        registrationData2.put("id", null);
+        registrationData2.put("name", "Jan");
+        registrationData2.put("surname", "Kowalski");
+        registrationData2.put("user", userMap2);
+
+        try {
+            String json = objectMapper.writeValueAsString(registrationData2);
+            response = RestAssured.given()
+                    .contentType("application/json")
+                    .body(json)
+                    .post(baseUrl + "/register/student");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @When("uzytkownik próbuje się zarejestrować")
+    public void uzytkownikPrboujeSieZarejestrowac() {
+        try {
+            String json = objectMapper.writeValueAsString(registrationData2);
+            response = RestAssured.given()
+                    .contentType("application/json")
+                    .body(json)
+                    .post(baseUrl + "/register/student");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("uzytkownik dostaje błąd")
+    public void uzytkownikMaDostepDoSystemu() {
+        assertThat(response.getStatusCode(), is(409));
+    }
+
+    // Next
+
+    private Map<String, String> loginData = new HashMap<>();
+    private String token;
+
+    @Given("istnieje użytkownik {string} i haśle {string}")
+    public void istnieje_uzytkownik_i_hasle(String email, String password) {
+        loginData.clear();
+        loginData.put("email", email);
+        loginData.put("password", password);
     }
 
     @When("wykonuję logowanie do systemu")
-    public void wykonujęLogowanieDoSystemu() {
+    public void wykonuje_logowanie_do_systemu() {
         try {
             String json = objectMapper.writeValueAsString(loginData);
             response = RestAssured.given()
@@ -83,7 +135,7 @@ public class RegisterAndLogin {
     }
 
     @Then("uzytkownik ma dostęp do systemu")
-    public void uzytkownikMaDostępDoSystemu() {
+    public void uzytkownik_ma_dostep_do_systemu() {
         assertThat(response.getStatusCode(), is(200));
         assertThat(token, notNullValue());
         assertThat(token, not(isEmptyString()));
@@ -91,67 +143,36 @@ public class RegisterAndLogin {
 
     // Next
 
-    @Given("nie istnieje uzytkowni o username {string} i haśle {string}")
-    public void nieIstniejeUzytkowniOUsernameIHaśle(String username, String password) {
-        loginData.put("username", username);
-        loginData.put("password", password);
+    private String token1;
+
+    @Given("zalogowany użytkownik {string} i haśle {string} posiada token JWT")
+    public void zalogowanyUzytkownikIHaslePosiadaTokenJWT(String email, String password) {
+        Map<String, String> login = new HashMap<>();
+        login.put("email", email);
+        login.put("password", password);
+
+        try {
+            String json = objectMapper.writeValueAsString(login);
+            response = RestAssured.given()
+                    .contentType("application/json")
+                    .body(json)
+                    .post(baseUrl + "/api/auth/login");
+
+            token1 = response.jsonPath().getString("token");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertThat(token1, notNullValue());
+        assertThat(token1, not(isEmptyString()));
     }
 
-
-
-    @When("wykonuję PUT na {string} z body:")
-    public void wykonuję_put_na_z_body(String path, String body) {
-        response = RestAssured.given()
-                .contentType("application/json")
-                .body(body)
-                .when()
-                .put(baseUrl + path)
-                .andReturn();
+    @When("wylogowuje się z systemu")
+    public void wylogowujeSięZSystemu() {
     }
 
-    @When("wykonuję GET na {string}")
-    public void wykonuję_get_na(String path) {
-        response = RestAssured.given()
-                .when()
-                .get(baseUrl + path)
-                .andReturn();
+    @Then("jest wylogowany i nie posiada tokenu")
+    public void jestWylogowanyINiePosiadaTokenu() {
     }
-
-    @Then("odpowiedź ma status {int}")
-    public void odpowiedź_ma_status(Integer status) {
-        assertThat(response.getStatusCode(), is(status));
-    }
-
-    @Then("odpowiedź zawiera {string}")
-    public void odpowiedź_zawiera(String text) {
-        assertThat(response.getBody().asString(), containsString(text));
-    }
-
-    @Given("istnieje użytkownik o username {string} i haśle {string}")
-    public void istnieje_użytkownik_o_username_i_haśle(String username, String password) {
-        // Można dodać przygotowanie użytkownika w bazie, lub pominąć jeśli dane testowe istnieją
-    }
-
-    @Then("odpowiedź zawiera token autoryzacji")
-    public void odpowiedź_zawiera_token_autoryzacji() {
-        String token = response.jsonPath().getString("token");
-        assertThat(token, notNullValue());
-    }
-
-    @Given("zalogowany użytkownik posiada token {string}")
-    public void zalogowany_użytkownik_posiada_token(String token) {
-        // Przechowujemy token do kolejnych zapytań
-        this.token = token;
-    }
-
-    @When("wykonuję POST na {string} z header Authorization {string}")
-    public void wykonuję_post_na_z_header_authorization(String path, String authHeader) {
-        response = RestAssured.given()
-                .header("Authorization", authHeader)
-                .when()
-                .post(baseUrl + path)
-                .andReturn();
-    }
-
 
 }
