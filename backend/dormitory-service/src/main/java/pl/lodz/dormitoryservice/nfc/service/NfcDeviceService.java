@@ -77,8 +77,13 @@ public class NfcDeviceService {
        if (currentUser == null) {
            throw new RuntimeException("Validation failed");
        }
+
+       // if current user do not have any card assigned, return false
+       if (currentUser.cardUuid() == null) {
+           return false;
+       }
        // check if the user card uuid and the one from the request match
-       if (currentUser.cardUuid().toLowerCase() != nfcAccessRequestDTO.card_uid().toLowerCase()) {
+       if (!currentUser.cardUuid().toLowerCase().equals(nfcAccessRequestDTO.card_uid().toLowerCase())) {
            throw new NotFoundException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
            + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
        }
