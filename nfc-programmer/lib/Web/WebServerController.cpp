@@ -32,8 +32,10 @@ uint8_t WebServerController::startServer()
     },
                         NULL, [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
                         {
-                            AsyncResponseStream *response = request->beginResponseStream("application/json");
                             Serial.println("Received request to program card");
+                            AsyncResponseStream *response = request->beginResponseStream("application/json");
+                            response->addHeader("Connection", "keep-alive");
+
                             if (request->contentType() != "application/json")
                             {
                                 Serial.println("Received request with wrong content type");

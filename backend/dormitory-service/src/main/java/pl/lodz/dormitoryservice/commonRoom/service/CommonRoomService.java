@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomCreateDTO;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomGetDTO;
+import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomWithNameDTO;
 import pl.lodz.dormitoryservice.commonRoom.mapper.CommonRoomMapper;
 import pl.lodz.dormitoryservice.commonRoom.scheduler.CommonRoomAssignmentScheduler;
 import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
@@ -42,8 +43,6 @@ public class CommonRoomService {
         if (commonRoomCreateDTO.maxTimeYouCanStay()>4){
             throw new IllegalArgumentException("Max time you can stay cannot be greater than 4");
         }
-
-
 
         CommonRoomEntity savedRoom = repository.save(CommonRoomMapper.toCommonRoomEntity(commonRoomCreateDTO));
         floorService.addCommonRoomToFloor(savedRoom.getId(), savedRoom.getFloor());
@@ -98,5 +97,11 @@ public class CommonRoomService {
         scheduler.deleteAllAssigmentsForRoom(commonRoom);
         scheduler.createAssignmentsForNextWeek(commonRoom);
         return ResponseEntity.ok("Assignments for next week reset successfully");
+    }
+
+    public CommonRoomWithNameDTO findCommonRoomByName(String name) {
+        CommonRoomEntity entity = repository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Common room not found with name: " + name));
+        // TODO Auto-generated method stub
+        return CommonRoomMapper.toCommonRoomWithNameDTO(entity);
     }
 }
