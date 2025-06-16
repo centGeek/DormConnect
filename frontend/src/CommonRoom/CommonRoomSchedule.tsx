@@ -1,11 +1,12 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import {useParams, useNavigate} from "react-router-dom";
+import {useEffect, useState, useContext} from "react";
 import Template from "../Template/Template";
-import { UserContext } from "../Context/UserContext";
+import {UserContext} from "../Context/UserContext";
 // @ts-expect-error
-import { groupBy } from "lodash";
+import {groupBy} from "lodash";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
-import ErrorPopUp  from "./ErrorPopUp.tsx";
+import ErrorPopUp from "./ErrorPopUp.tsx";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface assignmentProps {
     id: number;
@@ -27,7 +28,7 @@ interface CommonRoom {
 
 // @ts-ignore
 function CommonRoomSchedule() {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [assignments, setAssignments] = useState<assignmentProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [commonRoom, setCommonRoom] = useState<CommonRoom | null>(null);
@@ -95,7 +96,6 @@ function CommonRoomSchedule() {
                 credentials: "include",
             });
             if (!response.ok) {
-                const errorMessage = await response.text();
                 setIsPopUpErrorOpen(true);
             }
             await fetchAssignments();
@@ -131,12 +131,11 @@ function CommonRoomSchedule() {
             handleUnassign(assignment.id);
         } else if (!assignment.isFull) {
             handleAssign(assignment.id);
-        }
-        else {
+        } else {
             setIsPopUpErrorOpen(true);
         }
     };
-    const handleResetAssignments = async (commonRoomId: number) =>{
+    const handleResetAssignments = async (commonRoomId: number) => {
         try {
             const response = await fetch(`/api/common-room/reset-assignments/${commonRoomId}`, {
                 method: "PUT",
@@ -184,11 +183,7 @@ function CommonRoomSchedule() {
 
     // @ts-ignore
     return (
-        <Template buttons={[ {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}]}>
+        <Template buttons={buttons}>
             <div className="w-full flex justify-center items-center p-5">
                 <button
                     type="button"
@@ -202,13 +197,15 @@ function CommonRoomSchedule() {
                 {commonRoom && (
                     <div className="text-center text-gray-700">
                         <p className="font-semibold">
-                            <span className="text-gray-600">Typ pokoju:</span> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
+                            <span
+                                className="text-gray-600">Typ pokoju:</span> {getRoomStatusTranslation(commonRoom.type)}&nbsp;&nbsp;&nbsp;
                             <span className="text-gray-600">Piętro:</span> {commonRoom.floor}&nbsp;&nbsp;&nbsp;
                             <span className="text-gray-600">Pojemność:</span> {commonRoom.capacity}&nbsp;&nbsp;&nbsp;
                             <span className="text-gray-600">Limit zapisów:</span> {commonRoom.timesAWeekYouCanUseIt}
                         </p>
                         {((userContext?.user?.roles.includes("ADMIN") || (userContext?.user?.roles.includes("MANAGER"))) &&
-                            <button onClick={() => handleResetAssignments(commonRoom?.id || 0)} className=" mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 transition">
+                            <button onClick={() => handleResetAssignments(commonRoom?.id || 0)}
+                                    className=" mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-400 transition">
                                 Resetuj rezerwacje
                             </button>)}
                     </div>
@@ -223,7 +220,8 @@ function CommonRoomSchedule() {
                     Object.entries(groupBy(assignments, (assignment: assignmentProps) =>
                         new Date(assignment.startDate).toLocaleDateString()
                     )).map(([date, group]) => (
-                        <div key={date} className="flex flex-col border border-gray-500 bg-gray-300 p-4 rounded-lg shadow-md min-w-[200px]">
+                        <div key={date}
+                             className="flex flex-col border border-gray-500 bg-gray-300 p-4 rounded-lg shadow-md min-w-[200px]">
                             <h3 className="text-lg font-bold text-gray-700 mb-3 text-center">{date}</h3>
                             <div className="flex flex-col gap-3">
                                 {group.map((assignment: assignmentProps) => (
@@ -257,7 +255,7 @@ function CommonRoomSchedule() {
                     ))
                 )}
             </div>
-            {isPopUpErrorOpen && <ErrorPopUp onClose={handleClosePopUp} />}
+            {isPopUpErrorOpen && <ErrorPopUp onClose={handleClosePopUp}/>}
         </Template>
     );
 }

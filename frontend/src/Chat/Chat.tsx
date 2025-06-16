@@ -3,6 +3,7 @@ import Template from '../Template/Template.tsx';
 import './Chat.css';
 import axios from 'axios';
 import Cookies from "js-cookie";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface Message {
     text: string;
@@ -43,13 +44,7 @@ function ChatPage() {
 };
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="chat-container flex flex-col flex-grow w-full h-full max-w-screen-lg mx-auto px-4 py-6 bg-gray-100 rounded-lg shadow-md">
                 <h1 className="text-center text-4xl font-extrabold text-gray-800 mb-4">Witaj</h1>
                 <h3 className="text-center text-lg text-gray-600">Odpowiem na każde pytanie dotyczące studiowania na Politechnice Łódzkiej</h3>

@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../Context/UserContext";
+import {useContext, useEffect, useState} from "react";
+import {UserContext} from "../../Context/UserContext";
 import Template from "../../Template/Template";
-import { mainPageButtons } from "../interfaces/MainPageButtons";
-import { useNavigate } from "react-router-dom";
+import {mainPageButtons} from "../interfaces/MainPageButtons";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import UserDTO from "../interfaces/UserDTO";
-import { errorResponsePlugin } from "http-proxy-middleware";
+import {errorResponsePlugin} from "http-proxy-middleware";
+import {buttons} from "../../ReusableComponents/buttons.ts";
 
 export default function UserManagementPanel() {
     const userContext = useContext(UserContext);
@@ -37,13 +38,7 @@ export default function UserManagementPanel() {
 
     return (
         <Template buttons={
-            [
-                {text: 'Chat', link: '/chat'},
-                {text: 'Wydarzenia', link: '/events'},
-                {text: 'Pokoje wspólne', link: '/common-rooms'},
-                {text: 'Pokój', link: '/rooms/myInfo'},
-                {text: 'Zgłoś problem', link: '/problems'}
-            ]
+            buttons
         }>
             <div>
                 <button
@@ -56,8 +51,10 @@ export default function UserManagementPanel() {
                 <div>
                     <h1 className="text-xl">Panel zarządzania użytkownikami</h1>
                     <form>
-                        <label htmlFor="username-search" className="block mb-2">Wyszukaj po nazwie użytkownika lub adresie e-mail</label>
-                        <input type="text" placeholder="Nazwa użytkownika/email" name="username-search" className="border-2"></input>
+                        <label htmlFor="username-search" className="block mb-2">Wyszukaj po nazwie użytkownika lub
+                            adresie e-mail</label>
+                        <input type="text" placeholder="Nazwa użytkownika/email" name="username-search"
+                               className="border-2"></input>
                     </form>
                     <p>Wszyscy użytkownicy:</p>
 
@@ -68,7 +65,9 @@ export default function UserManagementPanel() {
                             <p><strong>Email:</strong> {user.email}</p>
                             <p><strong>Rola:</strong> {user.role}</p>
                             <p><strong>Konto aktywne: </strong> {String(user.isActive)} </p>
-                            <button className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition" onClick={() => navigate("/users/manage/" + user.id)}>Zarządzaj</button>
+                            <button className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
+                                    onClick={() => navigate("/users/manage/" + user.id)}>Zarządzaj
+                            </button>
                         </div>)
                     )}
                 </div>

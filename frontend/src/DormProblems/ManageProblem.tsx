@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from '../Context/UserContext';
 import Template from '../Template/Template';
 import translate from './components/TranslateProblemStatus.tsx';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface DormProblem {
     id: number;
@@ -98,13 +99,7 @@ function DormProblemManage() {
 
     return (
         <Template
-            buttons={[
-                {text: 'Chat', link: '/chat'},
-                {text: 'Wydarzenia', link: '/events'},
-                {text: 'Pokoje wspólne', link: '/common-rooms'},
-                {text: 'Pokój', link: '/rooms/myInfo'},
-                {text: 'Zgłoś problem', link: '/problems'}
-            ]}
+            buttons={buttons}
         >
             <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg border border-gray-200">
                 <button

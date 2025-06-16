@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Template from '../Template/Template';
 import { UserContext } from '../Context/UserContext';
 import translateStatus from "./components/TranslateProblemStatus.tsx";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 
 interface DormProblem {
@@ -86,13 +87,7 @@ function DormProblems() {
     }, [userContext?.user?.roles]);
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="relative p-6">
 
                 <div className="text-center mb-8">

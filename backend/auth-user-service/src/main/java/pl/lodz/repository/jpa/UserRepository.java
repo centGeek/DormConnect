@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
         select u from UserEntity u where u.uuid =:uuid
             """)
     Optional<UserEntity> findByUuid(String uuid);
+
+    boolean existsByUserName(String newUsername);
 }
 
 
