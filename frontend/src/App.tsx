@@ -51,11 +51,11 @@ function App() {
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
                         <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
+                        <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         {(userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER')) && (
                             <>
                                 <Route path="/dormitory" element={<CreateDormitory />} />
                                 <Route path="/events/admin/events" element={<AdminEvents />} />
-                                <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                                 <Route path="/users/manage" element={<UserManagementPanel/>}/>
                                 <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
                                 <Route path="/users/manage/:id" element={<ManageUser/>}/>

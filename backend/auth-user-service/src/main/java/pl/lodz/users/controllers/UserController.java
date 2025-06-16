@@ -119,4 +119,14 @@ public class UserController {
             throw new UserException("Error updating password: " + e.getMessage(), e);
         }
     }
+
+    @GetMapping("/get/name-surname/{id}")
+    public ResponseEntity<Map<String, String>> getUserNameAndSurnameById(@PathVariable Long id) {
+        try {
+            Map<String, String> result = userService.getUserNameAndSurnameById(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            throw new UserException("Error fetching name and surname: " + e.getMessage(), e);
+        }
+    }
 }
