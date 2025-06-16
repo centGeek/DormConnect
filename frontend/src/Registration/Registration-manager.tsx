@@ -116,7 +116,7 @@ function RegistrationManager() {
     return (
         <Template
         buttons = {buttons}>
-            <div className="flex flex-col items-center justify-center  bg-gray-100">
+            <div className="flex flex-col items-center justify-center">
                 <button
                     type="button"
                     className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition self-start mb-4"
