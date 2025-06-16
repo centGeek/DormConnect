@@ -17,6 +17,7 @@ import pl.lodz.eventservice.entity.ApprovalStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -94,11 +95,11 @@ public class EventTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(dto), headers);
         ResponseEntity<EventDTO> createResponse = restTemplate.postForEntity(baseUrl() + "/create", request, EventDTO.class);
-        Long id = createResponse.getBody().eventId();
+        Long id = Objects.requireNonNull(createResponse.getBody()).eventId();
 
         ResponseEntity<EventDTO> getResponse = restTemplate.getForEntity(baseUrl() + "/" + id, EventDTO.class);
         assertEquals(HttpStatus.OK, getResponse.getStatusCode());
-        assertEquals(id, getResponse.getBody().eventId());
+        assertEquals(id, Objects.requireNonNull(getResponse.getBody()).eventId());
     }
 
     @Test
@@ -116,7 +117,7 @@ public class EventTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(dto), headers);
         ResponseEntity<EventDTO> createResponse = restTemplate.postForEntity(baseUrl() + "/create", request, EventDTO.class);
-        Long id = createResponse.getBody().eventId();
+        Long id = Objects.requireNonNull(createResponse.getBody()).eventId();
 
         EventDTO updateDto = new EventDTO(id, "Updated Event", "Updated Desc",
                 LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3),
@@ -128,7 +129,7 @@ public class EventTest {
                 baseUrl() + "/" + id, HttpMethod.PUT, updateRequest, EventDTO.class);
 
         assertEquals(HttpStatus.OK, updateResponse.getStatusCode());
-        assertEquals("Updated Event", updateResponse.getBody().eventName());
+        assertEquals("Updated Event", Objects.requireNonNull(updateResponse.getBody()).eventName());
     }
 
     @Test
@@ -139,7 +140,7 @@ public class EventTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(dto), headers);
         ResponseEntity<EventDTO> createResponse = restTemplate.postForEntity(baseUrl() + "/create", request, EventDTO.class);
-        Long id = createResponse.getBody().eventId();
+        Long id = Objects.requireNonNull(createResponse.getBody()).eventId();
 
         ResponseEntity<Void> deleteResponse = restTemplate.exchange(
                 baseUrl() + "/" + id, HttpMethod.DELETE, null, Void.class);
