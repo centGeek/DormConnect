@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomCreateDTO;
 import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomGetDTO;
+import pl.lodz.dormitoryservice.commonRoom.dto.CommonRoomWithNameDTO;
 import pl.lodz.dormitoryservice.commonRoom.service.CommonRoomService;
 import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
 
@@ -93,7 +94,9 @@ class CommonRoomController {
     @GetMapping("/find/by-name")
     public ResponseEntity<?> getMethodName(@RequestParam String name) {
         try {
-            return service.findCommonRoomByName(name);
+            CommonRoomWithNameDTO room =  service.findCommonRoomByName(name);
+            return ResponseEntity.ok(room);
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Common room not found: " + e.getMessage());
         } catch (Exception e) {

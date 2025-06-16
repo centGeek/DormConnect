@@ -43,8 +43,12 @@ public class CommonRoomService {
         if (commonRoomCreateDTO.maxTimeYouCanStay()>4){
             throw new IllegalArgumentException("Max time you can stay cannot be greater than 4");
         }
-
         CommonRoomEntity savedRoom = repository.save(CommonRoomMapper.toCommonRoomEntity(commonRoomCreateDTO));
+        String roomName = savedRoom.getCommonRoomType().name() + "-"
+                + Integer.toString(savedRoom.getFloor()) + "-"
+                + savedRoom.getId();
+        savedRoom.setName(roomName);
+        savedRoom = repository.save(savedRoom);
         floorService.addCommonRoomToFloor(savedRoom.getId(), savedRoom.getFloor());
         scheduler.createAssignmentsForNextWeek(savedRoom);
 
@@ -100,8 +104,11 @@ public class CommonRoomService {
     }
 
     public CommonRoomWithNameDTO findCommonRoomByName(String name) {
-        CommonRoomEntity entity = repository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Common room not found with name: " + name));
-        // TODO Auto-generated method stub
+        CommonRoomEntity entity = repository.findByName(name);
+        if (entity == null) {
+            throw new IllegalArgumentException("Common room with name " + name + " not found");
+        }
+
         return CommonRoomMapper.toCommonRoomWithNameDTO(entity);
     }
 }

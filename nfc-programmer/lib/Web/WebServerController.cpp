@@ -64,9 +64,7 @@ uint8_t WebServerController::startServer()
 
                                 uint8_t *cardUid;
 
-                                esp_task_wdt_add(NULL);
                                 cardUid = this->nfcController.listen();
-     
 
                                 if (cardUid == nullptr)
                                 {

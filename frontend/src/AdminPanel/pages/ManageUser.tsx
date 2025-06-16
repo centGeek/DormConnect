@@ -6,12 +6,13 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "../../Context/UserContext";
 import DeleteUserDialog from "../components/DeleteUserDialog";
-import GenerateUUIDDialog from "../components/GenerateUUIDDialog";
+import GenerateUUIDDialog from "../components/ProgramCardDialog";
 import ChangeRoleDialog from "../components/ChangeRoleDialog";
 import ChangeEmailDialog from "../components/ChangeEmailDialog";
 import LockAccountDialog from "../components/LockAccountDialog";
 import ErrorDialog from "../components/ErrorDialog";
 import SuccessDialog from "../components/SuccessDialog";
+import ProgramCardDialog from "../components/ProgramCardDialog";
 
 
 
@@ -107,7 +108,6 @@ export default function ManageUser() {
                     <h1 className="text-xl">Zarządzanie użytkownikiem</h1>
                     <div>
                         <h2 className="text-lg">ID: {currUser?.id}</h2>
-                        <h2 className="text-lg">UUID: {currUser?.uuid}</h2>
                         <h2 className="text-lg">Nazwa użytkownika: {currUser?.userName}</h2>
                         <h2 className="text-lg">Email: {currUser?.email}</h2>
                         <h2 className="text-lg">Rola: {currUser?.role}</h2>
@@ -124,12 +124,11 @@ export default function ManageUser() {
                         user={currUser}
                         onError={handleDialogChangeError} 
                         onSuccess={handleDialogChangeSuccess} />}
-                        {currUser && <GenerateUUIDDialog 
+                        {currUser && <ProgramCardDialog 
                         user={currUser}
                         onError={handleDialogChangeError} 
                         onSuccess={handleDialogChangeSuccess} />}
                         {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
-                        <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition">Zarządzaj kartą dostępu</button>
                     </div>
 
                 </div>

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.ws.rs.NotFoundException;
+import pl.lodz.dormitoryservice.entity.CommonRoomAssignmentEntity;
+import pl.lodz.dormitoryservice.entity.CommonRoomEntity;
 import pl.lodz.dormitoryservice.entity.NfcDeviceEntity;
 import pl.lodz.dormitoryservice.nfc.dto.GetNfcDeviceDTO;
 import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
@@ -75,13 +77,18 @@ public class NfcDeviceService {
        if (currentUser == null) {
            throw new RuntimeException("Validation failed");
        }
-
        // check if the user card uuid and the one from the request match
        if (currentUser.cardUuid().toLowerCase() != nfcAccessRequestDTO.card_uid().toLowerCase()) {
            throw new NotFoundException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
            + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
        }
 
+       // if user has admin role, allow access to every room
+       if (currentUser.role().equalsIgnoreCase("admin")) {
+           return true;
+       }
+
+       // otherwise, check if the user has an assignment to the room
        return roomAssignmentRepository.existsAssignmentAtDate(
                currentUser.id(),
                LocalDate.now(),
@@ -108,12 +115,26 @@ public class NfcDeviceService {
        if (currentUser == null) {
            throw new NotFoundException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
        }
-       //long currentRoomId = commonRoomRepository.findCommonRoomByName()
-       // TODO: Implement logic to fetch the current room ID based on the request
-       // CommonRoomAssignment currentAssignment = commonRoomAssignmentRepository
-       //         .findCurrentAssingmentByCommonRoomId(nfc)
 
-       throw new UnsupportedOperationException("Unimplemented method 'checkCommonRoomAccess'");
+       CommonRoomEntity commonRoomEntity = commonRoomRepository.findByName(nfcAccessRequestDTO.roomNumber());
+       if (commonRoomEntity == null) {
+           throw new NotFoundException("Common room with name: " + nfcAccessRequestDTO.roomNumber() + " not found");
+       }
+       long currRoomEntity = commonRoomEntity.getId();
+       long currUserId = currentUser.id();
+
+       CommonRoomAssignmentEntity currentAssignment = commonRoomAssignmentRepository
+               .findCurrentAssingmentByCommonRoomId(currRoomEntity);
+
+       boolean hasAccess = false;
+       for (Long value: currentAssignment.getUsersId()) {
+           if (value == currUserId) {
+               hasAccess = true;
+               break;
+           }
+       }
+       return hasAccess;
+
    }
 
    public List<GetNfcDeviceDTO> getNfcDevices() {

@@ -23,11 +23,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 
-import pl.lodz.dormitoryservice.nfc.dto.GetUserDTO;
-import pl.lodz.dormitoryservice.nfc.dto.NfcProgramCardDTO;
-import pl.lodz.dormitoryservice.nfc.dto.NfcProgrammerDTO;
-import pl.lodz.dormitoryservice.nfc.dto.ProgrammedCardDTO;
-import pl.lodz.dormitoryservice.nfc.dto.RegisterNfcProgrammerDTO;
+import pl.lodz.dormitoryservice.nfc.dto.*;
 import pl.lodz.dormitoryservice.entity.NfcProgrammerEntity;
 import pl.lodz.dormitoryservice.nfc.exception.DeviceConnectionException;
 import pl.lodz.dormitoryservice.nfc.exception.DeviceNotFoundException;
@@ -93,6 +89,7 @@ public class NfcProgrammerService {
                 // .POST(HttpRequest.BodyPublishers.ofString(entity.toString()))
                 .build();
             HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+            client.close();
             ProgrammedCardDTO programmedCardDTO = Jackson2ObjectMapperBuilder.json()
                 .build()
                 .readValue(resp.body(), ProgrammedCardDTO.class);
@@ -153,9 +150,21 @@ public class NfcProgrammerService {
    }
 
     public List<NfcProgrammerDTO> getAllNfcProgrammers() {
-        // TODO Auto-generated method stub
         return nfcProgrammerRepository.findAll().stream()
                 .map(NfcProgrammerMapper::entityToNfcProgrammerDTO)
                 .toList();
+    }
+
+    public boolean checkConnectionstatus(String uuid) {
+        NfcProgrammerEntity currentDevice = nfcProgrammerRepository.findByUuid(UUID.fromString(uuid));
+        String url = "http://" + currentDevice.getIpAddress() + ":" + currentDevice.getPort() + "/api/wifi-info" ;
+        NfcStatusDTO statusDto = restTemplate.getForObject(url, NfcStatusDTO.class);
+        if (statusDto == null) {
+            throw new DeviceConnectionException("Device with UUID " + uuid + " is not reachable");
+        }
+        if (statusDto.status().equalsIgnoreCase("ok")) {
+            return true;
+        }
+        return false;
     }
 }
