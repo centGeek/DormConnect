@@ -1,5 +1,6 @@
 package pl.lodz.users.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.entity.RoleEntity;
@@ -23,11 +24,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleJpaRepository roleJpaRepository;
     private final StudentJpaRepository studentJpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleJpaRepository roleJpaRepository, StudentJpaRepository studentJpaRepository) {
+    public UserService(UserRepository userRepository, RoleJpaRepository roleJpaRepository, StudentJpaRepository studentJpaRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleJpaRepository = roleJpaRepository;
         this.studentJpaRepository = studentJpaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<GetUserDTO> getAllUsers() {
@@ -99,6 +102,19 @@ public class UserService {
         userEntity.setUuid(newUuid.toString());
         UserEntity saved = userRepository.save(userEntity);
         return UserMapper.mapToGetUserDTO(saved);
+    }
+
+    public String changeUserPassword(Long id, String newPassword, String oldPassword) {
+        UserEntity userEntity = userRepository.findById(id)
+            .orElseThrow(() -> new UserException("User not found with id: " + id));
+        if (!passwordEncoder.matches(oldPassword, userEntity.getPassword())){
+            throw new UserException("Old password does not match");
+        }
+        else {
+            userEntity.setPassword(passwordEncoder.encode(newPassword));
+            UserEntity saved = userRepository.save(userEntity);
+            return "Password changed successfully for user: " + saved.getUserName();
+        }
     }
 
 }
