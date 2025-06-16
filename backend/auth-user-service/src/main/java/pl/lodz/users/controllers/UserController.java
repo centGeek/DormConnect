@@ -129,4 +129,18 @@ public class UserController {
             throw new UserException("Error fetching name and surname: " + e.getMessage(), e);
         }
     }
+
+    @PutMapping("/update/username")
+    public ResponseEntity<String> updateUsername(@RequestHeader("Authorization") String token_bearer,
+                                                 @RequestBody Map<String, String> body) {
+        String newUsername = body.get("newUsername");
+        String token = token_bearer.replace("Bearer ", "");
+        Long userId = jwtService.getIdFromToken(token);
+        try {
+            userService.updateUsername(userId, newUsername);
+            return ResponseEntity.ok("Username updated successfully");
+        } catch (Exception e) {
+            throw new UserException("Error updating username: " + e.getMessage(), e);
+        }
+    }
 }

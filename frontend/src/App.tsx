@@ -49,7 +49,6 @@ function App() {
                         <Route path="/common-room/:id" element={<CommonRoomSchedule />} />
                         <Route path='/problems' element={<DormProblem/>}/>
                         <Route path='/problems/create' element={<DormProblemCreate/>}/>
-                        <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                         <Route path='/problems/details/:problemId' element={<DormProblemView/>}/>
                         <Route path="/account-settings" element={<AccountSettingsPanel/>}/>
                         {(userContext?.user?.roles.includes('ADMIN') || userContext?.user?.roles.includes('MANAGER')) && (
@@ -60,10 +59,7 @@ function App() {
                                 <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
                                 <Route path="/users/manage/:id" element={<ManageUser/>}/>
                                 <Route path="/admin-panel" element={<AdminPanel/>}/>
-                            </>
-                        )}
-                        {(userContext?.user?.roles.includes('ADMIN')) && (
-                            <>
+                                <Route path='/problems/manage/:problemId' element={<DormProblemManage/>}/>
                                 <Route path="/register/user" element={<RegistrationManager/>} />
                             </>
                         )}

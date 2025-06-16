@@ -141,4 +141,14 @@ public class UserService {
         return Map.of("name", "-", "surname", "-");
     }
 
+    public void updateUsername(Long id, String newUsername) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserException("User not found with id: " + id));
+        if (userRepository.existsByUserName(newUsername)) {
+            throw new UserException("Username already exists");
+        }
+        userEntity.setUserName(newUsername);
+        userRepository.save(userEntity);
+    }
+
 }
