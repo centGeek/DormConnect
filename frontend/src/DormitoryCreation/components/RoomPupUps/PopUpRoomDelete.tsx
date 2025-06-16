@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Cookies from "js-cookie";
 
 interface ResidentReassignmentPreview {
     userId: number;
-    residentName: string;
+    fullName: string;
     fromDate: string;
     toDate: string;
     plannedNewStartDate: string | null;
@@ -24,7 +24,7 @@ interface PopUpRoomDeleteProps {
     roomId: number;
 }
 
-function PopUpRoomDelete({ onClose, roomNumber, roomId }: PopUpRoomDeleteProps) {
+function PopUpRoomDelete({onClose, roomNumber, roomId}: PopUpRoomDeleteProps) {
     const [loading, setLoading] = useState(false);
     const [simulation, setSimulation] = useState<DeleteRoomImpactPreviewDTO | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -97,10 +97,10 @@ function PopUpRoomDelete({ onClose, roomNumber, roomId }: PopUpRoomDeleteProps) 
                 </tr>
                 </thead>
                 <tbody>
-                {residents.map((r,index) => (
+                {residents.map((r, index) => (
                     <tr key={`${r.userId}-${index}`}>
                         <td className="border px-2 py-1 text-center">{r.userId}</td>
-                        <td className="border px-2 py-1">{r.residentName}</td>
+                        <td className="border px-2 py-1">{r.fullName}</td>
                         <td className="border px-2 py-1 text-center">{r.fromDate}</td>
                         <td className="border px-2 py-1 text-center">{r.toDate}</td>
                         <td className="border px-2 py-1 text-center">{r.plannedNewStartDate ?? "–"}</td>
@@ -116,13 +116,15 @@ function PopUpRoomDelete({ onClose, roomNumber, roomId }: PopUpRoomDeleteProps) 
 
     return (
         <div className="fixed inset-0 border border-gray-500 flex items-center justify-center z-50 ">
-            <div className="bg-white p-6 border border-gray-500 rounded-lg shadow-lg  max-h-[90vh] overflow-auto relative">
+            <div
+                className="bg-white p-6 border border-gray-500 rounded-lg shadow-lg  max-h-[90vh] overflow-auto relative">
                 <h1 className="text-xl font-bold mb-4 text-gray-700">Usuń pokój</h1>
 
                 {!simulation ? (
                     <>
                         <p className="text-gray-600 mb-6">
-                            Czy na pewno chcesz usunąć pokój <strong>{roomNumber}</strong>? Tej operacji nie można cofnąć.
+                            Czy na pewno chcesz usunąć pokój <strong>{roomNumber}</strong>? Tej operacji nie można
+                            cofnąć.
                         </p>
                         <div className="flex justify-between">
                             <button
