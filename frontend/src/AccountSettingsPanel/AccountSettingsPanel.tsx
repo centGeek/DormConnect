@@ -1,14 +1,10 @@
 import Template from "../Template/Template";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 export default function AccountSettingsPanel() {
     return (
         <Template
-                    buttons={[
-                        {text: 'Chat', link: '/chat'},
-                        {text: 'Wydarzenia', link: '/events'},
-                        {text: 'Pokoje wspólne', link: '/common-rooms'},
-                        {text: 'Pokój', link: '/rooms/myInfo'},
-                        {text: 'Zgłoś problem', link: '/problems'}]}>
+                    buttons={buttons}>
         <div>
                 <div id="container">
                     <h1 className="text-xl">Panel Zarządzania użytkownikami</h1>

@@ -36,7 +36,6 @@ function App() {
             <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/register/student" element={<RegistrationStudent/>} />
-                <Route path="/register/manager" element={<RegistrationManager/>} />
                 {userContext?.token ? (
                     <>
                         <Route path="/home" element={<Home />} />
@@ -61,6 +60,11 @@ function App() {
                                 <Route path="/nfc/manage" element={<NfcManagementPanel/>}/>
                                 <Route path="/users/manage/:id" element={<ManageUser/>}/>
                                 <Route path="/admin-panel" element={<AdminPanel/>}/>
+                            </>
+                        )}
+                        {(userContext?.user?.roles.includes('ADMIN')) && (
+                            <>
+                                <Route path="/register/user" element={<RegistrationManager/>} />
                             </>
                         )}
 

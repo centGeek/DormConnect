@@ -6,6 +6,7 @@ import { UserContext } from "../Context/UserContext";
 import { groupBy } from "lodash";
 import getRoomStatusTranslation from "../ReusableComponents/CommonRoomTypes.tsx";
 import ErrorPopUp  from "./ErrorPopUp.tsx";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface assignmentProps {
     id: number;
@@ -184,11 +185,7 @@ function CommonRoomSchedule() {
 
     // @ts-ignore
     return (
-        <Template buttons={[ {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}]}>
+        <Template buttons={buttons}>
             <div className="w-full flex justify-center items-center p-5">
                 <button
                     type="button"

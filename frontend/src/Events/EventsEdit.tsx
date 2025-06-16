@@ -2,6 +2,7 @@ import Template from '../Template/Template';
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from '../Context/UserContext.tsx';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function EventsEdit() {
     const { user } = useContext(UserContext);
@@ -143,13 +144,7 @@ function EventsEdit() {
     };
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="flex flex-col items-center w-full  p-4 ">
 
                 <button

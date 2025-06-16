@@ -4,6 +4,7 @@ import Template from '../Template/Template';
 import EventCard from './EventsCard';
 import Pagination from './Pagination';
 import { UserContext } from '../Context/UserContext.tsx';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 interface Event {
     eventId: number;
@@ -128,13 +129,7 @@ const Events = () => {
     };
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="p-6">
                 {successMessage && <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4 justify-center">{successMessage}</div>}
 

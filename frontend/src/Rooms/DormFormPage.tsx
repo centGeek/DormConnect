@@ -4,6 +4,7 @@ import {parseJwt} from '../JWT/JWTDecoder';
 import {MapContainer, TileLayer, Marker, useMapEvents} from 'react-leaflet';
 import L, {LatLng} from 'leaflet';
 import {useMap} from 'react-leaflet';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function LocationPicker({onLocationSelect}: { onLocationSelect: (latlng: LatLng) => void }) {
     useMapEvents({
@@ -129,13 +130,7 @@ function DormFormPage() {
 
     return (
         <Template
-            buttons={[
-                {text: 'Chat', link: '/chat'},
-                {text: 'Wydarzenia', link: '/events'},
-                {text: 'Pokoje wspólne', link: '/common-rooms'},
-                {text: 'Pokój', link: '/rooms/myInfo'},
-                {text: 'Zgłoś problem', link: '/problems'}
-            ]}
+            buttons={buttons}
             footerContent={<p></p>}
         >
             <div className="flex flex-col md:flex-row w-full">

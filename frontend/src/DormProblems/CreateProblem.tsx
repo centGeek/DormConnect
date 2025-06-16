@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Template from '../Template/Template';
 import { UserContext } from '../Context/UserContext';
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function DormProblemCreate() {
     const navigate = useNavigate();
@@ -51,13 +52,7 @@ function DormProblemCreate() {
     useEffect(() => {}, []);
 
     return (
-        <Template buttons={[
-            {text: 'Chat', link: '/chat'},
-            {text: 'Wydarzenia', link: '/events'},
-            {text: 'Pokoje wspólne', link: '/common-rooms'},
-            {text: 'Pokój', link: '/rooms/myInfo'},
-            {text: 'Zgłoś problem', link: '/problems'}
-        ]}>
+        <Template buttons={buttons}>
             <div className="flex flex-col md:flex-row w-full">
                 {/* Lewa kolumna */}
                 <div className="w-full md:w-1/4 flex justify-center items-start p-5">

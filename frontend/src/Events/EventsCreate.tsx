@@ -2,6 +2,7 @@ import Template from '../Template/Template';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from "../Context/UserContext.tsx";
+import {buttons} from "../ReusableComponents/buttons.ts";
 
 function EventsCreate() {
     const userContext = useContext(UserContext);
@@ -103,13 +104,7 @@ function EventsCreate() {
 
     return (
         <Template
-            buttons={[
-                {text: 'Chat', link: '/chat'},
-                {text: 'Wydarzenia', link: '/events'},
-                {text: 'Pokoje wspólne', link: '/common-rooms'},
-                {text: 'Pokój', link: '/rooms/myInfo'},
-                {text: 'Zgłoś problem', link: '/problems'}
-            ]}
+            buttons={buttons}
         >
             <div className="flex flex-col md:flex-row w-full ">
                 {/* Lewa kolumna */}
