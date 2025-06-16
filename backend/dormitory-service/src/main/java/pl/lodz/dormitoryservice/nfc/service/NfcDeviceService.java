@@ -73,7 +73,7 @@ public class NfcDeviceService {
 
    public boolean checkAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
 
-       GetUserDTO currentUser = this.getUserByUuid(nfcAccessRequestDTO.user_uuid());
+       GetUserDTO currentUser = this.getUserByUuid(nfcAccessRequestDTO.userUuid());
        if (currentUser == null) {
            throw new RuntimeException("Validation failed");
        }
@@ -82,16 +82,19 @@ public class NfcDeviceService {
        if (currentUser.cardUuid() == null) {
            return false;
        }
-       // check if the user card uuid and the one from the request match
-       if (!currentUser.cardUuid().toLowerCase().equals(nfcAccessRequestDTO.card_uid().toLowerCase())) {
-           throw new NotFoundException("User with uuid: " + nfcAccessRequestDTO.user_uuid()
-           + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.card_uid());
-       }
 
        // if user has admin role, allow access to every room
        if (currentUser.role().equalsIgnoreCase("admin")) {
            return true;
        }
+
+       // check if the user card uuid and the one from the request match
+       if (!currentUser.cardUuid().toLowerCase().equals(nfcAccessRequestDTO.cardUid().toLowerCase())) {
+           throw new NotFoundException("User with uuid: " + nfcAccessRequestDTO.userUuid()
+           + " tried to authenticate with wrong card number: " + nfcAccessRequestDTO.cardUid());
+       }
+
+
 
        // otherwise, check if the user has an assignment to the room
        return roomAssignmentRepository.existsAssignmentAtDate(
@@ -116,9 +119,9 @@ public class NfcDeviceService {
    // still does not work, model need refactoting
    public boolean checkCommonRoomAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
        // TODO Auto-generated method stub
-       GetUserDTO currentUser = getUserByUuid(nfcAccessRequestDTO.user_uuid()); 
+       GetUserDTO currentUser = getUserByUuid(nfcAccessRequestDTO.userUuid());
        if (currentUser == null) {
-           throw new NotFoundException("Error while fetching user with uuid: " + nfcAccessRequestDTO.user_uuid());
+           throw new NotFoundException("Error while fetching user with uuid: " + nfcAccessRequestDTO.userUuid());
        }
 
        CommonRoomEntity commonRoomEntity = commonRoomRepository.findByName(nfcAccessRequestDTO.roomNumber());

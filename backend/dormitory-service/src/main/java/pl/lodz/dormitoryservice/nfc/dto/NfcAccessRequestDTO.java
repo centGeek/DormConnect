@@ -5,9 +5,9 @@ import jakarta.annotation.Nullable;
 import java.util.UUID;
 
 public record NfcAccessRequestDTO(
-        String device_uuid,
-        String card_uid,
-        String user_uuid,
+        String deviceUuid,
+        String cardUid,
+        String userUuid,
         String roomNumber,
         @Nullable
         String lockStatus

@@ -9,9 +9,9 @@ uint8_t WebClientController::initialize()
     return 0;
 }
 
-uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData)
+uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData, String url)
 {
-    this->http.begin(SERVER_REQUEST_ADDRESS);
+    this->http.begin(url);
     this->http.addHeader("Content-Type", "application/json");
     String dataToSend;
     serializeJson(jsonData, dataToSend);    
@@ -27,7 +27,7 @@ uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData)
 }
 
 uint8_t WebClientController::sendHttpGetRequest(String url) {
-    this->http.begin(SERVER_REQUEST_ADDRESS);
+    this->http.begin(url);
     uint8_t httpResponse = http.GET();
     if (httpResponse > 0) {
         String payload = http.getString();

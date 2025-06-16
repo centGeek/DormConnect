@@ -13,7 +13,7 @@ uint8_t NfcController::stringToHex(String input)
 {
     char charInput[input.length() + 1];
     input.toCharArray(charInput, sizeof(charInput));
-    return (uint8_t) strtol(charInput, 0, 16);
+    return (uint8_t)strtol(charInput, 0, 16);
 }
 
 /**
@@ -44,13 +44,16 @@ uint8_t NfcController::start_nfc()
 {
     this->nfc.begin();
     uint32_t nfc_version = nfc.getFirmwareVersion();
-    if (!nfc_version) {
+    if (!nfc_version)
+    {
         return 1;
     }
-    if(!nfc.SAMConfig()) {
+    if (!nfc.SAMConfig())
+    {
         return 1;
     }
-    else {
+    else
+    {
         return 0;
     }
 }
@@ -61,22 +64,29 @@ uint8_t NfcController::reset_nfc()
     return 0;
 }
 
-
-uint8_t* NfcController::listen()
+uint8_t *NfcController::listen()
 {
     uint8_t found;
-    uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
+    static uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
     uint8_t uid_length;
-
-    found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length);
-    if (found)
+    try
     {
-        return uid;
-    } 
-    else {
+        found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length);
+        if (found)
+        {
+            return uid;
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    catch (const std::exception &e)
+    {
+        Serial.print("Exception: ");
+        Serial.println(e.what());
         return nullptr;
     }
-    
 }
 
 uint8_t NfcController::writeNfcUserUUID(String userUUID)
@@ -93,7 +103,7 @@ uint8_t NfcController::writeNfcUserUUID(String userUUID)
     block 6     4 bytes of uuid
     block 7     4 bytes of uuid
     block 8     4 bytes of uuid
-    
+
     */
     uint8_t success = 0;
     uint8_t arrayCounter = 0;
@@ -111,29 +121,29 @@ uint8_t NfcController::writeNfcUserUUID(String userUUID)
         Serial.println();
 
         success = this->nfc.mifareultralight_WritePage(i, tempArray);
-        if (!success) {
+        if (!success)
+        {
             Serial.println("not ok");
             return -1;
         }
         arrayCounter += 4;
         Serial.println("ok");
     }
-    
+
     return 0;
-    
 }
 
-
-uint8_t* NfcController::readNfcUserUUID()
+uint8_t *NfcController::readNfcUserUUID()
 {
 
     uint8_t found;
-    uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
+    static uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
     uint8_t uid_length;
 
-    found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length, 1000);
+    found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length);
 
-    if (uid_length != NTAG216_UID_SIZE) {
+    if ((found == false) || (uid_length != NTAG216_UID_SIZE))
+    {
         return nullptr;
     }
 
@@ -145,7 +155,8 @@ uint8_t* NfcController::readNfcUserUUID()
     for (size_t i = 5; i < 9; i++)
     {
         success = nfc.mifareultralight_ReadPage(i, userUUID[arrayCounter]);
-        if(!success) {
+        if (!success)
+        {
             return nullptr;
         }
         arrayCounter++;
@@ -159,7 +170,6 @@ uint8_t* NfcController::readNfcUserUUID()
             uuidValue[arrayCounter] = userUUID[i][j];
             arrayCounter++;
         }
-        
     }
     return uuidValue;
 }
@@ -171,15 +181,17 @@ uint8_t *NfcController::readCardUUID()
     uint8_t uid_length;
     Serial.println("Reading...");
     found = this->nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uid_length, 5000);
-    Serial.println(found);
-    for (size_t i = 0; i < NTAG216_UID_SIZE; i++)
+    // Serial.println(found);
+    // for (size_t i = 0; i < NTAG216_UID_SIZE; i++)
+    // {
+    //     Serial.print(uid[i]);
+    // }
+    if (found)
     {
-        Serial.print(uid[i]);
-    }
-    
-    if (found) {
         return uid;
-    } else {
+    }
+    else
+    {
         return nullptr;
     }
 }
@@ -191,10 +203,12 @@ String NfcController::uuidToString(uint8_t *uuid, uint8_t size)
     uint8_t positionsSize = 4;
     for (size_t i = 0; i < size; i++)
     {
-        if(uuid[i] == 0) {
+        if (uuid[i] == 0)
+        {
             finalUuidString += "00";
         }
-        else {
+        else
+        {
             finalUuidString += String(uuid[i], HEX);
         }
     }
@@ -202,18 +216,18 @@ String NfcController::uuidToString(uint8_t *uuid, uint8_t size)
     {
         finalUuidString = insertCharAt(finalUuidString, uuidDashPositions[i], '-');
     }
-    
+
     return finalUuidString;
 }
 
-String NfcController::nfcTagToString(uint8_t* nfcUuid)
+String NfcController::nfcTagToString(uint8_t *nfcUuid)
 {
     String finalString = "";
     for (size_t i = 0; i < NTAG216_UID_SIZE; i++)
     {
         finalString += String(nfcUuid[i], HEX);
     }
-    
+
     return finalString;
 }
 
@@ -235,17 +249,20 @@ uint8_t *NfcController::uuidToIntArray(String uuidString)
     static uint8_t finalUUID[16];
     int i = 0;
     int j = 0;
-    while (i < uuidString.length()) {
-        if (uuidString.substring(i, i + 1) == "-") i++;
-        String firstPart =  uuidString.substring(i, i + 1);
-        if (uuidString.substring(i + 1, i + 2) == "-") i++;
+    while (i < uuidString.length())
+    {
+        if (uuidString.substring(i, i + 1) == "-")
+            i++;
+        String firstPart = uuidString.substring(i, i + 1);
+        if (uuidString.substring(i + 1, i + 2) == "-")
+            i++;
         String lastPart = uuidString.substring(i + 1, i + 2);
         String finalNumber = firstPart + lastPart;
         Serial.print("Final number: ");
         Serial.print(finalNumber);
         Serial.println();
-        finalUUID[j] = stringToHex(finalNumber); 
-        i+=2;
+        finalUUID[j] = stringToHex(finalNumber);
+        i += 2;
         j++;
     }
     return finalUUID;
