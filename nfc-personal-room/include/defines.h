@@ -10,10 +10,6 @@
 #define USER_UUID_CONTROL_BYTE_NUMBER 2
 #define USER_UUID_TOTAL_BYTES 
 
-#define SERVER_REQUEST_ADDRESS "http://192.168.166.74:8000/api/nfc/room/check-access"
-#define SERVER_REGISTER_DEVICE_ADDRESS "http://192.168.166.74:8000/api/nfc/register"
-
-#define DEVICE_UUID "773c4f56-e9a0-4f94-9cd2-403e7342fc29"
-#define ROOM_NUMBER "07"
 
 #define WORKING_OUTPUT_PIN 2
+#define LOCK_OUTPUT_PIN 18

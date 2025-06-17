@@ -3,6 +3,9 @@
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
 #include "../NFC/NfcController.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/semphr.h"
 
 class WebServerController {
 
@@ -14,6 +17,7 @@ private:
     IPAddress localIpAddress;
     NfcController nfcController;
     AsyncWebServer* webServer;
+    xSemaphoreHandle nfcMutex;
 
 public:
     WebServerController();

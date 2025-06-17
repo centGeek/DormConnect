@@ -7,6 +7,7 @@ WebServerController::WebServerController()
     this->serverPort = SERVER_PORT;
     this->webServer = new AsyncWebServer(serverPort);
     this->nfcController = NfcController();
+    this->nfcMutex = xSemaphoreCreateMutex();
 }
 
 WebServerController::~WebServerController()
@@ -33,79 +34,92 @@ uint8_t WebServerController::startServer()
                         NULL, [this](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
                         {
                             Serial.println("Received request to program card");
-                            digitalWrite(WORKING_OUTPUT_PIN, HIGH);
-                            AsyncResponseStream *response = request->beginResponseStream("application/json");
-                            response->addHeader("Connection", "keep-alive");
-
-                            if (request->contentType() != "application/json")
+                            if (xSemaphoreTake(this->nfcMutex, 2000 / portTICK_PERIOD_MS) == pdTRUE)
                             {
-                                Serial.println("Received request with wrong content type");
-                                digitalWrite(WORKING_OUTPUT_PIN, LOW);
-                                request->send(500, "text", "bad format");
-                            }
+                                // mutex acquired successfully
+                                digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+                                AsyncResponseStream *response = request->beginResponseStream("application/json");
+                                response->addHeader("Connection", "keep-alive");
 
-                            Serial.println("Deserializing json...");
-                            JsonDocument document;
-                            deserializeJson(document, (const char *)data, request->contentLength());
-
-                            const char *serverId;
-                            const char *roomNumber;
-                            const char *userUUID;
-                            const char *authorizationStatus;
-
-                            if (document.containsKey("userUuid"))
-                            {
-
-                                userUUID = document["userUuid"];
-                                String uuidString = String(userUUID);
-
-                                Serial.print("received userUUID: ");
-                                Serial.println(userUUID);
-
-                                Serial.println("Programming card...");
-
-                                uint8_t *cardUid;
-
-                                cardUid = this->nfcController.listen();
-
-                                if (cardUid == nullptr)
+                                if (request->contentType() != "application/json")
                                 {
-                                    esp_task_wdt_reset();
-                                    Serial.println("Timeout while listening for NFC card");
+                                    Serial.println("Received request with wrong content type");
                                     digitalWrite(WORKING_OUTPUT_PIN, LOW);
-                                    request->send(500, "Could not read nfc card");
-
+                                    request->send(500, "text", "bad format");
                                 }
+
+                                Serial.println("Deserializing json...");
+                                JsonDocument document;
+                                deserializeJson(document, (const char *)data, request->contentLength());
+
+                                const char *serverId;
+                                const char *roomNumber;
+                                const char *userUUID;
+                                const char *authorizationStatus;
+
+                                if (document.containsKey("userUuid"))
+                                {
+
+                                    userUUID = document["userUuid"];
+                                    String uuidString = String(userUUID);
+
+                                    Serial.print("received userUUID: ");
+                                    Serial.println(userUUID);
+
+                                    Serial.println("Programming card...");
+
+                                    uint8_t *cardUid;
+
+                                    cardUid = this->nfcController.listen();
+
+                                    if (cardUid == nullptr)
+                                    {
+                                        esp_task_wdt_reset();
+                                        Serial.println("Timeout while listening for NFC card");
+                                        digitalWrite(WORKING_OUTPUT_PIN, LOW);
+                                        xSemaphoreGive(this->nfcMutex);
+                                        request->send(500, "Could not read nfc card");
+                                    }
+                                    else
+                                    {
+                                        uint8_t success = this->nfcController.writeNfcUserUUID(uuidString);
+                                        if (success != 0)
+                                        {
+                                            Serial.println("Error while writing NFC card");
+                                            digitalWrite(WORKING_OUTPUT_PIN, LOW);
+                                            xSemaphoreGive(this->nfcMutex);
+                                            request->send(500, "Could not write nfc card");
+                                            return;
+                                        }
+
+                                        Serial.println("Card programmed");
+
+                                        JsonDocument responseJson;
+                                        responseJson["deviceId"] = DEVICE_UUID;
+                                        responseJson["userUuid"] = userUUID;
+                                        responseJson["cardUuid"] = this->nfcController.nfcTagToString(cardUid);
+                                        Serial.println("ok");
+                                        serializeJson(responseJson, *response);
+                                        response->setCode(200);
+                                        digitalWrite(WORKING_OUTPUT_PIN, LOW);
+                                        xSemaphoreGive(this->nfcMutex);
+                                        request->send(response);
+                                    }
+                                }
+
                                 else
                                 {
-                                    uint8_t success = this->nfcController.writeNfcUserUUID(uuidString);
-                                    if (success != 0)
-                                    {
-                                        Serial.println("Error while writing NFC card");
-                                        digitalWrite(WORKING_OUTPUT_PIN, LOW);
-                                        request->send(500, "Could not write nfc card");
-                                        return;
-                                    }
-
-                                    Serial.println("Card programmed");
-
-                                    JsonDocument responseJson;
-                                    responseJson["deviceId"] = DEVICE_UUID;
-                                    responseJson["userUuid"] = userUUID;
-                                    responseJson["cardUuid"] = this->nfcController.nfcTagToString(cardUid);
-                                    Serial.println("ok");
-                                    serializeJson(responseJson, *response);
-                                    response->setCode(200);
+                                    Serial.println("Cannot find all json keys");
                                     digitalWrite(WORKING_OUTPUT_PIN, LOW);
-                                    request->send(response);
+                                    xSemaphoreGive(this->nfcMutex);
+                                    request->send(500, "text", "cannot find all json keys");
                                 }
                             }
-
                             else
                             {
-                                Serial.println("Cannot find all json keys");
-                                digitalWrite(WORKING_OUTPUT_PIN, LOW);
-                                request->send(500, "text", "cannot find all json keys");
+                                Serial.println("Cattor could not acquire NFC device");
+                                request->send(500, "text", "could not acquire NFC device");
+                                return;
                             }
                         });
 
