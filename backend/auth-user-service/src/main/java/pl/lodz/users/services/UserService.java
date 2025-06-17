@@ -72,7 +72,6 @@ public class UserService {
     }
 
     public GetUserDTO getUserById(Long id) {
-        // TODO Auto-generated method stub
         UserEntity currUser = userRepository.findById(id).get();
         if (currUser == null) {
             throw new IllegalArgumentException("User not found with id: " + id);

@@ -69,18 +69,18 @@ function ChatPage() {
                         </div>
                     )}
                 </div>
-                <div className="chat-input-area mt-4 flex items-center">
-                    <input
+                <div className="chat-input-area mt-4 flex flex-wrap items-stretch gap-2 w-full">
+                <input
                         type="text"
                         placeholder="Zapytaj"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
+                        className="min-w-0 flex-[1_1_250px] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
                     />
                     <button
                         onClick={handleSend}
-                        className="ml-4 px-4 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-white hover:text-gray-500 border transition"
+                        className="w-full sm:w-auto px-4 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-white hover:text-gray-500 border transition"
                     >
                         Wyślij wiadomość
                     </button>

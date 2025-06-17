@@ -42,8 +42,8 @@ function RegistrationStudent() {
                 body: JSON.stringify(student)
             });
             if (response.status === 409) {
-                const errorData = await response.text();
-                throw new Error(errorData);
+                const errorData = await response.json();
+                throw new Error(errorData.message);
             }
 
 
