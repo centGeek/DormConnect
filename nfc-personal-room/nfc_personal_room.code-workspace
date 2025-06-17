@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../nfc_personal_room"
+		},
+		{
+			"name": "nfc-personal-room",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
