@@ -135,7 +135,7 @@ public class RoomService {
                 .map(assignment -> new AssignmentsDTO(
                         assignment.getId(),
                         userId,
-                        null //TODO Pull data from another service using REST.
+                        null
                         ,
                         assignment.getRoom().getNumber(),
                         assignment.getRoom().getFloor(),
