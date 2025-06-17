@@ -17,3 +17,4 @@
 #define ROOM_NUMBER "07"
 
 #define WORKING_OUTPUT_PIN 2
+#define LOCK_OUTPUT_PIN 18

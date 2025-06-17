@@ -3,8 +3,10 @@
 AppController::AppController()
 {
     Serial.begin(9600);
-    webClientController.initialize();
     pinMode(WORKING_OUTPUT_PIN, OUTPUT);
+    pinMode(LOCK_OUTPUT_PIN, OUTPUT);
+    digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+    this->lockStatus = 1; // 1 - open, 0 - closed
 }
 
 uint8_t AppController::run()
@@ -37,7 +39,7 @@ uint8_t AppController::run()
     vTaskDelay(pdTICKS_TO_MS(1000));
     // nfcController.writeNfcUserUUID("3cd1be9e-e9a6-4aa4-b97b-1a8934bb828a");
     Serial.println("Trying to register device...");
-    webClientController.initialize();
+
     JsonDocument jsonData;
     jsonData["uuid"] = DEVICE_UUID;
     jsonData["roomNumber"] = ROOM_NUMBER;
@@ -109,6 +111,23 @@ void AppController::mainLoopTask()
                 uint8_t response = webClientController.sendHttpPostRequest(json, SERVER_REQUEST_ADDRESS);
                 Serial.print("Response code: ");
                 Serial.println(response);
+
+                if (response == 200)
+                {
+                    Serial.println("Access granted");
+                    if (this->lockStatus == 0)
+                    {
+                        Serial.println("Locking the door...");
+                        digitalWrite(LOCK_OUTPUT_PIN, HIGH);
+                        this->lockStatus = 1;
+                    }
+                    else
+                    {
+                        Serial.println("Unlocking the door...");
+                        digitalWrite(LOCK_OUTPUT_PIN, LOW);
+                        this->lockStatus = 0;
+                    }
+                }
 
                 vTaskDelay(pdMS_TO_TICKS(2000));
                 digitalWrite(WORKING_OUTPUT_PIN, LOW);
