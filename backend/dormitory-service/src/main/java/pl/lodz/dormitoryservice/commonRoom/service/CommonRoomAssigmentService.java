@@ -47,14 +47,14 @@ public class CommonRoomAssigmentService {
     ) {
 
         CommonRoomAssignmentEntity commonRoomAssignmentEntity = repository.findById(commonRoomAssigmentId).orElseThrow(() -> new IllegalArgumentException("Common room assigment not found"));
-        LocalDate startDate = commonRoomAssignmentEntity.getStartDate()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        if (!roomAssignmentRepository.existsAssignmentForStudentDuring(userId, startDate, startDate)) {
-            return ResponseEntity.badRequest().body("User does not have any room assigned at this day");
-        }
+//        LocalDate startDate = commonRoomAssignmentEntity.getStartDate()
+//                .toInstant()
+//                .atZone(ZoneId.systemDefault())
+//                .toLocalDate();
+//
+//        if (!roomAssignmentRepository.existsAssignmentForStudentDuring(userId, startDate, startDate)) {
+//            return ResponseEntity.badRequest().body("User does not have any room assigned at this day");
+//        }
         if (commonRoomAssignmentEntity.getUsersId().contains(userId)) {
             return ResponseEntity.badRequest().body("User already joined the assigment");
         }
