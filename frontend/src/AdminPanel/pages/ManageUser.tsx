@@ -135,7 +135,7 @@ export default function ManageUser() {
 
                         <div className="mt-8 flex flex-col md:flex-row md:justify-between space-y-4 md:space-y-0">
 
-                            {currUser && <DeleteUserDialog
+                            {currUser && currUser.role != 'ADMIN' && <DeleteUserDialog
                                 user={currUser}
                                 onError={handleDialogChangeError}
                                 onSuccess={handleDialogChangeSuccess} />}

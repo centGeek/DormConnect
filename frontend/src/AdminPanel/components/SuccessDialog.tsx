@@ -24,8 +24,8 @@ export default function SuccessDialog({
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-        <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-          <DialogTitle className="font-bold">Operacja zakończona powodzeniem</DialogTitle>
+        <DialogPanel className="max-w-lg space-y-4 border-4 bg-white p-12 rounded-lg w-300">
+          <DialogTitle className="font-bold text-2xl">Operacja zakończona powodzeniem</DialogTitle>
           <Description>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Operacja zakończona pomyślnie: {message}
@@ -34,7 +34,7 @@ export default function SuccessDialog({
           <div className="flex gap-4">
             <button
               type="button"
-              className="bg-green-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-green-500 transition"
+              className="bg-gray-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
               onClick={handleClose}
             >
               OK

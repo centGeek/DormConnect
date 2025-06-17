@@ -120,6 +120,8 @@ void AppController::mainLoopTask()
                 json["roomNumber"] = ROOM_NUMBER;
                 json["lockStatus"] = "UNKNOWN";
                 uint8_t response = webClientController.sendHttpPostRequest(json, SERVER_REQUEST_ADDRESS);
+                Serial.print("Response code: ");
+                Serial.println(response);
                 if (response == 200)
                 {
                     lcd.clear();

@@ -17,12 +17,12 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
   const [connectionRequest, setConnectionRequest] = useState(false);
   const [isCardProgrammingInProgress, setIsCardProgrammingInProgress] = useState(false);
 
-    const handleCheckConnection = async () => {
+  const handleCheckConnection = async () => {
     if (!selectedProgrammer) {
       console.error("no nfc programmer selected")
-      
+
     }
-    
+
     try {
       setLoading(true);
       console.log("Checking connection for NFC programmer: ", selectedProgrammer?.uuid);
@@ -51,7 +51,7 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
       }
 
     } catch (error) {
-      console.error("An error occured while checking connection: ", error )
+      console.error("An error occured while checking connection: ", error)
       setConnectionRequest(true);
       setConnectionStatus(false);
       setLoading(false);
@@ -69,7 +69,7 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
   }
 
 
-    const handleProgramCard = async () => {
+  const handleProgramCard = async () => {
     const token = userContext?.token;
     setIsCardProgrammingInProgress(true);
     if (!selectedProgrammer) {
@@ -93,9 +93,9 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
       setIsCardProgrammingInProgress(false);
       if (response.status === HttpStatusCode.Ok) {
         console.log("Card programmed successfully: ", response.data);
-        
+
         if (onSuccess) {
-          
+
           onSuccess("Karta dostępu została zaprogramowana pomyślnie.");
         }
         setIsOpen(false); // Close the dialog on success
@@ -105,7 +105,7 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
       setIsCardProgrammingInProgress(false);
       console.error("An error occurred while programming the card: ", error);
       if (onError) {
-        onError("An error occurred while programming the card. Please try again.");
+        onError("Wystąpił błąd podczas programowania karty. Spróbuj ponownie.");
         setIsOpen(false); // Close the dialog on error
       }
     }
@@ -127,7 +127,7 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
       if (response.status === 200) {
         setNfcProgrammers(response.data);
 
-        setSelectedProgrammer(response.data[0]); 
+        setSelectedProgrammer(response.data[0]);
 
         console.log(nfcProgrammers);
 
@@ -141,7 +141,7 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
       console.error("An error occurred while fetching available programmers: ", error);
 
     }
-}
+  }
 
   const handleCloseConnectionInfo = () => {
     setConnectionRequest(false);
@@ -149,18 +149,18 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
     setLoading(false);
   }
 
-    const handleSetOpen = () => {
-      setIsOpen(true);
-      handleFetchAvaliableProgrammers();
-    }
+  const handleSetOpen = () => {
+    setIsOpen(true);
+    handleFetchAvaliableProgrammers();
+  }
 
-    const handleCloseDialog = () => {
-      setIsCardProgrammingInProgress(false);
-      setIsOpen(false);
-      setConnectionRequest(false);
-      setConnectionStatus(false);
-      setLoading(false);
-    }
+  const handleCloseDialog = () => {
+    setIsCardProgrammingInProgress(false);
+    setIsOpen(false);
+    setConnectionRequest(false);
+    setConnectionStatus(false);
+    setLoading(false);
+  }
 
 
   return (
@@ -172,31 +172,31 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
             <DialogTitle className="font-bold text-2xl">Programowanie karty dostępu</DialogTitle>
             <Description>
               <label className='text-gray-600'>Wybierz programator NFC, aby zaprogramować nową kartę dostępu dla użytkownika.</label>
-              {Array.isArray(nfcProgrammers) && nfcProgrammers.length !== 0 && 
-              <select className='w-full p-2 border rounded-lg mt-3 mb-3'  onChange={handleChangeSelectedProgrrammer}>
-                <option  disabled >Wybierz programator NFC</option>
-                {nfcProgrammers.map((programmer, id) => (     
-                  <option key={programmer.uuid} value={programmer.uuid}>
-                    Programator {id + 1}: {programmer.ipAddress}
-                  </option>
-                ))}
-              </select>}
-                <div className="flex justify-center">
-                  <button className='bg-gray-600 w-fit text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition' onClick={handleCheckConnection}>
-                    Sprawdź połączenie
-                  </button>
-                </div>
-                {loading && <label className= 'text-gray-600 flex flex-col items-center'>Sprawdzanie połączenia z programatorem...</label>}
-                {connectionRequest && connectionStatus && 
+              {Array.isArray(nfcProgrammers) && nfcProgrammers.length !== 0 &&
+                <select className='w-full p-2 border rounded-lg mt-3 mb-3' onChange={handleChangeSelectedProgrrammer}>
+                  <option disabled >Wybierz programator NFC</option>
+                  {nfcProgrammers.map((programmer, id) => (
+                    <option key={programmer.uuid} value={programmer.uuid}>
+                      Programator {id + 1}: {programmer.ipAddress}
+                    </option>
+                  ))}
+                </select>}
+              <div className="flex justify-center">
+                <button className='bg-gray-600 w-fit text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition' onClick={handleCheckConnection}>
+                  Sprawdź połączenie
+                </button>
+              </div>
+              {loading && <label className='text-gray-600 flex flex-col items-center'>Sprawdzanie połączenia z programatorem...</label>}
+              {connectionRequest && connectionStatus &&
                 <div className='flex flex-col items-center'>
-                <label className='text-gray-600'>Połączenie z programatorem zostało nawiązane.</label>
-                <button onClick={handleCloseConnectionInfo} className='bg-gray-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition'>ok</button>
+                  <label className='text-gray-600'>Połączenie z programatorem zostało nawiązane.</label>
+                  <button onClick={handleCloseConnectionInfo} className='bg-gray-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition'>ok</button>
                 </div>}
 
-                {connectionRequest && !connectionStatus && 
+              {connectionRequest && !connectionStatus &&
                 <div className='flex flex-col items-center'>
-                <label className='text-gray-600'>Nie udało się nawiązać połączenia z programatorem.</label>
-                <button onClick={handleCloseConnectionInfo} className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition'>ok</button>
+                  <label className='text-gray-600'>Nie udało się nawiązać połączenia z programatorem.</label>
+                  <button onClick={handleCloseConnectionInfo} className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition'>ok</button>
                 </div>}
             </Description>
             <div className="flex gap-4">
@@ -205,11 +205,11 @@ export default function ProgramCardDialog({ user, onSuccess, onError }: { user: 
                 <button className="bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
               </div>
             </div>
-            {isCardProgrammingInProgress && 
-            <div className='flex flex-col items-center'>
-            <label className='text-gray-600'>Programowanie karty ...</label>
-            </div>}
-            
+            {isCardProgrammingInProgress &&
+              <div className='flex flex-col items-center'>
+                <label className='text-gray-600'>Programowanie karty ...</label>
+              </div>}
+
           </DialogPanel>
         </div>
       </Dialog>
