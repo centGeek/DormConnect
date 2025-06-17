@@ -123,6 +123,10 @@ public class NfcDeviceService {
        if (currentUser == null) {
            throw new NotFoundException("Error while fetching user with uuid: " + nfcAccessRequestDTO.userUuid());
        }
+       // if user is admin, allow access to every common room at any time
+       else if (currentUser.role().equalsIgnoreCase("admin")) {
+           return true;
+       }
 
        CommonRoomEntity commonRoomEntity = commonRoomRepository.findByName(nfcAccessRequestDTO.roomNumber());
        if (commonRoomEntity == null) {

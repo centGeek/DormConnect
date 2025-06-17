@@ -12,7 +12,7 @@ import ChangeEmailDialog from "../components/ChangeEmailDialog";
 import LockAccountDialog from "../components/LockAccountDialog";
 import ErrorDialog from "../components/ErrorDialog";
 import SuccessDialog from "../components/SuccessDialog";
-import {buttons} from "../../ReusableComponents/buttons.ts";
+import { buttons } from "../../ReusableComponents/buttons.ts";
 import ProgramCardDialog from "../components/ProgramCardDialog";
 
 
@@ -94,36 +94,69 @@ export default function ManageUser() {
                 buttons={buttons}>
                 <button
                     type="button"
-                    className="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition"
+                    className="bg-gray-600 text-white hover:bg-gray-500 px-5 py-2 rounded-lg  transition"
                     onClick={() => navigate('/users/manage')}
                 >
                     ← Powrót
                 </button>
-                <div>
-                    <h1 className="text-xl">Zarządzanie użytkownikiem</h1>
-                    <div>
-                        <h2 className="text-lg">ID: {currUser?.id}</h2>
-                        <h2 className="text-lg">Nazwa użytkownika: {currUser?.userName}</h2>
-                        <h2 className="text-lg">Email: {currUser?.email}</h2>
-                        <h2 className="text-lg">Rola: {currUser?.role}</h2>
-                        {currUser?.isActive &&
-                            <h2 className="text-lg">Status konta: aktywne</h2>}
-                        {!currUser?.isActive &&
-                            <h2 className="text-lg">Status konta: nieaktywne</h2>}
-                        {currUser && <DeleteUserDialog 
-                        user={currUser}
-                        onError={handleDialogChangeError} 
-                        onSuccess={handleDialogChangeSuccess} />}
-                        {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
-                        {currUser && <LockAccountDialog 
-                        user={currUser}
-                        onError={handleDialogChangeError} 
-                        onSuccess={handleDialogChangeSuccess} />}
-                        {currUser && <ProgramCardDialog 
-                        user={currUser}
-                        onError={handleDialogChangeError} 
-                        onSuccess={handleDialogChangeSuccess} />}
-                        {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
+                <div className="max-w-7xl  mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+                    <h1 className="text-2xl font-bold mb-6 text-center">Zarządzanie użytkownikiem</h1>
+                    <div className="w-4xl mx-auto mt-10 p-6 bg-gray-100 hadow-md rounded-lg">
+                        <div className=" flex h-10 p-5 flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">ID: </label>
+                            <label className="text-xl text-black">{currUser?.id} </label>
+                        </div>
+
+                        <div className=" h-10 p-5 mt-2 flex flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">Nazwa użytkownika: </label>
+                            <label className="text-xl text-black">{currUser?.userName} </label>
+                        </div>
+
+                        <div className="h-10 p-5 mt-2 flex flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">Email </label>
+                            <label className="text-xl text-black">{currUser?.email} </label>
+                        </div>
+
+                        <div className="h-10 p-5 mt-2 flex flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">Rola: </label>
+                            <label className="text-xl text-black">{currUser?.role} </label>
+                        </div>
+
+
+                        {currUser?.isActive && <div className="h-10 p-5 mt-2 flex flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">Status konta: </label>
+                            <label className="text-xl text-black">aktywne </label>
+                        </div>}
+
+                        {!currUser?.isActive && <div className="h-10 p-5 mt-2 flex flex-col md:flex-row hover:bg-gray-200 rounded-lg md:items-center md:justify-between">
+                            <label className="text-xl text-black">Status konta: </label>
+                            <label className="text-xl text-black">nieaktywne </label>
+                        </div>}
+
+                        <div className="mt-8 flex flex-col md:flex-row md:justify-between space-y-4 md:space-y-0">
+
+                            {currUser && <DeleteUserDialog
+                                user={currUser}
+                                onError={handleDialogChangeError}
+                                onSuccess={handleDialogChangeSuccess} />}
+
+                            {currUser && <ChangeRoleDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
+
+                            {currUser && <LockAccountDialog
+                                user={currUser}
+                                onError={handleDialogChangeError}
+                                onSuccess={handleDialogChangeSuccess} />}
+
+                            {currUser && <ProgramCardDialog
+                                user={currUser}
+                                onError={handleDialogChangeError}
+                                onSuccess={handleDialogChangeSuccess} />}
+
+                            {currUser && <ChangeEmailDialog user={currUser} onError={handleDialogChangeError} onSuccess={handleDialogChangeSuccess} />}
+
+
+
+                        </div>
                     </div>
 
                 </div>

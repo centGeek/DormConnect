@@ -43,15 +43,15 @@ export default function DeleteUserDialog({ user, onSuccess, onError }: { user: U
 
   return (
     <>
-      <button className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition' onClick={() => setIsOpen(true)}>Usuń użytkownika</button>
+      <button className='w-40 bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition' onClick={() => setIsOpen(true)}>Usuń użytkownika</button>
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-          <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-            <DialogTitle className="font-bold">Usuwanie użytkownika</DialogTitle>
+          <DialogPanel className="max-w-lg space-y-4 border-4 bg-white p-12 rounded-lg w-300">
+            <DialogTitle className="font-bold text-2xl">Usuwanie użytkownika</DialogTitle>
             <Description>Ta operacja jest nieodwracalna. Czy na pewno chcesz usunąć użytkownika?</Description>
             <div className="flex gap-4">
-              <button className='bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition' onClick={handleDeleteUser}>Usuń</button>
-              <button className="bg-blue-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-blue-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
+              <button className='bg-gray-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-gray-500 transition' onClick={handleDeleteUser}>Usuń</button>
+              <button className="bg-red-600 m-2 text-white px-5 py-2 rounded-lg hover:bg-red-500 transition" onClick={() => setIsOpen(false)}>Anuluj</button>
             </div>
           </DialogPanel>
         </div>
