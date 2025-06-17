@@ -1,5 +1,6 @@
 #define SDA_PIN 21
 #define SCL_PIN 22
+#define INPUT_BUTTON_PIN 34
 #define NTAG216_MEMORY_BLOCKS 231
 #define DATA_BLOCK_SIZE 4
 #define NTAG216_UID_SIZE 7
@@ -10,10 +11,12 @@
 #define USER_UUID_CONTROL_BYTE_NUMBER 2
 #define USER_UUID_TOTAL_BYTES 
 
-#define SERVER_REQUEST_ADDRESS "http://192.168.166.74:8000/api/nfc/room/check-access"
+#define SERVER_REQUEST_ADDRESS "http://192.168.166.74:8000/api/nfc/common-room/check-access"
 #define SERVER_REGISTER_DEVICE_ADDRESS "http://192.168.166.74:8000/api/nfc/register"
 
 #define DEVICE_UUID "773c4f56-e9a0-4f94-9cd2-403e7342fc29"
-#define ROOM_NUMBER "07"
+#define ROOM_NUMBER "LAUNDRY-0-1"
 
 #define WORKING_OUTPUT_PIN 2
+#define LOCK_OUTPUT_PIN 18
+#define BUTTON_INTERRUPT_PIN 19

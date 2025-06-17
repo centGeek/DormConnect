@@ -13,12 +13,12 @@ private:
     NfcController nfcController;
     WebClientController webClientController;
     NetworkController networkController;
-    LiquidCrystal_I2C lcd;
+    void mainLoopTask();
 
 public:
     AppController();
     uint8_t run();
-    void mainLoopTask();
+
 };
 
 

@@ -1,4 +1,3 @@
-#include "Wire.h"
 #include "Adafruit_PN532.h"
 #include "../../include/defines.h"
 #include <memory>

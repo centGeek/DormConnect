@@ -4,10 +4,6 @@ WebClientController::WebClientController()
 {
 }
 
-uint8_t WebClientController::initialize()
-{
-    return 0;
-}
 
 uint8_t WebClientController::sendHttpPostRequest(JsonDocument jsonData, String url)
 {

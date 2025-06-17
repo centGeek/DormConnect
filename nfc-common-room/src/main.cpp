@@ -6,7 +6,8 @@
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-AppController appController;
+
+
 
 const char* testUUID = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
 
@@ -16,7 +17,7 @@ void setup() {
     
     delay(2000);
     Serial.println("ok");
-    
+    AppController appController;
     appController.run();
     // lcd.init(SDA_PIN, SCL_PIN);                      // initialize the lcd 
     // // Print a message to the LCD.

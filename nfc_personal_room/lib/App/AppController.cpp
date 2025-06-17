@@ -1,9 +1,8 @@
 #include "AppController.h"
 
-AppController::AppController() : lcd(0x27, 16, 2)
+AppController::AppController()
 {
     Serial.begin(9600);
-    Wire.begin();
     webClientController.initialize();
     pinMode(WORKING_OUTPUT_PIN, OUTPUT);
 }
@@ -25,14 +24,6 @@ uint8_t AppController::run()
         }
     } while (success);
 
-    lcd.init(16, 2);
-    lcd.backlight();
-    lcd.setContrast(80);
-    lcd.clear();
-    delay(1000);
-    lcd.setCursor(0, 0);
-    lcd.print("NFC initialized");
-
     // network initialization
     success = networkController.connectToNetwork();
     if (success)
@@ -40,9 +31,7 @@ uint8_t AppController::run()
         Serial.println("Error while connecting to network. Resetting module...");
         vTaskDelay(pdTICKS_TO_MS(1000));
     }
-    lcd.setCursor(0, 1);
-    lcd.print("Connected to network");
-    vTaskDelay(pdTICKS_TO_MS(1000));
+
 
     // REGISTER DEVICE
     vTaskDelay(pdTICKS_TO_MS(1000));
@@ -97,9 +86,7 @@ void AppController::mainLoopTask()
                 if (userUUID == nullptr)
                 {
                     Serial.println("Error while reading user UUID from NFC tag");
-                    lcd.clear();
-                    lcd.setCursor(0, 0);
-                    lcd.print("NFC ERROR");
+
                     vTaskDelay(pdMS_TO_TICKS(2000));
                     digitalWrite(WORKING_OUTPUT_PIN, LOW);
                     continue;
@@ -122,24 +109,6 @@ void AppController::mainLoopTask()
                 uint8_t response = webClientController.sendHttpPostRequest(json, SERVER_REQUEST_ADDRESS);
                 Serial.print("Response code: ");
                 Serial.println(response);
-                if (response == 200)
-                {
-                    lcd.clear();
-                    lcd.setCursor(0, 0);
-                    lcd.print("ACCESS GRANTED");
-                }
-                else if (response == 403)
-                {
-                    lcd.clear();
-                    lcd.setCursor(0, 0);
-                    lcd.print("ACCESS DENIED");
-                }
-                else
-                {
-                    lcd.clear();
-                    lcd.setCursor(0, 0);
-                    lcd.print("CONNECTION ERROR");
-                }
 
                 vTaskDelay(pdMS_TO_TICKS(2000));
                 digitalWrite(WORKING_OUTPUT_PIN, LOW);

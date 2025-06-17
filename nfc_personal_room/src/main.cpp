@@ -1,4 +1,3 @@
-#include <Wire.h>
 #include <Adafruit_PN532.h>
 
 #include "../lib/App/AppController.h"
@@ -6,13 +5,13 @@
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-AppController appController;
+
 
 const char* testUUID = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
 
 
 void setup() {
-
+    AppController appController;
     
     delay(2000);
     Serial.println("ok");
