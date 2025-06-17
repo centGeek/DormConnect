@@ -117,7 +117,7 @@ public class NfcDeviceService {
     }
 
 
-    // still does not work, model need refactoting
+
     public boolean checkCommonRoomAccess(NfcAccessRequestDTO nfcAccessRequestDTO) {
         // TODO Auto-generated method stub
         GetUserDTO currentUser = getUserByUuid(nfcAccessRequestDTO.userUuid());

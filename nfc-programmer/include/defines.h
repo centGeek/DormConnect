@@ -11,12 +11,4 @@
 #define USER_UUID_TOTAL_BYTES 
 
 
-#define DEVICE_UUID "e7c560a3-8b7b-49bb-bcf9-cca125571cf5"
-
-#define WIFI_SSID "Redmi Note 10S"
-#define WIFI_PASSWORD "watxur6z45avvpy"
-#define SERVER_PORT 4045
-
-#define SERVER_REQUEST_ADDRESS "http://192.168.166.74:8000/api/nfc-programmer/register"
-
 #define WORKING_OUTPUT_PIN 2

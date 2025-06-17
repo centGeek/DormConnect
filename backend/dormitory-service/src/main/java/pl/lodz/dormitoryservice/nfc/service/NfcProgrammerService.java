@@ -86,7 +86,6 @@ public class NfcProgrammerService {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(
                     "{\"deviceUuid\":\"" + entity.deviceUuid() + "\", \"userUuid\":\"" + entity.userUuid() + "\"}"))
-                // .POST(HttpRequest.BodyPublishers.ofString(entity.toString()))
                 .build();
             HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
             client.close();

@@ -24,7 +24,7 @@ public class NfcDeviceController {
        this.nfcDeviceService = nfcDeviceService;
    }
 
-   // works
+
    @PostMapping("/register")
    public ResponseEntity<NfcDeviceRegisterDTO> registerDevice(@RequestBody NfcDeviceRegisterDTO deviceDTO) {
        try {
@@ -36,7 +36,6 @@ public class NfcDeviceController {
 
    }
 
-   // probablu works
    @PostMapping("/room/check-access")
    public ResponseEntity<NfcAccessRequestDTO> checkAccess(@RequestBody NfcAccessRequestDTO nfcAccessRequestDTO) {
        try {
@@ -51,7 +50,6 @@ public class NfcDeviceController {
    }
 
 
-   // this endpoint does not work yet - coommon room entity has to have an unique name
    @PostMapping("/common-room/check-access")
    public ResponseEntity<NfcAccessRequestDTO> checkCommonRoomAccess(
        @RequestBody NfcAccessRequestDTO nfcAccessRequestDTO) {
@@ -66,7 +64,6 @@ public class NfcDeviceController {
        }
    }
 
-   //works
    @PostMapping("/update-status")
    public ResponseEntity<NfcDeviceUpdateDTO> updateDeviceStatus(@RequestBody NfcDeviceUpdateDTO deviceUpdateDTO) {
        try {
@@ -86,7 +83,4 @@ public class NfcDeviceController {
            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
        }
    }
-
-
-
 }
