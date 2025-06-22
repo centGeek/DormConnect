@@ -12,8 +12,6 @@ AppController::AppController()
     pinMode(LOCK_OUTPUT_PIN, OUTPUT);
     lockStatus = 0; // 0 - unlocked, 1 - locked
     digitalWrite(LOCK_OUTPUT_PIN, HIGH);
-
-
     //gpio_install_isr_service(ESP_INTR_FLAG_LEVEL1);
 
     // attachInterrupt(
@@ -72,6 +70,20 @@ uint8_t AppController::run()
         vTaskDelay(pdTICKS_TO_MS(1000));
     }
 
+    digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    digitalWrite(WORKING_OUTPUT_PIN, LOW);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    digitalWrite(WORKING_OUTPUT_PIN, LOW);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    digitalWrite(WORKING_OUTPUT_PIN, LOW);
+    vTaskDelay(pdTICKS_TO_MS(250));
+    
+
     // REGISTER DEVICE
     vTaskDelay(pdTICKS_TO_MS(1000));
 
@@ -126,10 +138,16 @@ void AppController::mainLoopTask()
                 {
                     Serial.println("Error while reading user UUID from NFC tag");
                     vTaskDelay(pdMS_TO_TICKS(2000));
-                    digitalWrite(WORKING_OUTPUT_PIN, LOW);
                     continue;
                 }
                 Serial.println("Success");
+            digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+            vTaskDelay(pdTICKS_TO_MS(250));
+            digitalWrite(WORKING_OUTPUT_PIN, LOW);
+            vTaskDelay(pdTICKS_TO_MS(250));
+            digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+            vTaskDelay(pdTICKS_TO_MS(250));
+            digitalWrite(WORKING_OUTPUT_PIN, LOW);
                 Serial.print("Found user with id: ");
                 String userUUIDString = nfcController.uuidToString(userUUID, USER_UUID_SIZE_BYTES);
                 Serial.println(userUUIDString);
@@ -153,10 +171,12 @@ void AppController::mainLoopTask()
                     vTaskDelay(pdMS_TO_TICKS(5000)); // Lock for 5 seconds
                     digitalWrite(LOCK_OUTPUT_PIN, HIGH);
                     Serial.println("Locking the door...");
+                    digitalWrite(WORKING_OUTPUT_PIN, LOW);
                 } else {
                     vTaskDelay(pdMS_TO_TICKS(2000));
+                    digitalWrite(WORKING_OUTPUT_PIN, LOW);
                 }
-                digitalWrite(WORKING_OUTPUT_PIN, LOW);
+
 
                 // this->webServerController.startServer();
             

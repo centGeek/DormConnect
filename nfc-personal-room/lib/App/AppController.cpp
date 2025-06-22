@@ -5,7 +5,7 @@ AppController::AppController()
     Serial.begin(9600);
     pinMode(WORKING_OUTPUT_PIN, OUTPUT);
     pinMode(LOCK_OUTPUT_PIN, OUTPUT);
-    digitalWrite(WORKING_OUTPUT_PIN, HIGH);
+    digitalWrite(LOCK_OUTPUT_PIN, HIGH);
     this->lockStatus = 1; // 1 - open, 0 - closed
 }
 
