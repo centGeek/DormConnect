@@ -2,35 +2,44 @@ import sys
 import json
 import base64
 import asyncio
-import requests
 from datetime import datetime
 from playwright.async_api import async_playwright
-import io
+import folium
 
 def img_to_base64_from_file(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-def img_to_base64_from_url(url):
-    r = requests.get(url)
-    r.raise_for_status()
-    return base64.b64encode(r.content).decode()
-
-def get_static_map_url(lat, lon, zoom=15, width=400, height=300, marker=True):
-    base = "https://staticmap.openstreetmap.de/staticmap.php"
-    params = f"?center={lat},{lon}&zoom={zoom}&size={width}x{height}"
-    if marker:
-        params += f"&markers={lat},{lon},red-pushpin"
-    return base + params
+async def html_to_png_base64(html: str, width=800, height=600) -> str:
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page(viewport={"width": width, "height": height})
+        await page.set_content(html, wait_until="networkidle")
+        screenshot = await page.screenshot(type="png")
+        await browser.close()
+        return base64.b64encode(screenshot).decode()
 
 async def generate_pdf(html_content: str) -> bytes:
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
         await page.set_content(html_content, wait_until='networkidle')
-        pdf_bytes = await page.pdf(format='A4', print_background=True, margin={"top":"2cm","bottom":"2cm","left":"2cm","right":"2cm"})
+        pdf_bytes = await page.pdf(format='A4', print_background=True,
+                                   margin={"top": "2cm", "bottom": "2cm", "left": "2cm", "right": "2cm"})
         await browser.close()
         return pdf_bytes
+
+def create_map_html(lat, lon, zoom=17):
+    m = folium.Map(
+        location=[lat, lon],
+        zoom_start=zoom,
+        control_scale=False,
+        zoom_control=False,
+        dragging=False,
+        tiles="CartoDB Positron"
+    )
+    folium.Marker([lat, lon]).add_to(m)
+    return m.get_root().render()
 
 def create_html(data: dict, logo_base64: str, map_base64: str, lat, lon) -> str:
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -92,10 +101,10 @@ def create_html(data: dict, logo_base64: str, map_base64: str, lat, lon) -> str:
             }}
             .logo {{
                 text-align: center;
-                margin-top: 40px;
+                margin-top: 0px;
             }}
             .logo img {{
-                width: 120px;
+                width: 240px;
                 opacity: 0.7;
             }}
         </style>
@@ -110,8 +119,8 @@ def create_html(data: dict, logo_base64: str, map_base64: str, lat, lon) -> str:
             <tr><th>Pole</th><th>Wartość</th></tr>
             <tr><td>Data rozpoczęcia</td><td>{data.get('startDate', '-')}</td></tr>
             <tr><td>Data zakończenia</td><td>{data.get('endDate', '-')}</td></tr>
-            <tr><td>Wynik priorytetu</td><td>{data.get('priorityScore', '-')}</td></tr>
-            <tr><td>Dochód (PLN)</td><td>{data.get('income', '-')}</td></tr>
+            <tr><td>Wynik rekrutacyjny</td><td>{data.get('priorityScore', '-')}</td></tr>
+            <tr><td>Wpisany dochód (PLN)</td><td>{data.get('income', '-')}</td></tr>
         </table>
 
         {map_img_html}
@@ -124,6 +133,19 @@ def create_html(data: dict, logo_base64: str, map_base64: str, lat, lon) -> str:
     </html>
     """
 
+async def main_async(data, logo_base64):
+    lat = data.get('lat')
+    lon = data.get('lon')
+    map_base64 = ""
+
+    if lat is not None and lon is not None:
+        folium_map_html = create_map_html(lat, lon)
+        map_base64 = await html_to_png_base64(folium_map_html, width=800, height=600)
+
+    html = create_html(data, logo_base64, map_base64, lat, lon)
+    pdf_bytes = await generate_pdf(html)
+    return pdf_bytes
+
 def main():
     input_json = sys.stdin.read()
     try:
@@ -132,29 +154,15 @@ def main():
         print(f"Error: Niepoprawny JSON: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Ładujemy logo z lokalnego pliku
     try:
         logo_base64 = img_to_base64_from_file("./dormitory-service/src/main/resources/pl/lodz/dormitoryservice/scripts/logo.png")
     except Exception as e:
         print(f"Warning: Nie udało się wczytać logo: {e}", file=sys.stderr)
         logo_base64 = ""
 
-    lat = data.get('lat')
-    lon = data.get('lon')
-    map_base64 = ""
-
-    if lat is not None and lon is not None:
-        try:
-            map_url = get_static_map_url(lat, lon)
-            map_base64 = img_to_base64_from_url(map_url)
-        except Exception as e:
-            print(f"Warning: Nie udało się pobrać mapy: {e}", file=sys.stderr)
-
-    html = create_html(data, logo_base64, map_base64, lat, lon)
-    pdf_bytes = asyncio.run(generate_pdf(html))
+    pdf_bytes = asyncio.run(main_async(data, logo_base64))
     base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
     print(base64_pdf)
-
 
 if __name__ == "__main__":
     main()
