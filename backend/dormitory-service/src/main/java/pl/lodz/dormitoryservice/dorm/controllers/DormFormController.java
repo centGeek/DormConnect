@@ -1,5 +1,7 @@
 package pl.lodz.dormitoryservice.dorm.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,10 @@ import pl.lodz.dormitoryservice.dorm.DTO.DormFormDTO;
 import pl.lodz.dormitoryservice.dorm.services.DormFormService;
 import pl.lodz.dormitoryservice.entity.DormFormEntity;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +57,68 @@ public class DormFormController {
                     saved.getPriorityScore()
             );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+            //Python script
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            String jsonDormForm = mapper.writeValueAsString(dto);
+
+            ProcessBuilder pb = new ProcessBuilder(
+                    "./.venv/Scripts/python.exe",
+                    "./dormitory-service/src/main/resources/pl/lodz/dormitoryservice/scripts/generate_pdf.py"
+            );
+
+            Process process = pb.start();
+
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+                writer.write(jsonDormForm);
+                writer.flush();
+                process.getOutputStream().close();
+            }
+
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
+
+            Thread outputThread = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        output.append(line).append("\n");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            Thread errorThread = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        error.append(line).append("\n");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            outputThread.start();
+            errorThread.start();
+
+            int exitCode = process.waitFor();
+
+            outputThread.join();
+            errorThread.join();
+
+            if (exitCode != 0) {
+                logger.error("Python script error output:\n{}", error.toString());
+                throw new RuntimeException("PDF generation failed. Details: " + error.toString());
+            }
+
+            String base64Pdf = output.toString().trim();
+
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(base64Pdf);
+
 
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)

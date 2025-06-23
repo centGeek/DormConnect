@@ -8,6 +8,9 @@ public record DormFormCreateDTO(
         LocalDate endDate,
         boolean isProcessed,
         String comments,
-        Integer priorityScore
+        Integer priorityScore,
+        Double income,
+        Double lat,
+        Double lon
 ) {
 }
