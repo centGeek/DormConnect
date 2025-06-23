@@ -12,3 +12,8 @@
 
 
 #define WORKING_OUTPUT_PIN 2
+
+#define MISO_PIN 19
+#define MOSI_PIN 23
+#define SCK_PIN 18
+#define SS_PIN 5

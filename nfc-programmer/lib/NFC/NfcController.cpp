@@ -138,17 +138,17 @@ uint8_t NfcController::writeNfcUserUUID(String userUUID)
         uint8_t tempArray[] = {uuidArray[arrayCounter], uuidArray[arrayCounter + 1], uuidArray[arrayCounter + 2], uuidArray[arrayCounter + 3]};
         for (size_t z = 0; z < 4; z++)
         {
-            // Serial.print(tempArray[z], HEX);
+            Serial.print(tempArray[z], HEX);
         }
-        // Serial.println();
+        Serial.println();
 
         success = this->nfc.mifareultralight_WritePage(i, tempArray);
         if (!success) {
-            // Serial.println("not ok");
+            Serial.println("not ok");
             return -1;
         }
         arrayCounter += 4;
-        // Serial.println("ok");
+        Serial.println("ok");
     }
     
     return 0;
@@ -223,10 +223,16 @@ String NfcController::uuidToString(uint8_t *uuid, uint8_t size)
     uint8_t positionsSize = 4;
     for (size_t i = 0; i < size; i++)
     {
-        if(uuid[i] == 0) {
+        if (uuid[i] == 0)
+        {
             finalUuidString += "00";
-        }
-        else {
+        } else if(uuid[i] < 0xf) {
+            finalUuidString += "0" + String(uuid[i], HEX);
+            //add case when letter A b c itd is leading like 0a 0b 0c 0d
+        } 
+
+        else
+        {
             finalUuidString += String(uuid[i], HEX);
         }
     }
@@ -234,7 +240,7 @@ String NfcController::uuidToString(uint8_t *uuid, uint8_t size)
     {
         finalUuidString = insertCharAt(finalUuidString, uuidDashPositions[i], '-');
     }
-    
+
     return finalUuidString;
 }
 
@@ -273,9 +279,7 @@ uint8_t *NfcController::uuidToIntArray(String uuidString)
         if (uuidString.substring(i + 1, i + 2) == "-") i++;
         String lastPart = uuidString.substring(i + 1, i + 2);
         String finalNumber = firstPart + lastPart;
-        // Serial.print("Final number: ");
-        // Serial.print(finalNumber);
-        // Serial.println();
+ 
         finalUUID[j] = stringToHex(finalNumber); 
         i+=2;
         j++;
