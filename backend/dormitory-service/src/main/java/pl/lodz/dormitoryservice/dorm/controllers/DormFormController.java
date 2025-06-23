@@ -10,10 +10,10 @@ import pl.lodz.dormitoryservice.common.JwtService;
 import pl.lodz.dormitoryservice.dorm.DTO.DormFormCreateDTO;
 import pl.lodz.dormitoryservice.dorm.DTO.DormFormDTO;
 import pl.lodz.dormitoryservice.dorm.services.DormFormService;
+import pl.lodz.dormitoryservice.dorm.services.PdfGeneratorService;
 import pl.lodz.dormitoryservice.entity.DormFormEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dorm/form")
@@ -22,6 +22,7 @@ public class DormFormController {
     private static final Logger logger = LoggerFactory.getLogger(DormFormController.class);
     private final DormFormService dormFormService;
     private final JwtService jwtService;
+    private final PdfGeneratorService pdfGeneratorService;
 
     @PostMapping
     public ResponseEntity<?> submitDormForm(
@@ -32,26 +33,16 @@ public class DormFormController {
             Long userId = jwtService.getIdFromToken(authorizationHeader.replace("Bearer ", ""));
 
             DormFormEntity entity = new DormFormEntity();
-            entity.setUserId(userId); // we take userId from a token
+            entity.setUserId(userId);
             entity.setStartDate(dto.startDate());
             entity.setEndDate(dto.endDate());
             entity.setProcessed(dto.isProcessed());
             entity.setComments(dto.comments());
             entity.setPriorityScore(dto.priorityScore());
 
-            DormFormEntity saved = dormFormService.submitDormForm(entity);
+            String base64Pdf = pdfGeneratorService.generatePdfBase64FromForm(dto);
 
-            DormFormDTO response = new DormFormDTO(
-                    saved.getId(),
-                    saved.getUserId(),
-                    saved.getStartDate(),
-                    saved.getEndDate(),
-                    saved.isProcessed(),
-                    saved.getComments(),
-                    saved.getPriorityScore()
-            );
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(base64Pdf);
 
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -61,6 +52,7 @@ public class DormFormController {
                     .body("Unexpected error occurred: " + e.getMessage());
         }
     }
+
 
     @PutMapping("/{formId}/deactivate")
     public ResponseEntity<?> deleteForm(

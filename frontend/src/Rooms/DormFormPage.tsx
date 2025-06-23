@@ -100,7 +100,10 @@ function DormFormPage() {
             endDate: endDate || null,
             comments,
             priorityScore,
-            isProcessed: false
+            isProcessed: false,
+            income,
+            lat: selectedLatLng.lat,
+            lon: selectedLatLng.lng
         };
 
         try {
@@ -114,7 +117,33 @@ function DormFormPage() {
                 credentials: 'include'
             });
 
-            if (!response.ok) throw new Error('Posiadasz już formularz w podanym zakresie dat!');
+            const text = await response.text();
+
+            if (!response.ok) {
+                if (response.status === 409) {
+                    setError('Masz już formularz w podanym zakresie dat.');
+                } else {
+                    setError(text || 'Wystąpił błąd podczas zapisu formularza.');
+                }
+                return;
+            }
+
+            // 🧾 Dekodowanie PDF tylko jeśli response.ok === true
+            const byteCharacters = atob(text);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'potwierdzenie_wniosku.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
 
             setSuccessMessage('Formularz został pomyślnie złożony! Otrzymany wynik rekrutacji to: ' + priorityScore);
             setStartDate('');
@@ -123,9 +152,12 @@ function DormFormPage() {
             setIncome('');
             setPriorityScore('');
             setSelectedLatLng(null);
+
         } catch (err: any) {
-            setError(err.message || 'Wystąpił błąd');
+            setError(err.message || 'Nieoczekiwany błąd po stronie klienta');
         }
+
+
     };
 
     return (

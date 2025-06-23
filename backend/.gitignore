@@ -151,3 +151,4 @@ XUNIT_RESULT*.xml
 
 # Vale
 .vale/styles/*
+
