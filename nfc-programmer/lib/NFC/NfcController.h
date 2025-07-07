@@ -6,7 +6,7 @@
 class NfcController {
 
 private:
-    Adafruit_PN532 nfc = Adafruit_PN532(SDA_PIN, SCL_PIN);
+    Adafruit_PN532 nfc = Adafruit_PN532(SCK, MISO, MOSI, SS);
     uint8_t stringToHex(String input);
     String insertCharAt(String base, uint8_t index, char charToInsert);
     std::shared_ptr<SemaphoreHandle_t> pn532Semaphore;

@@ -5,8 +5,8 @@
 
 class NetworkController {
 private:
-    char* wifiSsid = "Redmi Note 10S"; 
-    char* wifiPassword = "watxur6z45avvpy";
+    char* wifiSsid = WIFI_SSID;
+    char* wifiPassword = WIFI_PASSWORD;
     IPAddress localIpAddress;
 public:
     uint8_t connectToNetwork();
